@@ -5,12 +5,28 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-
+    selectedProjectId: 0,
+    selectedSprintId: 0,
+    selectedCategoryId: 0,
+    pageLabel: "",
   },
   mutations: {
+    selectProjectId(state, value) {
+      state.selectedProjectId = value;
+    },
 
+    selectCategoryId(state, value) {
+      state.selectedCategoryId = value;
+    },
+
+    selectSprintId(state, value) {
+      state.selectedSprintId = value; 
+    },
+    
+    setPageLabel(state, value) {
+      state.pageLabel = value;
+    }
   },
   actions: {
-
   }
 })
