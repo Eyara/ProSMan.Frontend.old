@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     getSprints: function() {
-      router.push({
+      router.replace({
         name: "sprints",
         query: { projectId: store.state.selectedProjectId }
       });

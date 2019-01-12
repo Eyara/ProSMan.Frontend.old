@@ -40,11 +40,6 @@ export default {
 
   methods: {
     getProjects: function() {
-      // this.projects = [
-      //   { id: 1, name: "Crusader's Destiny" },
-      //   { id: 2, name: "Crusader's Run" },
-      //   { id: 3, name: "Crusader's Kings" }
-      // ];
       axios.get("http://localhost:54973/api/Project").then(response => {
         this.projects = response.data.data;
       });
