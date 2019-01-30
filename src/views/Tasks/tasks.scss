@@ -1,0 +1,135 @@
+.md-table-head.md-numeric,
+.md-table-cell.md-numeric {
+  text-align: center !important;
+}
+
+.md-icon {
+  font-size: 22px !important;
+}
+
+.btn-circle {
+  display: inline-block;
+  border: 2px solid #448aff;
+  background-color: transparent;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  vertical-align: middle;
+  transition: 0.4s;
+}
+
+.btn-circle:hover {
+  background-color: #448aff;
+}
+
+.btn-action {
+  color: #448aff !important;
+  background-color: transparent;
+  border: 2px solid #448aff;
+  border-radius: 50%;
+  font-size: 32px !important;
+  height: 40px !important;
+  width: 40px !important;
+  transition: 0.4s;
+}
+
+.btn-action:hover {
+  color: #fafafa !important;
+  background-color: #448aff !important;
+}
+
+.progress-block {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.progress-task-bar {
+  margin-top: 10px;
+  height: 10px;
+  border-radius: 5px;
+}
+
+.tasks-content {
+  text-align: initial;
+}
+
+.tasks-block {
+  margin-top: 20px;
+  border-top: 1px solid rgba($color: #000000, $alpha: 0.5);
+  border-bottom: 1px solid rgba($color: #000000, $alpha: 0.5);
+  padding: 0px 20px 20px 20px;
+}
+
+.task {
+  display: flex;
+  padding-top: 20px;
+  border-bottom: 1px solid rgba($color: #000000, $alpha: 0.2);
+}
+
+.task-item {
+  margin-left: 20px;
+  padding-bottom: 10px;
+  width: 100%;
+}
+
+.task-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.task-info {
+  display: flex;
+  margin-top: 5px;
+
+  .task-info-header:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.task-sub-info {
+  margin-left: 5px;
+  vertical-align: bottom;
+}
+
+.task-info-header {
+  .md-icon {
+    color: #448aff;
+  }
+
+  font-size: 14px;
+  color: #448aff;
+}
+
+.task-finished {
+  .task-item > .task-name {
+    color: rgba($color: #000000, $alpha: 0.2);
+  }
+
+  .task-item > .task-info > .task-info-header {
+    .md-icon {
+      color: rgba($color: #000000, $alpha: 0.2);
+    }
+
+    font-size: 14px;
+    color: rgba($color: #000000, $alpha: 0.2);
+  }
+  .btn-circle {
+    background-color: #448aff;
+  }
+}
+
+.action-block {
+  margin: 20px 0 0 10px;
+}
+
+.action-buttons {
+  display: flex;
+
+  .md-icon {
+    color: #448aff;
+  }
+}
+
+.category-picker {
+  margin-top: 10px;
+}
