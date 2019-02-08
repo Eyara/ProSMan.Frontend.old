@@ -9,7 +9,7 @@
 
 .btn-circle {
   display: inline-block;
-  border: 2px solid #448aff;
+  border: 2px solid #3a9ad9;
   background-color: transparent;
   width: 20px;
   height: 20px;
@@ -19,13 +19,13 @@
 }
 
 .btn-circle:hover {
-  background-color: #448aff;
+  background-color: #3a9ad9;
 }
 
 .btn-action {
-  color: #448aff !important;
+  color: #3a9ad9 !important;
   background-color: transparent;
-  border: 2px solid #448aff;
+  border: 2px solid #3a9ad9;
   border-radius: 50%;
   font-size: 32px !important;
   height: 40px !important;
@@ -35,7 +35,7 @@
 
 .btn-action:hover {
   color: #fafafa !important;
-  background-color: #448aff !important;
+  background-color: #3a9ad9 !important;
 }
 
 .progress-block {
@@ -93,11 +93,11 @@
 
 .task-info-header {
   .md-icon {
-    color: #448aff;
+    color: #3a9ad9;
   }
 
   font-size: 14px;
-  color: #448aff;
+  color: #3a9ad9;
 }
 
 .task-finished {
@@ -114,7 +114,7 @@
     color: rgba($color: #000000, $alpha: 0.2);
   }
   .btn-circle {
-    background-color: #448aff;
+    background-color: #3a9ad9;
   }
 }
 
@@ -126,7 +126,7 @@
   display: flex;
 
   .md-icon {
-    color: #448aff;
+    color: #3a9ad9;
   }
 }
 

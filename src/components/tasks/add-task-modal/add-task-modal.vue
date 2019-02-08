@@ -46,7 +46,7 @@
 import axios from "axios";
 import store from "../../../store.js";
 export default {
-  name: "add-update-task-modal",
+  name: "add-task-modal",
 
   data: function() {
     return {

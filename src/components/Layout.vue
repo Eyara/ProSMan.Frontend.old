@@ -44,7 +44,7 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  background-color: #448aff !important;
+  background-color: #3a9ad9 !important;
 }
 
 .main-color {

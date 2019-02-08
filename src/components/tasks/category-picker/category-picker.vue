@@ -19,18 +19,18 @@
 }
 .category-chip {
   user-select: none;
-  color: #448aff;
-  background-color: rgb(224, 224, 224);
+  color: #3a9ad9;
+  background-color: #e9e0d6;
 }
 
 .category-chip:hover {
   color: white !important;
-  background-color: #448aff !important;
+  background-color: #3a9ad9 !important;
 }
 
 .category-chip-selected {
   color: white !important;
-  background-color: #448aff !important;
+  background-color: #3a9ad9 !important;
 }
 </style>
 

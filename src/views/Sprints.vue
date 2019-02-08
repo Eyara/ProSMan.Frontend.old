@@ -1,21 +1,8 @@
 <template>
   <div>
     <div v-if="sprints.length > 0">
-      <md-card v-for="sprint in sprints" :key="sprint.id">
-        <md-card-header>
-          <div class="md-title">{{sprint.name}}</div>
-        </md-card-header>
-        <md-card-actions md-alignment="space-between">
-          <div>
-            <router-link to="/tasks">
-              <md-button @click="tasksOpen(sprint.id)">
-                <span>Открыть</span>
-              </md-button>
-            </router-link>
-          </div>
-          <md-button>Удалить</md-button>
-        </md-card-actions>
-      </md-card>
+      <sprint-timeline v-bind:sprints="sprints"
+      v-on:tasks-open="tasksOpen"></sprint-timeline>
     </div>
   </div>
 </template>
@@ -24,14 +11,18 @@
 import axios from "axios";
 import store from "../store.js";
 import router from "../router.js";
+import SprintTimeline from "../components/sprints/sprint-timeline/sprint-timeline.vue";
 
 export default {
   name: "sprints",
+  components: {
+    SprintTimeline
+  },
   data: () => ({
     sprints: []
   }),
   created: function() {
-    store.commit('setPageLabel', "Спринты");
+    store.commit("setPageLabel", "Спринты");
     this.getSprints();
   },
   methods: {
@@ -50,7 +41,8 @@ export default {
         });
     },
     tasksOpen(sprintId) {
-      store.commit('selectSprintId', sprintId);
+      router.push({path: "/tasks" });
+      store.commit("selectSprintId", sprintId);
     }
   }
 };

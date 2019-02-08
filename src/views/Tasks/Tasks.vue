@@ -1,11 +1,13 @@
 <template>
   <div class="tasks-content">
-    <add-update-task-modal
+    <add-task-modal
       v-bind:isCreating="isCreating"
       v-bind:taskModel="taskModel"
       v-bind:showDialog="showDialog"
       v-on:close-dialog="closeDialog">
-    </add-update-task-modal>
+    </add-task-modal>
+    <update-task-modal>
+    </update-task-modal>
     <div class="progress-block">
       <div>Pre-Alpha 0.1</div>
       <md-progress-bar
@@ -60,7 +62,8 @@
 import axios from "axios";
 import store from "../../store.js";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
-import AddUpdateTaskModal from "../../components/tasks/add-update-task-modal/add-update-task-modal.vue";
+import AddTaskModal from "../../components/tasks/add-task-modal/add-task-modal.vue";
+import UpdateTaskModal from "../../components/tasks/update-task-modal/update-task-modal.vue";
 
 export default {
   name: "tasks",
@@ -71,7 +74,8 @@ export default {
     showDialog: false
   }),
   components: {
-    AddUpdateTaskModal,
+    AddTaskModal,
+    UpdateTaskModal,
     CategoryPicker
   },
   created: function() {
