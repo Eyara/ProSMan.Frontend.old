@@ -52,9 +52,17 @@ export default {
   methods: {
     toggleCategory(category) {
       category.selected = !category.selected;
+      this.emitSelectCategories();
+    },
 
+    selectAll() {
+      this.categories.forEach(x => (x.selected = true));
+      this.emitSelectCategories();
+    },
+
+    emitSelectCategories() {
       let selectedCategories = this.categories.filter(x => x.selected);
-      this.$emit("select-categories", selectedCategories);
+      this.$emit("select-categories", selectedCategories);  
     },
 
     getCategories() {
@@ -71,6 +79,8 @@ export default {
               selected: false
             };
           });
+
+          this.selectAll();
         });
     }
   }

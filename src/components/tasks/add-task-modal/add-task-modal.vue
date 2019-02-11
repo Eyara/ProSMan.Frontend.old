@@ -69,16 +69,8 @@ export default {
   },
 
   created: function() {
-    if (!this.isCreating) {
-      console.log('updated');
-      this.model = this.taskModel;
-    }
-    else {
-      console.log('created');
-      this.model = this.initial_model;
-    }
+    this.model = this.isCreating ? this.initial_model : this.taskModel;
 
-    console.log(this.model);
     this.getCategories();
   },
 

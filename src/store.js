@@ -9,6 +9,7 @@ export default new Vuex.Store({
     selectedSprintId: 0,
     selectedCategoryId: 0,
     pageLabel: "",
+    rightSideMenuOpen: false,
   },
   mutations: {
     selectProjectId(state, value) {
@@ -25,7 +26,11 @@ export default new Vuex.Store({
     
     setPageLabel(state, value) {
       state.pageLabel = value;
-    }
+    },
+
+    toggleRightSideMenu(state) {
+      state.rightSideMenuOpen = !state.rightSideMenuOpen;
+    },
   },
   actions: {
   }
