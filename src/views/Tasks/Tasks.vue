@@ -1,11 +1,5 @@
 <template>
   <div class="tasks-content">
-    <add-task-modal
-      v-bind:isCreating="isCreating"
-      v-bind:taskModel="taskModel"
-      v-bind:showDialog="showDialog"
-      v-on:close-dialog="closeDialog"
-    ></add-task-modal>
     <div class="progress-block">
       <div>Pre-Alpha 0.1</div>
       <md-progress-bar
@@ -34,7 +28,7 @@
             </div>
             <div class="task-info-header">
               <md-icon style="margin-right: -5px;">priority_high</md-icon>
-              <span class="task-sub-info">{{task.priority}}</span>
+              <span class="task-sub-info">{{task.priority | priority}}</span>
             </div>
           </div>
         </div>
@@ -49,7 +43,7 @@
       </div>
     </div>
     <div class="action-block">
-      <div @click="createTaskDialog()">
+      <div @click="createTask()">
         <md-icon class="btn-action">add</md-icon>
       </div>
     </div>
@@ -64,7 +58,6 @@
 import axios from "axios";
 import store from "../../store.js";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
-import AddTaskModal from "../../components/tasks/add-task-modal/add-task-modal.vue";
 
 export default {
   name: "tasks",
@@ -76,7 +69,6 @@ export default {
     showDialog: false
   }),
   components: {
-    AddTaskModal,
     CategoryPicker
   },
   created: function() {
@@ -102,8 +94,19 @@ export default {
       return this.tasks.filter(x =>
         this.selectedCategories.map(s => s.id).includes(x.categoryId)
       );
+    },
+
+    sideNavOpen: function() {
+      return store.state.rightSideMenuOpen;  
     }
   },
+
+  watch: {
+    // make update task list
+    // sideNavOpen(newValue, oldValue) {
+    // }
+  },
+
   methods: {
     getTasks: function() {
       axios
@@ -115,30 +118,21 @@ export default {
           this.tasks = response.data.data;
         });
     },
-    createTask: async function(model) {
-      await axios.post("http://localhost:54973/api/Task/", model);
-      this.getTasks();
-    },
-    editTask: async function(task) {
-      console.log(task);
+
+    createTask: function() {
+      store.commit("setCreating", true);
       store.commit("toggleRightSideMenu");
     },
+
+    editTask: async function(task) {
+      store.commit("setCreating", false);
+      store.commit("updateTask", task);
+      store.commit("toggleRightSideMenu");
+    },
+
     deleteTask: async function(id) {
       await axios.delete("http://localhost:54973/api/Task?id=" + id);
       this.getTasks();
-    },
-    openDialog: function() {
-      this.showDialog = true;
-    },
-    closeDialog: function(model) {
-      this.showDialog = false;
-      if (model != null) {
-        this.createTask(model);
-      }
-    },
-    createTaskDialog: function() {
-      this.isCreating = true;
-      this.openDialog();
     },
 
     selectCategories: function(selectedCategories) {

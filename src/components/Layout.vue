@@ -22,50 +22,55 @@
       </md-list>
     </md-drawer>
 
-    <md-drawer class="md-right" :md-active.sync="$store.state.rightSideMenuOpen">
-      <md-toolbar class="md-transparent" md-elevation="0">
-        <span class="md-title">Favorites</span>
-      </md-toolbar>
-
-      <md-list>
-        <md-list-item>
-          <span class="md-list-item-text">Abbey Christansen</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon class="md-primary">chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-
-        <md-list-item>
-          <span class="md-list-item-text">Alex Nelson</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon class="md-primary">chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-
-        <md-list-item>
-          <span class="md-list-item-text">Mary Johnson</span>
-
-          <md-button class="md-icon-button md-list-action">
-            <md-icon>chat_bubble</md-icon>
-          </md-button>
-        </md-list-item>
-      </md-list>
+    <md-drawer
+      class="md-right"
+      v-bind:class="{ 'hide-right': !$store.state.rightSideMenuOpen }"
+      :md-active.sync="$store.state.rightSideMenuOpen"
+    >
+      <add-task-modal 
+      v-if="$store.state.rightSideMenuOpen"
+      v-bind:taskModel="$store.state.updatingTask"
+      v-bind:isCreating="$store.state.isCreating"
+      v-on:close-dialog="closeSideNav"></add-task-modal>
     </md-drawer>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 import store from "../store.js";
+import AddTaskModal from "./tasks/add-task-modal/add-task-modal.vue";
 
 export default {
   name: "Layout",
   data: () => ({
     showNavigation: false
   }),
+  components: {
+    AddTaskModal
+  },
   created: function() {
     store.commit("selectProjectId", this.$route.query.projectId);
+  },
+  methods: {
+    closeSideNav: function(model, isCancel) {
+      store.commit("toggleRightSideMenu"); 
+      
+      if (isCancel) return;
+
+      if (store.state.isCreating) {
+        this.createTask(model);
+      }
+      else {
+        this.updateTask(model);
+      }  
+    },
+    createTask: async function(model) {
+      await axios.post("http://localhost:54973/api/Task/", model);
+    },
+    updateTask: async function(model) {
+      await axios.put("http://localhost:54973/api/Task/", model);
+    }
   }
 };
 </script>
@@ -85,5 +90,9 @@ export default {
 
 .md-drawer {
   width: 275px;
+}
+
+.hide-right {
+  width: 0;
 }
 </style>

@@ -1,44 +1,43 @@
 <template>
   <div>
-    <div>
-      <md-dialog :md-active.sync="show">
-        <md-dialog-title v-if="isCreating">Создание задачи</md-dialog-title>
-        <md-dialog-title v-else>Обновление задачи</md-dialog-title>
-        <md-content v-if="model !== null" class="modal-block">
-          <md-field>
-            <label>Название</label>
-            <md-input v-model="model.name"></md-input>
-          </md-field>
-          <md-field>
-            <label>Описание</label>
-            <md-textarea v-model="model.description" md-autogrow></md-textarea>
-          </md-field>
-          <md-field>
-            <label>Приоритет</label>
-            <md-select v-model="model.priority">
-              <md-option value="Low">Низкий</md-option>
-              <md-option value="Medium">Средний</md-option>
-              <md-option value="High">Высокий</md-option>
-            </md-select>
-          </md-field>
-          <md-field>
-            <label>Категория</label>
-            <md-select v-model="selectedCategoryId">
-              <md-option v-for="category in categories" v-bind:key="category.id"
-                v-bind:value="category.id">{{category.name}}</md-option>
-            </md-select>
-          </md-field>
-          <md-field>
-            <label>Предполагаемое время</label>
-            <md-input v-model="model.timeEstimate"></md-input>
-          </md-field>
-          <div class="button-block">
-            <md-button class="md-primary" @click="cancel()">Отмена</md-button>
-            <md-button class="md-raised md-primary" @click="create()">Создать</md-button>
-          </div>
-        </md-content>
-      </md-dialog>
-    </div>
+    <md-content v-if="model !== null" class="modal-block">
+      <h2 v-if="isCreating">Создание задачи</h2>
+      <h2 v-else>Обновление задачи</h2>
+      <md-field>
+        <label>Название</label>
+        <md-input v-model="model.name"></md-input>
+      </md-field>
+      <md-field>
+        <label>Описание</label>
+        <md-textarea v-model="model.description" md-autogrow></md-textarea>
+      </md-field>
+      <md-field>
+        <label>Приоритет</label>
+        <md-select v-model="model.priority">
+          <md-option value="1">Низкий</md-option>
+          <md-option value="2">Средний</md-option>
+          <md-option value="3">Высокий</md-option>
+        </md-select>
+      </md-field>
+      <md-field>
+        <label>Категория</label>
+        <md-select v-model="selectedCategoryId">
+          <md-option
+            v-for="category in categories"
+            v-bind:key="category.id"
+            v-bind:value="category.id"
+          >{{category.name}}</md-option>
+        </md-select>
+      </md-field>
+      <md-field>
+        <label>Предполагаемое время</label>
+        <md-input v-model="model.timeEstimate"></md-input>
+      </md-field>
+      <div class="button-block">
+        <md-button class="md-primary" @click="cancel()">Отмена</md-button>
+        <md-button class="md-raised md-primary" @click="create()">Создать</md-button>
+      </div>
+    </md-content>
   </div>
 </template>
 
@@ -65,11 +64,18 @@ export default {
       model: Object,
       categories: [],
       selectedCategoryId: String,
+      isCancel: Boolean,
     };
   },
 
   created: function() {
-    this.model = this.isCreating ? this.initial_model : this.taskModel;
+    if (this.isCreating) {
+      this.model = this.initial_model;
+    }
+    else {
+      this.model = this.taskModel;
+      this.selectedCategoryId = this.taskModel.categoryId;
+    }
 
     this.getCategories();
   },
@@ -94,19 +100,21 @@ export default {
 
   methods: {
     close: function() {
-      this.$emit("close-dialog", this.model);
+      this.$emit("close-dialog", this.model, this.isCancel);
       this.model = this.initial_model;
     },
     cancel: function() {
+      this.isCancel = true;
       this.model = null;
       this.close();
     },
     create: function() {
+      this.isCancel = false;
       this.model.categoryId = this.selectedCategoryId;
       this.close();
     },
 
-    getCategories: function () {
+    getCategories: function() {
       axios
         .get(
           "http://localhost:54973/api/Category/GetByProjectId?id=" +
@@ -115,7 +123,7 @@ export default {
         .then(response => {
           this.categories = response.data.data;
         });
-    },
+    }
   }
 };
 </script>
