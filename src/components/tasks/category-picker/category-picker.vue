@@ -8,7 +8,11 @@
         class="category-chip"
         v-bind:class="{ 'category-chip-selected': category.selected }"
         md-clickable
-      >{{category.name}}</md-chip>
+      >{{category.name}}
+      </md-chip>
+      <div class="action-block">
+        <md-icon class="btn-action">add</md-icon>
+      </div>
     </div>
   </div>
 </template>
@@ -30,6 +34,26 @@
 
 .category-chip-selected {
   color: white !important;
+  background-color: #3a9ad9 !important;
+}
+
+.action-block {
+  margin-left: 8px;
+}
+
+.btn-action {
+  color: #3a9ad9 !important;
+  background-color: transparent;
+  border: 2px solid #3a9ad9;
+  border-radius: 50%;
+  font-size: 20px !important;
+  height: 32px !important;
+  width: 32px !important;
+  transition: 0.4s;
+}
+
+.btn-action:hover {
+  color: #fafafa !important;
   background-color: #3a9ad9 !important;
 }
 </style>

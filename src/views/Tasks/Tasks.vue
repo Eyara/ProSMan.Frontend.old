@@ -18,7 +18,7 @@
         v-bind:key="task.id"
         v-bind:class="{ 'task-finished': task.isFinished}"
       >
-        <div class="btn-circle"></div>
+        <div class="btn-circle" @click="toggleFinishTask(task.id)"></div>
         <div class="task-item">
           <span class="task-name">{{task.name}}</span>
           <div class="task-info">
@@ -124,10 +124,15 @@ export default {
       store.commit("toggleRightSideMenu");
     },
 
-    editTask: async function(task) {
+    editTask: function(task) {
       store.commit("setCreating", false);
       store.commit("updateTask", task);
       store.commit("toggleRightSideMenu");
+    },
+
+    toggleFinishTask: async function(id) {
+      await axios.post("http://localhost:54973/api/Task/ToggleFinishTask?id=" + id);
+      this.getTasks();
     },
 
     deleteTask: async function(id) {
