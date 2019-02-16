@@ -10,8 +10,9 @@ export default new Vuex.Store({
     selectedCategoryId: 0,
     pageLabel: "",
     rightSideMenuOpen: false,
-    updatingTask: Object,
+    updatingItem: Object(null),
     isCreating: true,
+    updatingType: "project",
   },
   mutations: {
     selectProjectId(state, value) {
@@ -27,17 +28,23 @@ export default new Vuex.Store({
     },
     
     setPageLabel(state, value) {
-      state.pageLabel = value;
+      state.pageLabel = value;  
     },
 
     toggleRightSideMenu(state) {
       state.rightSideMenuOpen = !state.rightSideMenuOpen;
     },
-    updateTask(state, value) {
-      state.updatingTask = value;
+
+    updateItem(state, value) {
+      state.updatingItem = value;
     },
+
     setCreating(state, value) {
       state.isCreating = value;
+    },
+
+    setUpdatingType(state, value) {
+      state.updatingType = value;
     }
   },
   actions: {

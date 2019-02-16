@@ -8,7 +8,9 @@
         :md-value="finishedTasksProportion"
       ></md-progress-bar>
       <div class="category-picker">
-        <category-picker v-on:select-categories="selectCategories"></category-picker>
+        <category-picker v-on:select-categories="selectCategories"
+          v-on:create-category="createCategory"
+        ></category-picker>
       </div>
     </div>
     <div class="tasks-block" v-if="tasks.length > 0">
@@ -19,7 +21,7 @@
         v-bind:class="{ 'task-finished': task.isFinished}"
       >
         <div class="btn-circle" @click="toggleFinishTask(task.id)"></div>
-        <div class="task-item">
+        <div class="task-item" @click="editTask(task)">
           <span class="task-name">{{task.name}}</span>
           <div class="task-info">
             <div class="task-info-header">
@@ -33,9 +35,6 @@
           </div>
         </div>
         <div class="action-buttons">
-          <div @click="editTask(task)">
-            <md-icon>edit</md-icon>
-          </div>
           <div @click="deleteTask(task.id)">
             <md-icon>delete</md-icon>
           </div>
@@ -122,11 +121,19 @@ export default {
     createTask: function() {
       store.commit("setCreating", true);
       store.commit("toggleRightSideMenu");
+      store.commit("setUpdatingType", "task");
+    },
+
+    createCategory: function() {
+      store.commit("setCreating", true);
+      store.commit("toggleRightSideMenu");
+      store.commit("setUpdatingType", "category");
     },
 
     editTask: function(task) {
       store.commit("setCreating", false);
-      store.commit("updateTask", task);
+      store.commit("updateItem", task);
+      store.commit("setUpdatingType", "task");
       store.commit("toggleRightSideMenu");
     },
 

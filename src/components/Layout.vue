@@ -27,11 +27,18 @@
       v-bind:class="{ 'hide-right': !$store.state.rightSideMenuOpen }"
       :md-active.sync="$store.state.rightSideMenuOpen"
     >
-      <add-task-modal 
-      v-if="$store.state.rightSideMenuOpen"
-      v-bind:taskModel="$store.state.updatingTask"
-      v-bind:isCreating="$store.state.isCreating"
-      v-on:close-dialog="closeSideNav"></add-task-modal>
+      <add-task-modal
+        v-if="$store.state.rightSideMenuOpen && $store.state.updatingType == 'task'"
+        v-bind:taskModel="$store.state.updatingItem"
+        v-bind:isCreating="$store.state.isCreating"
+        v-on:close-dialog="closeSideNav"
+      ></add-task-modal>
+      <add-category-modal
+        v-else-if="$store.state.rightSideMenuOpen && $store.state.updatingType == 'category'"
+        v-bind:categoryModel="$store.state.updatingItem"
+        v-bind:isCreating="$store.state.isCreating"
+        v-on:close-dialog="closeSideNav"
+      ></add-category-modal>
     </md-drawer>
   </div>
 </template>
@@ -40,6 +47,7 @@
 import axios from "axios";
 import store from "../store.js";
 import AddTaskModal from "./tasks/add-task-modal/add-task-modal.vue";
+import AddCategoryModal from "./tasks/add-category-modal/add-category-modal.vue";
 
 export default {
   name: "Layout",
@@ -47,29 +55,47 @@ export default {
     showNavigation: false
   }),
   components: {
-    AddTaskModal
+    AddTaskModal,
+    AddCategoryModal
   },
   created: function() {
     store.commit("selectProjectId", this.$route.query.projectId);
   },
   methods: {
     closeSideNav: function(model, isCancel) {
-      store.commit("toggleRightSideMenu"); 
-      
+      store.commit("toggleRightSideMenu");
+
       if (isCancel) return;
 
-      if (store.state.isCreating) {
-        this.createTask(model);
+      if (store.state.updatingType == "task") {
+        store.state.isCreating
+          ? this.createTask(model)
+          : this.updateTask(model);
+        return;
+      } else if (store.state.updatingType == "category") {
+        store.state.isCreating
+          ? this.createCategory(model)
+          : this.updateCategory(model);
+        return;
       }
-      else {
-        this.updateTask(model);
-      }  
     },
+
     createTask: async function(model) {
       await axios.post("http://localhost:54973/api/Task/", model);
     },
+
     updateTask: async function(model) {
       await axios.put("http://localhost:54973/api/Task/", model);
+    },
+
+    createCategory: async function(model) {
+      await axios.post("http://localhost:54973/api/Category", model);
+    },
+
+    // eslint-disable-next-line
+    updateCategory: async function(model) {
+      // not implented
+      // await axios.put("http://localhost:54973/api/Category", model);
     }
   }
 };

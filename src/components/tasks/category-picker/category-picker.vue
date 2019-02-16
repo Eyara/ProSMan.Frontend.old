@@ -10,7 +10,7 @@
         md-clickable
       >{{category.name}}
       </md-chip>
-      <div class="action-block">
+      <div class="action-block" @click="emitCreateCategory()">
         <md-icon class="btn-action">add</md-icon>
       </div>
     </div>
@@ -82,6 +82,10 @@ export default {
     selectAll() {
       this.categories.forEach(x => (x.selected = true));
       this.emitSelectCategories();
+    },
+
+    emitCreateCategory() {
+      this.$emit("create-category");
     },
 
     emitSelectCategories() {
