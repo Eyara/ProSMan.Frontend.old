@@ -2,7 +2,15 @@
   <div>
     <div v-if="sprints.length > 0">
       <sprint-timeline v-bind:sprints="sprints"
-      v-on:tasks-open="tasksOpen"></sprint-timeline>
+      v-on:tasks-open="tasksOpen"
+      v-on:edit-sprint="editSprint"
+      v-on:delete-sprint="deleteSprint"
+      ></sprint-timeline>
+    </div>
+    <div class="action-block">
+      <div @click="createSprint()">
+        <md-button class="btn-action">Создать новый спринт</md-button>
+      </div>
     </div>
   </div>
 </template>
@@ -26,7 +34,7 @@ export default {
     this.getSprints();
   },
   methods: {
-    getSprints: function() {
+    getSprints() {
       router.replace({
         name: "sprints",
         query: { projectId: store.state.selectedProjectId }
@@ -40,13 +48,43 @@ export default {
           this.sprints = response.data.data;
         });
     },
+
     tasksOpen(sprintId) {
       router.push({path: "/tasks" });
       store.commit("selectSprintId", sprintId);
+    },
+
+    createSprint() {
+      store.commit("setCreating", true);
+      store.commit("setUpdatingType", "sprint"); 
+      store.commit("toggleRightSideMenu");
+    },
+
+    editSprint(sprint) {
+      store.commit("setCreating", false);
+      store.commit("updateItem", sprint);
+      store.commit("setUpdatingType", "sprint");
+      store.commit("toggleRightSideMenu");
+    },
+
+    async deleteSprint(id) {
+      await axios.delete("http://localhost:54973/api/Sprint?id=" + id);
+      this.getSprints();
     }
   }
 };
 </script>
 
 <style scoped lang="scss">
+
+.btn-action {
+  color: #3a9ad9 !important;
+  background-color: transparent;
+  transition: 0.4s;
+}
+
+.btn-action:hover {
+  color: #fafafa !important;
+  background-color: #3a9ad9 !important;
+}
 </style>

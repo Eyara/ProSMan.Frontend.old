@@ -1,8 +1,8 @@
 <template>
   <div>
     <md-content v-if="model !== null" class="modal-block">
-      <h2 v-if="isCreating">Создание категории</h2>
-      <h2 v-else>Обновление категории</h2>
+      <h2 v-if="isCreating">Создание проекта</h2>
+      <h2 v-else>Обновление проекта</h2>
       <md-field>
         <label>Название</label>
         <md-input v-model="model.name"></md-input>
@@ -16,19 +16,16 @@
 </template>
 
 <script>
-import store from "../../../store.js";
 export default {
-  name: "add-category-modal",
+  name: "add-project-modal",
 
   data: function() {
     return {
       initial_model: {
         id: "00000000-0000-0000-0000-000000000000",
-        projectId: store.state.selectedProjectId,
         name: "",
       },
       model: Object,
-      categories: [],
       isCancel: Boolean,
     };
   },
@@ -38,7 +35,7 @@ export default {
       this.model = this.initial_model;
     }
     else {
-      this.model = this.categoryModel;
+      this.model = this.projectModel;
     }
   },
 
@@ -57,7 +54,7 @@ export default {
   props: {
     isCreating: Boolean,
     showDialog: Boolean,
-    categoryModel: Object
+    projectModel: Object
   },
 
   methods: {

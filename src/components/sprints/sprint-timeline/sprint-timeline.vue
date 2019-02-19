@@ -10,13 +10,17 @@
                 <span class="timeline__day">{{sprint.fromDate | day}}</span>
                 <span class="timeline__month">{{ sprint.fromDate | month}}</span>
               </div>
-              <div class="timeline__post" @click="tasksOpen(sprint.id)">
-                <div class="timeline__content">
+              <div class="timeline__post">
+                <div class="timeline__content" @click="tasksOpen(sprint.id)">
                   <p>{{sprint.name}}</p>
                 </div>
                 <div class="timeline__actions">
+                  <div @click="emitEditSprint(sprint)">
                     <md-icon>create</md-icon>
+                  </div>
+                  <div @click="emitDeleteSprint(sprint.id)">
                     <md-icon>delete</md-icon>
+                  </div>
                 </div>
               </div>
             </div>
@@ -32,7 +36,6 @@
 </style>
 
 <script>
-// eslint-disable-next-line 
 import moment from 'moment'
 export default {
   name: "sprint-timeline",
@@ -56,8 +59,16 @@ export default {
   },
 
   methods: {
-    tasksOpen: function(id) {
+    tasksOpen(id) {
       this.$emit("tasks-open", id);
+    },
+
+    emitEditSprint(sprint) {
+      this.$emit("edit-sprint", sprint);
+    },
+
+    emitDeleteSprint(id) {
+      this.$emit("delete-sprint", id);
     }
   }
 };

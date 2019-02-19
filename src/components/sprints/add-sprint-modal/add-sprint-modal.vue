@@ -1,12 +1,18 @@
 <template>
   <div>
     <md-content v-if="model !== null" class="modal-block">
-      <h2 v-if="isCreating">Создание категории</h2>
-      <h2 v-else>Обновление категории</h2>
+      <h2 v-if="isCreating">Создание спринта</h2>
+      <h2 v-else>Обновление спринта</h2>
       <md-field>
         <label>Название</label>
         <md-input v-model="model.name"></md-input>
       </md-field>
+      <md-datepicker v-model="model.fromDate">
+        <label>Дата начала спринта</label>
+      </md-datepicker>
+      <md-datepicker v-model="model.toDate">
+        <label>Дата окончания спринта</label>
+      </md-datepicker>
       <div class="button-block">
         <md-button class="md-primary" @click="cancel()">Отмена</md-button>
         <md-button class="md-raised md-primary" @click="create()">Создать</md-button>
@@ -17,8 +23,9 @@
 
 <script>
 import store from "../../../store.js";
+
 export default {
-  name: "add-category-modal",
+  name: "add-sprint-modal",
 
   data: function() {
     return {
@@ -26,19 +33,20 @@ export default {
         id: "00000000-0000-0000-0000-000000000000",
         projectId: store.state.selectedProjectId,
         name: "",
+        fromDate: new Date(),
+        toDate: new Date(),
+        isFinished: false
       },
-      model: Object,
-      categories: [],
-      isCancel: Boolean,
+      model: Object | String,
+      isCancel: Boolean
     };
   },
 
-  created: function() {
+  mounted: function() {
     if (this.isCreating) {
       this.model = this.initial_model;
-    }
-    else {
-      this.model = this.categoryModel;
+    } else {
+      this.model = this.sprintModel;
     }
   },
 
@@ -57,23 +65,25 @@ export default {
   props: {
     isCreating: Boolean,
     showDialog: Boolean,
-    categoryModel: Object
+    sprintModel: Object
   },
 
   methods: {
-    close: function() {
+    close() {
       this.$emit("close-dialog", this.model, this.isCancel);
       this.model = this.initial_model;
     },
-    cancel: function() {
+
+    cancel() {
       this.isCancel = true;
       this.model = null;
       this.close();
     },
-    create: function() {
+    
+    create() {
       this.isCancel = false;
       this.close();
-    },
+    }
   }
 };
 </script>
