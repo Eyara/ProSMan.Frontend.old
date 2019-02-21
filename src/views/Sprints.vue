@@ -1,10 +1,11 @@
 <template>
   <div>
     <div v-if="sprints.length > 0">
-      <sprint-timeline v-bind:sprints="sprints"
-      v-on:tasks-open="tasksOpen"
-      v-on:edit-sprint="editSprint"
-      v-on:delete-sprint="deleteSprint"
+      <sprint-timeline
+        v-bind:sprints="sprints"
+        v-on:tasks-open="tasksOpen"
+        v-on:edit-sprint="editSprint"
+        v-on:delete-sprint="deleteSprint"
       ></sprint-timeline>
     </div>
     <div class="action-block">
@@ -29,34 +30,60 @@ export default {
   data: () => ({
     sprints: []
   }),
-  created: function() {
+
+  created() {
     store.commit("setPageLabel", "Спринты");
-    this.getSprints();
+    
+    if (this.selectedProjectId) this.getSprints();
   },
+
+  computed: {
+    hasBeenUpdated() {
+      return store.state.hasBeenUpdated;
+    },
+
+    selectedProjectId() {
+      return store.state.selectedProject.id;
+    }
+  },
+
+  watch: {
+    hasBeenUpdated(newValue) {
+      if (newValue) {
+        this.getSprints();
+        store.commit("setHasBeenUpdated", false);
+      }
+    },
+    
+    selectedProjectId(newValue) {
+      if (newValue) this.getSprints();
+    }
+  },
+
   methods: {
     getSprints() {
       router.replace({
         name: "sprints",
-        query: { projectId: store.state.selectedProjectId }
+        query: { projectId: store.state.selectedProject.id }
       });
       axios
         .get(
           "http://localhost:54973/api/Sprint/GetByProjectId?id=" +
-            store.state.selectedProjectId
+            store.state.selectedProject.id
         )
         .then(response => {
           this.sprints = response.data.data;
         });
     },
 
-    tasksOpen(sprintId) {
-      router.push({path: "/tasks" });
-      store.commit("selectSprintId", sprintId);
+    tasksOpen(sprint) {
+      router.push({ path: "/tasks" });
+      store.commit("selectSprint", sprint);
     },
 
     createSprint() {
       store.commit("setCreating", true);
-      store.commit("setUpdatingType", "sprint"); 
+      store.commit("setUpdatingType", "sprint");
       store.commit("toggleRightSideMenu");
     },
 
@@ -76,11 +103,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 .btn-action {
   color: #3a9ad9 !important;
   background-color: transparent;
   transition: 0.4s;
+  z-index: 0;
 }
 
 .btn-action:hover {

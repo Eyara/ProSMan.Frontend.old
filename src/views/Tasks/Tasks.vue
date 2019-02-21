@@ -1,14 +1,16 @@
 <template>
   <div class="tasks-content">
     <div class="progress-block">
-      <div>Pre-Alpha 0.1</div>
+      <div>{{$store.state.selectedSprint.name}}</div>
       <md-progress-bar
         class="progress-task-bar"
         md-mode="determinate"
         :md-value="finishedTasksProportion"
       ></md-progress-bar>
-      <div class="category-picker">
-        <category-picker v-on:select-categories="selectCategories"
+      <div v-if="hasCategories" class="category-picker">
+        <category-picker
+          v-bind:categories="categories"
+          v-on:select-categories="selectCategories"
           v-on:create-category="createCategory"
         ></category-picker>
       </div>
@@ -56,98 +58,163 @@
 <script>
 import axios from "axios";
 import store from "../../store.js";
+import router from "../../router.js";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
 
 export default {
   name: "tasks",
   data: () => ({
     tasks: [],
+    categories: [],
     selectedCategories: [],
     taskModel: {},
     isCreating: true,
     showDialog: false
   }),
+
   components: {
     CategoryPicker
   },
-  created: function() {
+
+  created() {
     store.commit("setPageLabel", "Задания");
-    this.getTasks();
+
+    if (store.state.selectedProject.id && store.state.selectedSprint.id) {
+      this.refresh();
+    }
   },
+
   computed: {
-    finishedTasksLength: function() {
+    finishedTasksLength() {
       return this.tasks.filter(x => x.isFinished).length;
     },
 
-    tasksLength: function() {
+    tasksLength() {
       return this.tasks.length;
     },
 
-    finishedTasksProportion: function() {
+    finishedTasksProportion() {
       return 100 * (this.finishedTasksLength / this.tasksLength);
     },
 
-    selectedTasks: function() {
+    selectedTasks() {
       if (this.selectedCategories.length === 0) return [];
-
+    
       return this.tasks.filter(x =>
         this.selectedCategories.map(s => s.id).includes(x.categoryId)
       );
     },
 
-    sideNavOpen: function() {
-      return store.state.rightSideMenuOpen;  
-    }
+    hasCategories() {
+      return this.categories.length > 0;
+    },
+
+    hasBeenUpdated() {
+      return store.state.hasBeenUpdated;
+    },
+
+    selectedSprintAndProjectIds() {
+      return store.state.selectedSprint.id && store.state.selectedProject.id;
+    },
   },
 
   watch: {
-    // make update task list
-    // sideNavOpen(newValue, oldValue) {
-    // }
+    hasBeenUpdated(newValue) {
+      if (newValue) {
+        switch (store.state.updatingType) {
+          case "task":
+            this.getTasks();
+            break;
+          case "category":
+            this.getCategory();
+            break;
+        }
+        store.commit("setHasBeenUpdated", false);
+      }
+    },
+
+    selectedSprintAndProjectIds(newValue) {
+      if (newValue) {
+        this.refresh();
+      }
+    }
   },
 
   methods: {
-    getTasks: function() {
+    refresh() {
+      router.replace({
+        name: "tasks",
+        query: {
+          projectId: store.state.selectedProject.id,
+          sprintId: store.state.selectedSprint.id
+        }
+      });
+      
+      this.getCategories();
+      this.getTasks();
+    },
+
+    getTasks() {
       axios
         .get(
           "http://localhost:54973/api/Task/GetBySprintId?id=" +
-            store.state.selectedSprintId
+            store.state.selectedSprint.id
         )
         .then(response => {
           this.tasks = response.data.data;
         });
     },
 
-    createTask: function() {
+    getCategories() {
+      axios
+        .get(
+          "http://localhost:54973/api/Category/GetByProjectId?id=" +
+            store.state.selectedProject.id
+        )
+        .then(response => {
+          this.categories = response.data.data.map(x => {
+            return {
+              id: x.id,
+              name: x.name,
+              selected: true
+            };
+          });
+          this.selectCategories(this.categories);
+        });
+    },
+
+    createTask() {
       store.commit("setCreating", true);
       store.commit("toggleRightSideMenu");
       store.commit("setUpdatingType", "task");
     },
 
-    createCategory: function() {
+    createCategory() {
       store.commit("setCreating", true);
       store.commit("toggleRightSideMenu");
       store.commit("setUpdatingType", "category");
     },
 
-    editTask: function(task) {
+    editTask(task) {
       store.commit("setCreating", false);
       store.commit("updateItem", task);
       store.commit("setUpdatingType", "task");
       store.commit("toggleRightSideMenu");
     },
 
-    toggleFinishTask: async function(id) {
-      await axios.post("http://localhost:54973/api/Task/ToggleFinishTask?id=" + id);
+    async toggleFinishTask(id) {
+      await axios.post(
+        "http://localhost:54973/api/Task/ToggleFinishTask?id=" + id
+      );
       this.getTasks();
     },
 
-    deleteTask: async function(id) {
+    async deleteTask(id) {
       await axios.delete("http://localhost:54973/api/Task?id=" + id);
       this.getTasks();
     },
 
-    selectCategories: function(selectedCategories) {
+    selectCategories(selectedCategories) {
       this.selectedCategories = selectedCategories;
     }
   }

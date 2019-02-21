@@ -15,7 +15,10 @@
       </md-datepicker>
       <div class="button-block">
         <md-button class="md-primary" @click="cancel()">Отмена</md-button>
-        <md-button class="md-raised md-primary" @click="create()">Создать</md-button>
+        <md-button class="md-raised md-primary" @click="create()">
+          <span v-if="isCreating">Создать</span>
+          <span v-else>Обновить</span>
+        </md-button>
       </div>
     </md-content>
   </div>
@@ -27,11 +30,11 @@ import store from "../../../store.js";
 export default {
   name: "add-sprint-modal",
 
-  data: function() {
+  data() {
     return {
       initial_model: {
         id: "00000000-0000-0000-0000-000000000000",
-        projectId: store.state.selectedProjectId,
+        projectId: store.state.selectedProject.id,
         name: "",
         fromDate: new Date(),
         toDate: new Date(),
@@ -42,7 +45,7 @@ export default {
     };
   },
 
-  mounted: function() {
+  mounted() {
     if (this.isCreating) {
       this.model = this.initial_model;
     } else {
@@ -52,10 +55,10 @@ export default {
 
   computed: {
     show: {
-      get: function() {
+      get() {
         return this.showDialog;
       },
-      set: function() {
+      set() {
         this.close();
         return false;
       }
@@ -79,7 +82,7 @@ export default {
       this.model = null;
       this.close();
     },
-    
+
     create() {
       this.isCancel = false;
       this.close();

@@ -11,7 +11,7 @@
                 <span class="timeline__month">{{ sprint.fromDate | month}}</span>
               </div>
               <div class="timeline__post">
-                <div class="timeline__content" @click="tasksOpen(sprint.id)">
+                <div class="timeline__content" @click="tasksOpen(sprint)">
                   <p>{{sprint.name}}</p>
                 </div>
                 <div class="timeline__actions">
@@ -47,20 +47,20 @@ export default {
   },
 
   filters: {
-    year: function (date) {
+    year(date) {
       return moment(date).format('YYYY');
     },
-    month: function(date) {
+    month(date) {
       return moment(date).format('MMM');
     },
-    day: function(date) {
+    day(date) {
       return moment(date).format('D');
     }
   },
 
   methods: {
-    tasksOpen(id) {
-      this.$emit("tasks-open", id);
+    tasksOpen(sprint) {
+      this.$emit("tasks-open", sprint);
     },
 
     emitEditSprint(sprint) {

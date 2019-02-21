@@ -5,26 +5,27 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    selectedProjectId: 0,
-    selectedSprintId: 0,
+    selectedProject: Object(null),
+    selectedSprint: Object(null),
     selectedCategoryId: 0,
     pageLabel: "",
     rightSideMenuOpen: false,
     updatingItem: Object(null),
     isCreating: true,
     updatingType: "project",
+    hasBeenUpdated: false,
   },
   mutations: {
-    selectProjectId(state, value) {
-      state.selectedProjectId = value;
+    selectProject(state, value) {
+      state.selectedProject = value;
     },
 
     selectCategoryId(state, value) {
       state.selectedCategoryId = value;
     },
 
-    selectSprintId(state, value) {
-      state.selectedSprintId = value; 
+    selectSprint(state, value) {
+      state.selectedSprint = value; 
     },
     
     setPageLabel(state, value) {
@@ -45,6 +46,10 @@ export default new Vuex.Store({
 
     setUpdatingType(state, value) {
       state.updatingType = value;
+    },
+
+    setHasBeenUpdated(state, value) {
+      state.hasBeenUpdated = value;
     }
   },
   actions: {

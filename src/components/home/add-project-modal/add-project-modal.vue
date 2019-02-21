@@ -9,7 +9,10 @@
       </md-field>
       <div class="button-block">
         <md-button class="md-primary" @click="cancel()">Отмена</md-button>
-        <md-button class="md-raised md-primary" @click="create()">Создать</md-button>
+        <md-button class="md-raised md-primary" @click="create()">
+          <span v-if="isCreating">Создать</span>
+          <span v-else>Обновить</span>
+        </md-button>
       </div>
     </md-content>
   </div>
@@ -19,32 +22,31 @@
 export default {
   name: "add-project-modal",
 
-  data: function() {
+  data() {
     return {
       initial_model: {
         id: "00000000-0000-0000-0000-000000000000",
-        name: "",
+        name: ""
       },
       model: Object,
-      isCancel: Boolean,
+      isCancel: Boolean
     };
   },
 
-  created: function() {
+  created() {
     if (this.isCreating) {
       this.model = this.initial_model;
-    }
-    else {
+    } else {
       this.model = this.projectModel;
     }
   },
 
   computed: {
     show: {
-      get: function() {
+      get() {
         return this.showDialog;
       },
-      set: function() {
+      set() {
         this.close();
         return false;
       }
@@ -58,19 +60,19 @@ export default {
   },
 
   methods: {
-    close: function() {
+    close() {
       this.$emit("close-dialog", this.model, this.isCancel);
       this.model = this.initial_model;
     },
-    cancel: function() {
+    cancel() {
       this.isCancel = true;
       this.model = null;
       this.close();
     },
-    create: function() {
+    create() {
       this.isCancel = false;
       this.close();
-    },
+    }
   }
 };
 </script>

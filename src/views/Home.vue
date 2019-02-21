@@ -4,7 +4,7 @@
       <md-card v-for="project in projects" :key="project.id">
         <md-card-header>
           <router-link to="/sprints">
-            <div @click="openProject(project.id)" class="md-title">{{project.name}}</div>
+            <div @click="openProject(project)" class="md-title">{{project.name}}</div>
           </router-link>
         </md-card-header>
         <md-card-actions md-alignment="space-between">
@@ -34,19 +34,34 @@ export default {
   name: "home",
   components: {},
 
-  data: function() {
+  data() {
     return {
       projects: []
     };
   },
 
-  created: function() {
+  created() {
     store.commit("setPageLabel", "Проекты");
     this.getProjects();
   },
 
+  computed: {
+    hasBeenUpdated() {
+      return store.state.hasBeenUpdated;
+    }
+  },
+  
+  watch: {
+    hasBeenUpdated(newValue) {
+      if (newValue) {
+        this.getProjects();
+        store.commit("setHasBeenUpdated", false);
+      }
+    }
+  },
+
   methods: {
-    getProjects: function() {
+    getProjects() {
       axios.get("http://localhost:54973/api/Project").then(response => {
         this.projects = response.data.data;
       });
@@ -70,8 +85,8 @@ export default {
       this.getProjects();
     },
 
-    openProject(projectId) {
-      store.commit("selectProjectId", projectId);
+    openProject(project) {
+      store.commit("selectProject", project);
     }
   }
 };
@@ -83,5 +98,17 @@ export default {
   margin: 4px;
   display: inline-block;
   vertical-align: top;
+}
+
+.btn-action {
+  color: #3a9ad9 !important;
+  background-color: transparent;
+  transition: 0.4s;
+  z-index: 0;
+}
+
+.btn-action:hover {
+  color: #fafafa !important;
+  background-color: #3a9ad9 !important;
 }
 </style>

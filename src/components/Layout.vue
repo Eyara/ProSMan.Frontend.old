@@ -74,68 +74,95 @@ export default {
     AddSprintModal,
     AddProjectModal
   },
-  created: function() {
-    store.commit("selectProjectId", this.$route.query.projectId);
+  async created() {
+    this.selectProject();
+    this.selectSprint();
   },
   methods: {
-    closeSideNav: function(model, isCancel) {
+    async closeSideNav(model, isCancel) {
       store.commit("toggleRightSideMenu");
 
       if (isCancel) return;
 
-      if (store.state.updatingType == "task") {
-        store.state.isCreating
-          ? this.createTask(model)
-          : this.updateTask(model);
-        return;
-      } else if (store.state.updatingType == "category") {
-        store.state.isCreating
-          ? this.createCategory(model)
-          : this.updateCategory(model);
-        return;
-      } else if (store.state.updatingType == "sprint"){
-        store.state.isCreating
-        ? this.createSprint(model)
-        : this.updateSprint(model);
-      } else if (store.state.updatingType == "project"){
-        store.state.isCreating
-        ? this.createProject(model)
-        : this.updateProject(model);
+      switch (store.state.updatingType) {
+        case "task":
+          store.state.isCreating
+            ? await this.createTask(model)
+            : await this.updateTask(model);
+          break;
+        case "category":
+          store.state.isCreating
+            ? await this.createCategory(model)
+            : await this.updateCategory(model);
+          break;
+        case "sprint":
+          store.state.isCreating
+            ? await this.createSprint(model)
+            : await this.updateSprint(model);
+          break;
+        case "project":
+          store.state.isCreating
+            ? await this.createProject(model)
+            : await this.updateProject(model);
+          break;
       }
+      store.commit("setHasBeenUpdated", true);
     },
 
-    createTask: async function(model) {
-      await axios.post("http://localhost:54973/api/Task/", model);
+    async createTask(model) {
+      return axios.post("http://localhost:54973/api/Task/", model);
     },
 
-    updateTask: async function(model) {
-      await axios.put("http://localhost:54973/api/Task/", model);
+    async updateTask(model) {
+      return axios.put("http://localhost:54973/api/Task/", model);
     },
 
-    createCategory: async function(model) {
-      await axios.post("http://localhost:54973/api/Category", model);
+    async createCategory(model) {
+      return axios.post("http://localhost:54973/api/Category", model);
     },
 
     // eslint-disable-next-line
-    updateCategory: async function(model) {
+    async updateCategory(model) {
       // not implented
       // await axios.put("http://localhost:54973/api/Category", model);
     },
 
-    createSprint: async function(model) {
-      await axios.post("http://localhost:54973/api/Sprint", model);
+    async createSprint(model) {
+      return axios.post("http://localhost:54973/api/Sprint", model);
     },
 
-    updateSprint: async function(model) {
-      await axios.put("http://localhost:54973/api/Sprint", model);
+    async updateSprint(model) {
+      return axios.put("http://localhost:54973/api/Sprint", model);
     },
 
-    createProject: async function(model) {
-      await axios.post("http://localhost:54973/api/Project", model);
+    async createProject(model) {
+      return axios.post("http://localhost:54973/api/Project", model);
     },
 
-    editProject: async function(model) {
-      await axios.put("http://localhost:54973/api/Project", model);
+    async editProject(model) {
+      return axios.put("http://localhost:54973/api/Project", model);
+    },
+
+    async selectProject() {
+      await axios
+        .get(
+          "http://localhost:54973/api/Project/GetById?id=" +
+            this.$route.query.projectId
+        )
+        .then(project => {
+          store.commit("selectProject", project.data.data[0]);
+        });
+    },
+
+    async selectSprint() {
+      await axios
+        .get(
+          "http://localhost:54973/api/Sprint/GetById?id=" +
+            this.$route.query.sprintId
+        )
+        .then(sprint => {
+          store.commit("selectSprint", sprint.data.data[0]);
+        });
     }
   }
 };
@@ -166,7 +193,7 @@ export default {
   width: 0;
 }
 
-@media(max-width: 600px) {
+@media (max-width: 600px) {
   .drawer-sidenav {
     width: 100%;
     max-width: 100% !important;
