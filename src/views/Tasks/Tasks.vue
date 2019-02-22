@@ -56,9 +56,10 @@
 </style>
 
 <script>
-import axios from "axios";
 import store from "../../store.js";
 import router from "../../router.js";
+import taskService from "../../services/task.service.js";
+import categoryService from "../../services/category.service.js";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
 
 export default {
@@ -155,22 +156,14 @@ export default {
     },
 
     getTasks() {
-      axios
-        .get(
-          "http://localhost:54973/api/Task/GetBySprintId?id=" +
-            store.state.selectedSprint.id
-        )
+      return taskService.getBySprintId(store.state.selectedSprint.id)
         .then(response => {
           this.tasks = response.data.data;
         });
     },
 
     getCategories() {
-      axios
-        .get(
-          "http://localhost:54973/api/Category/GetByProjectId?id=" +
-            store.state.selectedProject.id
-        )
+      categoryService.getByProjectId(store.state.selectedProject.id)
         .then(response => {
           this.categories = response.data.data.map(x => {
             return {
@@ -203,14 +196,12 @@ export default {
     },
 
     async toggleFinishTask(id) {
-      await axios.post(
-        "http://localhost:54973/api/Task/ToggleFinishTask?id=" + id
-      );
+      await taskService.toggleFinishTask(id);
       this.getTasks();
     },
 
     async deleteTask(id) {
-      await axios.delete("http://localhost:54973/api/Task?id=" + id);
+      await taskService.deleteTask(id);
       this.getTasks();
     },
 

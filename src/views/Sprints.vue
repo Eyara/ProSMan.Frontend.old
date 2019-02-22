@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import axios from "axios";
 import store from "../store.js";
 import router from "../router.js";
+import sprintService from "../services/sprint.service.js";
 import SprintTimeline from "../components/sprints/sprint-timeline/sprint-timeline.vue";
 
 export default {
@@ -33,7 +33,7 @@ export default {
 
   created() {
     store.commit("setPageLabel", "Спринты");
-    
+
     if (this.selectedProjectId) this.getSprints();
   },
 
@@ -54,7 +54,7 @@ export default {
         store.commit("setHasBeenUpdated", false);
       }
     },
-    
+
     selectedProjectId(newValue) {
       if (newValue) this.getSprints();
     }
@@ -66,11 +66,8 @@ export default {
         name: "sprints",
         query: { projectId: store.state.selectedProject.id }
       });
-      axios
-        .get(
-          "http://localhost:54973/api/Sprint/GetByProjectId?id=" +
-            store.state.selectedProject.id
-        )
+      sprintService
+        .getByProjectId(store.state.selectedProject.id)
         .then(response => {
           this.sprints = response.data.data;
         });
@@ -95,7 +92,7 @@ export default {
     },
 
     async deleteSprint(id) {
-      await axios.delete("http://localhost:54973/api/Sprint?id=" + id);
+      await sprintService.deleteSprint(id);
       this.getSprints();
     }
   }

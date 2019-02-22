@@ -45,8 +45,8 @@
 </template>
 
 <script>
-import axios from "axios";
 import store from "../../../store.js";
+import categoryService from "../../../services/category.service.js";
 export default {
   name: "add-task-modal",
 
@@ -117,11 +117,8 @@ export default {
     },
 
     getCategories() {
-      axios
-        .get(
-          "http://localhost:54973/api/Category/GetByProjectId?id=" +
-            store.state.selectedProject.id
-        )
+      categoryService
+        .getByProjectId(store.state.selectedProject.id)
         .then(response => {
           this.categories = response.data.data;
         });

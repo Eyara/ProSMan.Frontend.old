@@ -56,8 +56,13 @@
 </template>
 
 <script>
-import axios from "axios";
 import store from "../store.js";
+
+import projectService from "../services/project.service.js";
+import sprintService from "../services/sprint.service.js";
+import taskService from "../services/task.service.js";
+import categoryService from "../services/category.service.js";
+
 import AddTaskModal from "./tasks/add-task-modal/add-task-modal.vue";
 import AddCategoryModal from "./tasks/add-category-modal/add-category-modal.vue";
 import AddSprintModal from "./sprints/add-sprint-modal/add-sprint-modal.vue";
@@ -110,15 +115,15 @@ export default {
     },
 
     async createTask(model) {
-      return axios.post("http://localhost:54973/api/Task/", model);
+      return await taskService.createTask(model);
     },
 
     async updateTask(model) {
-      return axios.put("http://localhost:54973/api/Task/", model);
+      return await taskService.updateTask(model);
     },
 
     async createCategory(model) {
-      return axios.post("http://localhost:54973/api/Category", model);
+      return await categoryService.createCategory(model);
     },
 
     // eslint-disable-next-line
@@ -128,38 +133,32 @@ export default {
     },
 
     async createSprint(model) {
-      return axios.post("http://localhost:54973/api/Sprint", model);
+      return await sprintService.createSprint(model);
     },
 
     async updateSprint(model) {
-      return axios.put("http://localhost:54973/api/Sprint", model);
+      return await sprintService.updateSprint(model);
     },
 
     async createProject(model) {
-      return axios.post("http://localhost:54973/api/Project", model);
+      return await projectService.createProject(model);
     },
 
     async editProject(model) {
-      return axios.put("http://localhost:54973/api/Project", model);
+      return await projectService.editProject(model);
     },
 
     async selectProject() {
-      await axios
-        .get(
-          "http://localhost:54973/api/Project/GetById?id=" +
-            this.$route.query.projectId
-        )
+      return await projectService
+        .getById(this.$route.query.projectId)
         .then(project => {
           store.commit("selectProject", project.data.data[0]);
         });
     },
 
     async selectSprint() {
-      await axios
-        .get(
-          "http://localhost:54973/api/Sprint/GetById?id=" +
-            this.$route.query.sprintId
-        )
+      return await sprintService
+        .getById(this.$route.query.sprintId)
         .then(sprint => {
           store.commit("selectSprint", sprint.data.data[0]);
         });

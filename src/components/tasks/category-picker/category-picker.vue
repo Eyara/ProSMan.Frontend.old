@@ -59,10 +59,6 @@
 </style>
 
 <script>
-/* eslint-disable */
-import axios from "axios";
-import store from "../../../store.js";
-
 export default {
   name: "category-picker",
 

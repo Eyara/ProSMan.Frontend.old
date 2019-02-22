@@ -28,11 +28,13 @@
 </template>
 
 <script>
-import axios from "axios";
 import store from "../store.js";
+import projectService from "../services/project.service.js"
+
 export default {
   name: "home",
-  components: {},
+  components: {
+  },
 
   data() {
     return {
@@ -61,10 +63,10 @@ export default {
   },
 
   methods: {
-    getProjects() {
-      axios.get("http://localhost:54973/api/Project").then(response => {
-        this.projects = response.data.data;
-      });
+    async getProjects() {
+      await projectService.getProjects().then(response => {
+            this.projects = response.data.data;
+        });
     },
 
     createProject() {
@@ -81,7 +83,7 @@ export default {
     },
 
     async deleteProject(id) {
-      await axios.delete("http://localhost:54973/api/Project?id=" + id);
+      await projectService.deleteProject(id);
       this.getProjects();
     },
 
