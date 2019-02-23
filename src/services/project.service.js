@@ -1,24 +1,26 @@
 import axios from 'axios';
+import globalVariable from '../variables'
+
 export default {
     name: 'projectService',
 
     createProject(model) {
-        return axios.post("http://localhost:54973/api/Project", model);
+        return axios.post(globalVariable.hostname + "api/Project", model);
     },
 
     getProjects() {
-        return axios.get("http://localhost:54973/api/Project");
+        return axios.get(globalVariable.hostname + "api/Project");
     },
 
     getById(projectId) {
-        return axios.get("http://localhost:54973/api/Project/GetById?id=" + projectId);
+        return axios.get(globalVariable.hostname + "api/Project/GetById?id=" + projectId);
     },
 
     deleteProject(id) {
-        return axios.delete("http://localhost:54973/api/Project?id=" + id);
+        return axios.delete(globalVariable.hostname + "api/Project?id=" + id);
     },
 
     editProject(model) {
-        return axios.put("http://localhost:54973/api/Project", model);
+        return axios.put(globalVariable.hostname + "api/Project", model);
     }
 }

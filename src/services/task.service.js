@@ -1,24 +1,26 @@
 import axios from 'axios';
+import globalVariable from '../variables'
+
 export default {
     name: 'taskService',
 
     createTask(model) {
-        return axios.post("http://localhost:54973/api/Task/", model);
+        return axios.post(globalVariable.hostname + "api/Task/", model);
     },
 
     getBySprintId(id) {
-        return axios.get("http://localhost:54973/api/Task/GetBySprintId?id=" + id);
+        return axios.get(globalVariable.hostname + "api/Task/GetBySprintId?id=" + id);
     },
 
     toggleFinishTask(id) {
-        return axios.post("http://localhost:54973/api/Task/ToggleFinishTask?id=" + id);
+        return axios.post(globalVariable.hostname + "api/Task/ToggleFinishTask?id=" + id);
     },
 
     deleteTask(id) {
-        return axios.delete("http://localhost:54973/api/Task?id=" + id);
+        return axios.delete(globalVariable.hostname + "api/Task?id=" + id);
     },
 
     updateTask(model) {
-        return axios.put("http://localhost:54973/api/Task/", model);
+        return axios.put(globalVariable.hostname + "api/Task/", model);
     },
 }
