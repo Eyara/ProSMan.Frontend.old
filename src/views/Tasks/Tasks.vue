@@ -1,12 +1,13 @@
 <template>
   <div class="tasks-content">
-    <div class="progress-block">
+    <div v-if="finishedTasksProportion" class="progress-block">
       <div>{{$store.state.selectedSprint.name}}</div>
       <md-progress-bar
         class="progress-task-bar"
         md-mode="determinate"
         :md-value="finishedTasksProportion"
       ></md-progress-bar>
+      <div class="progress-header">{{finishedTasksHours}}ч / {{tasksHours}}ч</div>
       <div v-if="hasCategories" class="category-picker">
         <category-picker
           v-bind:categories="categories"
@@ -86,21 +87,28 @@ export default {
   },
 
   computed: {
-    finishedTasksLength() {
-      return this.tasks.filter(x => x.isFinished).length;
+    finishedTasksHours() {
+      if (this.tasks.length === 0) return 0;
+      return this.tasks
+        .filter(x => x.isFinished)
+        .map(x => x.timeEstimate)
+        .reduce((accumulator, array) => accumulator + array);
     },
 
-    tasksLength() {
-      return this.tasks.length;
+    tasksHours() {
+      if (this.tasks.length === 0) return 0;
+      return this.tasks
+        .map(x => x.timeEstimate)
+        .reduce((accumulator, array) => accumulator + array);
     },
 
     finishedTasksProportion() {
-      return 100 * (this.finishedTasksLength / this.tasksLength);
+      return 100 * (this.finishedTasksHours / this.tasksHours);
     },
 
     selectedTasks() {
       if (this.selectedCategories.length === 0) return [];
-    
+
       return this.tasks.filter(x =>
         this.selectedCategories.map(s => s.id).includes(x.categoryId)
       );
@@ -116,7 +124,7 @@ export default {
 
     selectedSprintAndProjectIds() {
       return store.state.selectedSprint.id && store.state.selectedProject.id;
-    },
+    }
   },
 
   watch: {
@@ -150,20 +158,22 @@ export default {
           sprintId: store.state.selectedSprint.id
         }
       });
-      
+
       this.getCategories();
       this.getTasks();
     },
 
     getTasks() {
-      return taskService.getBySprintId(store.state.selectedSprint.id)
+      return taskService
+        .getBySprintId(store.state.selectedSprint.id)
         .then(response => {
           this.tasks = response.data.data;
         });
     },
 
     getCategories() {
-      categoryService.getByProjectId(store.state.selectedProject.id)
+      categoryService
+        .getByProjectId(store.state.selectedProject.id)
         .then(response => {
           this.categories = response.data.data.map(x => {
             return {
