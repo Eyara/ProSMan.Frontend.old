@@ -1,8 +1,15 @@
 <template>
   <div>
     <md-toolbar class="top-menu">
-      <md-button class="md-icon-button" @click="showNavigation = true">
+      <md-button
+        v-if="$store.state.menuButtonType == 'menu'"
+        class="md-icon-button"
+        @click="showNavigation = true">
         <md-icon class="main-color">menu</md-icon>
+      </md-button>
+      <md-button v-else-if="$store.state.menuButtonType == 'back'"
+        class="md-icon-button" @click="$router.go(-1)">
+        <md-icon class="main-color">arrow_back</md-icon>
       </md-button>
       <h3 class="md-title main-color">{{$store.state.pageLabel}}</h3>
     </md-toolbar>

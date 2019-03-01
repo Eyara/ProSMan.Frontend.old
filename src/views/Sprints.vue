@@ -1,16 +1,25 @@
 <template>
   <div>
-    <div v-if="sprints.length > 0">
-      <sprint-timeline
-        v-bind:sprints="sprints"
-        v-on:tasks-open="tasksOpen"
-        v-on:edit-sprint="editSprint"
-        v-on:delete-sprint="deleteSprint"
-      ></sprint-timeline>
-    </div>
-    <div class="action-block">
-      <div @click="createSprint()">
-        <md-button class="btn-action">Создать новый спринт</md-button>
+    <div v-if="sprints">
+      <div v-if="sprints.length === 0">
+        <md-empty-state
+          md-icon="date_range"
+          md-label="Создай первый спринт"
+          md-description="В этом проекте пока нет спринтов. Добавь их!"
+        ></md-empty-state>
+      </div>
+      <div v-else>
+        <sprint-timeline
+          v-bind:sprints="sprints"
+          v-on:tasks-open="tasksOpen"
+          v-on:edit-sprint="editSprint"
+          v-on:delete-sprint="deleteSprint"
+        ></sprint-timeline>
+      </div>
+      <div class="action-block">
+        <div @click="createSprint()">
+          <md-button class="btn-action">Создать новый спринт</md-button>
+        </div>
       </div>
     </div>
   </div>
@@ -28,11 +37,12 @@ export default {
     SprintTimeline
   },
   data: () => ({
-    sprints: []
+    sprints: null
   }),
 
   created() {
     store.commit("setPageLabel", "Спринты");
+    store.commit("setMenuButtonType", "back");
 
     if (this.selectedProjectId) this.getSprints();
   },

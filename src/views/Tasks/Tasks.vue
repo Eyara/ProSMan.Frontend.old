@@ -1,52 +1,61 @@
 <template>
   <div class="tasks-content">
-    <div v-if="finishedTasksProportion" class="progress-block">
-      <div>{{$store.state.selectedSprint.name}}</div>
-      <md-progress-bar
-        class="progress-task-bar"
-        md-mode="determinate"
-        :md-value="finishedTasksProportion"
-      ></md-progress-bar>
-      <div class="progress-header">{{finishedTasksHours}}ч / {{tasksHours}}ч</div>
-      <div v-if="hasCategories" class="category-picker">
-        <category-picker
-          v-bind:categories="categories"
-          v-on:select-categories="selectCategories"
-          v-on:create-category="createCategory"
-        ></category-picker>
+    <div v-if="tasks">
+      <div v-if="finishedTasksProportion" class="progress-block">
+        <div>{{$store.state.selectedSprint.name}}</div>
+        <md-progress-bar
+          class="progress-task-bar"
+          md-mode="determinate"
+          :md-value="finishedTasksProportion"
+        ></md-progress-bar>
+        <div class="progress-header">{{finishedTasksHours}}ч / {{tasksHours}}ч</div>
+        <div v-if="hasCategories" class="category-picker">
+          <category-picker
+            v-bind:categories="categories"
+            v-on:select-categories="selectCategories"
+            v-on:create-category="createCategory"
+          ></category-picker>
+        </div>
       </div>
-    </div>
-    <div class="tasks-block" v-if="tasks.length > 0">
-      <div
-        class="task"
-        v-for="task in selectedTasks"
-        v-bind:key="task.id"
-        v-bind:class="{ 'task-finished': task.isFinished}"
-      >
-        <div class="btn-circle" @click="toggleFinishTask(task.id)"></div>
-        <div class="task-item" @click="editTask(task)">
-          <span class="task-name">{{task.name}}</span>
-          <div class="task-info">
-            <div class="task-info-header">
-              <md-icon>access_time</md-icon>
-              <span class="task-sub-info">{{task.timeEstimate}}ч</span>
+      <div v-if="tasks.length === 0">
+        <md-empty-state
+          md-icon="list"
+          md-label="Добавь новую задачу"
+          md-description="В этом спринте нет заданий. Добавь их!"
+        ></md-empty-state>
+      </div>
+      <div class="tasks-block" v-else>
+        <div
+          class="task"
+          v-for="task in selectedTasks"
+          v-bind:key="task.id"
+          v-bind:class="{ 'task-finished': task.isFinished}"
+        >
+          <div class="btn-circle" @click="toggleFinishTask(task.id)"></div>
+          <div class="task-item" @click="editTask(task)">
+            <span class="task-name">{{task.name}}</span>
+            <div class="task-info">
+              <div class="task-info-header">
+                <md-icon>access_time</md-icon>
+                <span class="task-sub-info">{{task.timeEstimate}}ч</span>
+              </div>
+              <div class="task-info-header">
+                <md-icon style="margin-right: -5px;">priority_high</md-icon>
+                <span class="task-sub-info">{{task.priority | priority}}</span>
+              </div>
             </div>
-            <div class="task-info-header">
-              <md-icon style="margin-right: -5px;">priority_high</md-icon>
-              <span class="task-sub-info">{{task.priority | priority}}</span>
+          </div>
+          <div class="action-buttons">
+            <div @click="deleteTask(task.id)">
+              <md-icon>delete</md-icon>
             </div>
           </div>
         </div>
-        <div class="action-buttons">
-          <div @click="deleteTask(task.id)">
-            <md-icon>delete</md-icon>
-          </div>
-        </div>
       </div>
-    </div>
-    <div class="action-block">
-      <div @click="createTask()">
-        <md-icon class="btn-action">add</md-icon>
+      <div class="action-block">
+        <div @click="createTask()">
+          <md-icon class="btn-action">add</md-icon>
+        </div>
       </div>
     </div>
   </div>
@@ -66,7 +75,7 @@ import CategoryPicker from "../../components/tasks/category-picker/category-pick
 export default {
   name: "tasks",
   data: () => ({
-    tasks: [],
+    tasks: null,
     categories: [],
     selectedCategories: [],
     taskModel: {},
@@ -80,6 +89,7 @@ export default {
 
   created() {
     store.commit("setPageLabel", "Задания");
+    store.commit("setMenuButtonType", "back");
 
     if (store.state.selectedProject.id && store.state.selectedSprint.id) {
       this.refresh();
@@ -88,6 +98,7 @@ export default {
 
   computed: {
     finishedTasksHours() {
+      if (!this.tasks) return 0;
       if (this.tasks.length === 0) return 0;
       return this.tasks
         .filter(x => x.isFinished)
@@ -96,6 +107,7 @@ export default {
     },
 
     tasksHours() {
+      if (!this.tasks) return 0;
       if (this.tasks.length === 0) return 0;
       return this.tasks
         .map(x => x.timeEstimate)

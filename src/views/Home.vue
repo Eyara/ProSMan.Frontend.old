@@ -1,27 +1,36 @@
 <template>
   <div class="home">
-    <div v-if="projects.length > 0">
-      <md-card v-for="project in projects" :key="project.id">
-        <md-card-header>
-          <router-link to="/sprints">
-            <div @click="openProject(project)" class="md-title">{{project.name}}</div>
-          </router-link>
-        </md-card-header>
-        <md-card-actions md-alignment="space-between">
-          <div @click="editProject(project)">
-            <md-button>
-              <span>Редактировать</span>
-            </md-button>
-          </div>
-          <div @click="deleteProject(project.id)">
-            <md-button>Удалить</md-button>
-          </div>
-        </md-card-actions>
-      </md-card>
-    </div>
-    <div class="action-block">
-      <div @click="createProject()">
-        <md-button class="btn-action">Создать новый проект</md-button>
+    <div v-if="projects">
+      <div v-if="projects.length === 0">
+        <md-empty-state
+          md-icon="date_range"
+          md-label="Создай первый проекте"
+          md-description="Ты пока не создал ни одного проекта"
+        ></md-empty-state>
+      </div>
+      <div v-else>
+        <md-card v-for="project in projects" :key="project.id">
+          <md-card-header>
+            <router-link to="/sprints">
+              <div @click="openProject(project)" class="md-title">{{project.name}}</div>
+            </router-link>
+          </md-card-header>
+          <md-card-actions md-alignment="space-between">
+            <div @click="editProject(project)">
+              <md-button>
+                <span>Редактировать</span>
+              </md-button>
+            </div>
+            <div @click="deleteProject(project.id)">
+              <md-button>Удалить</md-button>
+            </div>
+          </md-card-actions>
+        </md-card>
+      </div>
+      <div class="action-block">
+        <div @click="createProject()">
+          <md-button class="btn-action">Создать новый проект</md-button>
+        </div>
       </div>
     </div>
   </div>
@@ -29,21 +38,21 @@
 
 <script>
 import store from "../store.js";
-import projectService from "../services/project.service.js"
+import projectService from "../services/project.service.js";
 
 export default {
   name: "home",
-  components: {
-  },
+  components: {},
 
   data() {
     return {
-      projects: []
+      projects: null
     };
   },
 
   created() {
     store.commit("setPageLabel", "Проекты");
+    store.commit("setMenuButtonType", "menu");
     this.getProjects();
   },
 
@@ -52,7 +61,7 @@ export default {
       return store.state.hasBeenUpdated;
     }
   },
-  
+
   watch: {
     hasBeenUpdated(newValue) {
       if (newValue) {
@@ -65,8 +74,8 @@ export default {
   methods: {
     async getProjects() {
       await projectService.getProjects().then(response => {
-            this.projects = response.data.data;
-        });
+        this.projects = response.data.data;
+      });
     },
 
     createProject() {
