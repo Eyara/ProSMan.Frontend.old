@@ -47,7 +47,7 @@ a {
 </style>
 
 <script>
-import Layout from "./components/layout.vue";
+import Layout from "./components/Layout.vue";
 import "vue-material/dist/theme/default.css";
 
 export default {
