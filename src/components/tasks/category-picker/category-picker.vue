@@ -59,28 +59,16 @@
 </style>
 
 <script>
-/* eslint-disable */
-import axios from "axios";
-import store from "../../../store.js";
-
 export default {
   name: "category-picker",
-  data: () => ({
-    categories: []
-  }),
 
-  created: function() {
-    this.getCategories();
+  props: {
+    categories: Array,
   },
 
   methods: {
     toggleCategory(category) {
       category.selected = !category.selected;
-      this.emitSelectCategories();
-    },
-
-    selectAll() {
-      this.categories.forEach(x => (x.selected = true));
       this.emitSelectCategories();
     },
 
@@ -92,25 +80,6 @@ export default {
       let selectedCategories = this.categories.filter(x => x.selected);
       this.$emit("select-categories", selectedCategories);  
     },
-
-    getCategories() {
-      axios
-        .get(
-          "http://localhost:54973/api/Category/GetByProjectId?id=" +
-            store.state.selectedProjectId
-        )
-        .then(response => {
-          this.categories = response.data.data.map(x => {
-            return {
-              id: x.id,
-              name: x.name,
-              selected: false
-            };
-          });
-
-          this.selectAll();
-        });
-    }
   }
 };
 </script>

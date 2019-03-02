@@ -1,49 +1,61 @@
 <template>
   <div class="tasks-content">
-    <div class="progress-block">
-      <div>Pre-Alpha 0.1</div>
-      <md-progress-bar
-        class="progress-task-bar"
-        md-mode="determinate"
-        :md-value="finishedTasksProportion"
-      ></md-progress-bar>
-      <div class="category-picker">
-        <category-picker v-on:select-categories="selectCategories"
-          v-on:create-category="createCategory"
-        ></category-picker>
+    <div v-if="tasks">
+      <div v-if="finishedTasksProportion != null" class="progress-block">
+        <div>{{$store.state.selectedSprint.name}}</div>
+        <md-progress-bar
+          class="progress-task-bar"
+          md-mode="determinate"
+          :md-value="finishedTasksProportion"
+        ></md-progress-bar>
+        <div class="progress-header">{{finishedTasksHours}}ч / {{tasksHours}}ч</div>
+        <div v-if="hasCategories" class="category-picker">
+          <category-picker
+            v-bind:categories="categories"
+            v-on:select-categories="selectCategories"
+            v-on:create-category="createCategory"
+          ></category-picker>
+        </div>
       </div>
-    </div>
-    <div class="tasks-block" v-if="tasks.length > 0">
-      <div
-        class="task"
-        v-for="task in selectedTasks"
-        v-bind:key="task.id"
-        v-bind:class="{ 'task-finished': task.isFinished}"
-      >
-        <div class="btn-circle" @click="toggleFinishTask(task.id)"></div>
-        <div class="task-item" @click="editTask(task)">
-          <span class="task-name">{{task.name}}</span>
-          <div class="task-info">
-            <div class="task-info-header">
-              <md-icon>access_time</md-icon>
-              <span class="task-sub-info">{{task.timeEstimate}}ч</span>
+      <div v-if="tasks.length === 0">
+        <md-empty-state
+          md-icon="list"
+          md-label="Добавь новую задачу"
+          md-description="В этом спринте нет заданий. Добавь их!"
+        ></md-empty-state>
+      </div>
+      <div class="tasks-block" v-else>
+        <div
+          class="task"
+          v-for="task in selectedTasks"
+          v-bind:key="task.id"
+          v-bind:class="{ 'task-finished': task.isFinished}"
+        >
+          <div class="btn-circle" @click="toggleFinishTask(task.id)"></div>
+          <div class="task-item" @click="editTask(task)">
+            <span class="task-name">{{task.name}}</span>
+            <div class="task-info">
+              <div class="task-info-header">
+                <md-icon>access_time</md-icon>
+                <span class="task-sub-info">{{task.timeEstimate}}ч</span>
+              </div>
+              <div class="task-info-header">
+                <md-icon style="margin-right: -5px;">priority_high</md-icon>
+                <span class="task-sub-info">{{task.priority | priority}}</span>
+              </div>
             </div>
-            <div class="task-info-header">
-              <md-icon style="margin-right: -5px;">priority_high</md-icon>
-              <span class="task-sub-info">{{task.priority | priority}}</span>
+          </div>
+          <div class="action-buttons">
+            <div @click="deleteTask(task.id)">
+              <md-icon>delete</md-icon>
             </div>
           </div>
         </div>
-        <div class="action-buttons">
-          <div @click="deleteTask(task.id)">
-            <md-icon>delete</md-icon>
-          </div>
-        </div>
       </div>
-    </div>
-    <div class="action-block">
-      <div @click="createTask()">
-        <md-icon class="btn-action">add</md-icon>
+      <div class="action-block">
+        <div @click="createTask()">
+          <md-icon class="btn-action">add</md-icon>
+        </div>
       </div>
     </div>
   </div>
@@ -54,40 +66,55 @@
 </style>
 
 <script>
-import axios from "axios";
 import store from "../../store.js";
+import router from "../../router.js";
+import taskService from "../../services/task.service.js";
+import categoryService from "../../services/category.service.js";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
 
 export default {
   name: "tasks",
   data: () => ({
-    tasks: [],
+    tasks: null,
+    categories: [],
     selectedCategories: [],
     taskModel: {},
     isCreating: true,
     showDialog: false
   }),
+
   components: {
     CategoryPicker
   },
-  created: function() {
+
+  created() {
     store.commit("setPageLabel", "Задания");
-    this.getTasks();
+    store.commit("setMenuButtonType", "back");
+
+    if (store.state.selectedProject.id && store.state.selectedSprint.id) {
+      this.refresh();
+    }
   },
+
   computed: {
-    finishedTasksLength: function() {
-      return this.tasks.filter(x => x.isFinished).length;
+    finishedTasksHours() {
+      return this.tasks
+        .filter(x => x.isFinished)
+        .map(x => x.timeEstimate)
+        .reduce((accumulator, array) => accumulator + array, 0);
     },
 
-    tasksLength: function() {
-      return this.tasks.length;
+    tasksHours() {
+      return this.tasks
+        .map(x => x.timeEstimate)
+        .reduce((accumulator, array) => accumulator + array, 0);
     },
 
-    finishedTasksProportion: function() {
-      return 100 * (this.finishedTasksLength / this.tasksLength);
+    finishedTasksProportion() {
+      return 100 * (this.finishedTasksHours / this.tasksHours);
     },
 
-    selectedTasks: function() {
+    selectedTasks() {
       if (this.selectedCategories.length === 0) return [];
 
       return this.tasks.filter(x =>
@@ -95,59 +122,108 @@ export default {
       );
     },
 
-    sideNavOpen: function() {
-      return store.state.rightSideMenuOpen;  
+    hasCategories() {
+      return this.categories.length > 0;
+    },
+
+    hasBeenUpdated() {
+      return store.state.hasBeenUpdated;
+    },
+
+    selectedSprintAndProjectIds() {
+      return store.state.selectedSprint.id && store.state.selectedProject.id;
     }
   },
 
   watch: {
-    // make update task list
-    // sideNavOpen(newValue, oldValue) {
-    // }
+    hasBeenUpdated(newValue) {
+      if (newValue) {
+        switch (store.state.updatingType) {
+          case "task":
+            this.getTasks();
+            break;
+          case "category":
+            this.getCategory();
+            break;
+        }
+        store.commit("setHasBeenUpdated", false);
+      }
+    },
+
+    selectedSprintAndProjectIds(newValue) {
+      if (newValue) {
+        this.refresh();
+      }
+    }
   },
 
   methods: {
-    getTasks: function() {
-      axios
-        .get(
-          "http://localhost:54973/api/Task/GetBySprintId?id=" +
-            store.state.selectedSprintId
-        )
+    refresh() {
+      router.replace({
+        name: "tasks",
+        query: {
+          projectId: store.state.selectedProject.id,
+          sprintId: store.state.selectedSprint.id
+        }
+      });
+
+      this.getCategories();
+      this.getTasks();
+    },
+
+    getTasks() {
+      return taskService
+        .getBySprintId(store.state.selectedSprint.id)
         .then(response => {
           this.tasks = response.data.data;
         });
     },
 
-    createTask: function() {
+    getCategories() {
+      categoryService
+        .getByProjectId(store.state.selectedProject.id)
+        .then(response => {
+          this.categories = response.data.data.map(x => {
+            return {
+              id: x.id,
+              name: x.name,
+              selected: true
+            };
+          });
+          this.selectCategories(this.categories);
+        });
+    },
+
+    createTask() {
       store.commit("setCreating", true);
       store.commit("toggleRightSideMenu");
       store.commit("setUpdatingType", "task");
     },
 
-    createCategory: function() {
+    createCategory() {
       store.commit("setCreating", true);
       store.commit("toggleRightSideMenu");
       store.commit("setUpdatingType", "category");
     },
 
-    editTask: function(task) {
+    editTask(task) {
       store.commit("setCreating", false);
       store.commit("updateItem", task);
       store.commit("setUpdatingType", "task");
       store.commit("toggleRightSideMenu");
     },
 
-    toggleFinishTask: async function(id) {
-      await axios.post("http://localhost:54973/api/Task/ToggleFinishTask?id=" + id);
+    async toggleFinishTask(id) {
+      await taskService.toggleFinishTask(id);
       this.getTasks();
     },
 
-    deleteTask: async function(id) {
-      await axios.delete("http://localhost:54973/api/Task?id=" + id);
+    async deleteTask(id) {
+      await taskService.deleteTask(id);
       this.getTasks();
     },
 
-    selectCategories: function(selectedCategories) {
+    selectCategories(selectedCategories) {
       this.selectedCategories = selectedCategories;
     }
   }

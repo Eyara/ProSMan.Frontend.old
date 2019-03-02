@@ -35,24 +35,27 @@
       </md-field>
       <div class="button-block">
         <md-button class="md-primary" @click="cancel()">Отмена</md-button>
-        <md-button class="md-raised md-primary" @click="create()">Создать</md-button>
+        <md-button class="md-raised md-primary" @click="create()">
+          <span v-if="isCreating">Создать</span>
+          <span v-else>Обновить</span>
+        </md-button>
       </div>
     </md-content>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import store from "../../../store.js";
+import categoryService from "../../../services/category.service.js";
 export default {
   name: "add-task-modal",
 
-  data: function() {
+  data() {
     return {
       initial_model: {
         id: "00000000-0000-0000-0000-000000000000",
-        projectId: store.state.selectedProjectId,
-        sprintId: store.state.selectedSprintId,
+        projectId: store.state.selectedProject.id,
+        sprintId: store.state.selectedSprint.id,
         categoryId: "",
         isFinished: 0,
         name: "",
@@ -64,15 +67,14 @@ export default {
       model: Object,
       categories: [],
       selectedCategoryId: String,
-      isCancel: Boolean,
+      isCancel: Boolean
     };
   },
 
-  created: function() {
+  created() {
     if (this.isCreating) {
       this.model = this.initial_model;
-    }
-    else {
+    } else {
       this.model = this.taskModel;
       this.selectedCategoryId = this.taskModel.categoryId;
     }
@@ -82,10 +84,10 @@ export default {
 
   computed: {
     show: {
-      get: function() {
+      get() {
         return this.showDialog;
       },
-      set: function() {
+      set() {
         this.close();
         return false;
       }
@@ -99,27 +101,24 @@ export default {
   },
 
   methods: {
-    close: function() {
+    close() {
       this.$emit("close-dialog", this.model, this.isCancel);
       this.model = this.initial_model;
     },
-    cancel: function() {
+    cancel() {
       this.isCancel = true;
       this.model = null;
       this.close();
     },
-    create: function() {
+    create() {
       this.isCancel = false;
       this.model.categoryId = this.selectedCategoryId;
       this.close();
     },
 
-    getCategories: function() {
-      axios
-        .get(
-          "http://localhost:54973/api/Category/GetByProjectId?id=" +
-            store.state.selectedProjectId
-        )
+    getCategories() {
+      categoryService
+        .getByProjectId(store.state.selectedProject.id)
         .then(response => {
           this.categories = response.data.data;
         });
