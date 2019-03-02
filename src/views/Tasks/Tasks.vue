@@ -1,7 +1,7 @@
 <template>
   <div class="tasks-content">
     <div v-if="tasks">
-      <div v-if="finishedTasksProportion" class="progress-block">
+      <div v-if="finishedTasksProportion != null" class="progress-block">
         <div>{{$store.state.selectedSprint.name}}</div>
         <md-progress-bar
           class="progress-task-bar"
@@ -98,20 +98,16 @@ export default {
 
   computed: {
     finishedTasksHours() {
-      if (!this.tasks) return 0;
-      if (this.tasks.length === 0) return 0;
       return this.tasks
         .filter(x => x.isFinished)
         .map(x => x.timeEstimate)
-        .reduce((accumulator, array) => accumulator + array);
+        .reduce((accumulator, array) => accumulator + array, 0);
     },
 
     tasksHours() {
-      if (!this.tasks) return 0;
-      if (this.tasks.length === 0) return 0;
       return this.tasks
         .map(x => x.timeEstimate)
-        .reduce((accumulator, array) => accumulator + array);
+        .reduce((accumulator, array) => accumulator + array, 0);
     },
 
     finishedTasksProportion() {
