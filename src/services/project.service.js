@@ -9,7 +9,7 @@ export default {
     },
 
     getProjects() {
-        return axios.get(globalVariable.hostname + "api/Project");
+        return axios.get("api/Project");
     },
 
     getById(projectId) {

@@ -4,7 +4,7 @@
       rel="stylesheet"
       href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons"
     >
-    <div id="nav">
+    <div v-if="$store.state.isAuthenticated" id="nav">
       <Layout/>
     </div>
     <md-content class="content">
@@ -30,7 +30,7 @@
     font-weight: bold;
     color: #2c3e50;
     &.router-link-exact-active {
-      color: #42b983;
+      color: #3a9ad9;
     }
   }
 }
@@ -47,13 +47,26 @@ a {
 </style>
 
 <script>
+import router from "./router.js";
+import store from "./store.js";
+
 import Layout from "./components/Layout.vue";
 import "vue-material/dist/theme/default.css";
 
 export default {
   name: "App",
   components: {
-    Layout
-  }
+    Layout,
+  },
+
+  created() {
+    if (localStorage.getItem('access_token') == null) {
+      store.commit("setAuthenticated", false);
+      router.push({ path: "/login" });
+    }
+    else {
+      store.commit("setAuthenticated", true);
+    }
+  },
 };
 </script>

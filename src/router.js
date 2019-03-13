@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Sprints from './views/Sprints.vue'
 import Tasks from './views/Tasks/Tasks.vue'
+import Login from './views/Login.vue'
+import Today from './views/Today.vue'
 
 Vue.use(Router)
 
@@ -22,6 +24,16 @@ export default new Router({
       path: '/tasks',
       name: 'tasks',
       component: Tasks
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
+    },
+    {
+      path: '/today',
+      name: 'today',
+      component: Today
     }
   ]
 })

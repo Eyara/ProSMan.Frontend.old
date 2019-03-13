@@ -12,8 +12,16 @@ export default {
         return axios.get(globalVariable.hostname + "api/Task/GetBySprintId?id=" + id);
     },
 
+    getTodayTasks() {
+        return axios.get(globalVariable.hostname + "api/Task/getTodayTasks");    
+    },
+
     toggleFinishTask(id) {
         return axios.post(globalVariable.hostname + "api/Task/ToggleFinishTask?id=" + id);
+    },
+
+    toggleTodayTask(id) {
+        return axios.post(globalVariable.hostname + "api/Task/ToggleTodayTask?id=" + id);
     },
 
     deleteTask(id) {

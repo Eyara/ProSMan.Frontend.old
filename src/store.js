@@ -15,6 +15,7 @@ export default new Vuex.Store({
     updatingType: "project",
     hasBeenUpdated: false,
     menuButtonType: "menu",
+    isAuthenticated: false,
   },
   mutations: {
     selectProject(state, value) {
@@ -55,6 +56,10 @@ export default new Vuex.Store({
 
     setMenuButtonType(state, value) {
       state.menuButtonType = value;
+    },
+
+    setAuthenticated(state, value) {
+      state.isAuthenticated = value;
     }
   },
   actions: {
