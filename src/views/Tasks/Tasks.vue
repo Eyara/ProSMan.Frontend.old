@@ -46,6 +46,10 @@
             </div>
           </div>
           <div class="action-buttons">
+            <div @click="toggleTodayTask(task.id)">
+                <md-icon v-if="todayTaskDate(task.date)">star_border</md-icon>
+                <md-icon v-else>star</md-icon>
+            </div>
             <div @click="deleteTask(task.id)">
               <md-icon>delete</md-icon>
             </div>
@@ -68,6 +72,7 @@
 <script>
 import store from "../../store.js";
 import router from "../../router.js";
+import moment from 'moment'
 import taskService from "../../services/task.service.js";
 import categoryService from "../../services/category.service.js";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
@@ -194,6 +199,10 @@ export default {
         });
     },
 
+    todayTaskDate(date) {
+      return moment(date).format("YYYY-MM-DD") != moment().format("YYYY-MM-DD");
+    },
+
     createTask() {
       store.commit("setCreating", true);
       store.commit("toggleRightSideMenu");
@@ -215,6 +224,11 @@ export default {
 
     async toggleFinishTask(id) {
       await taskService.toggleFinishTask(id);
+      this.getTasks();
+    },
+
+    async toggleTodayTask(id) {
+      await taskService.toggleTodayTask(id);
       this.getTasks();
     },
 

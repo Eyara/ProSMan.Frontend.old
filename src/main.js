@@ -4,7 +4,11 @@ import router from './router'
 import store from './store'
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
+import interceptorSetup from './interceptors/authReqInterceptor'
+import unauthorize from './interceptors/unauthInterceptor'
 
+interceptorSetup()
+unauthorize()
 
 Vue.config.productionTip = false
 

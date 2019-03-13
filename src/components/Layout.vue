@@ -4,29 +4,44 @@
       <md-button
         v-if="$store.state.menuButtonType == 'menu'"
         class="md-icon-button"
-        @click="showNavigation = true">
+        @click="showNavigation = true"
+      >
         <md-icon class="main-color">menu</md-icon>
       </md-button>
-      <md-button v-else-if="$store.state.menuButtonType == 'back'"
-        class="md-icon-button" @click="$router.go(-1)">
+      <md-button
+        v-else-if="$store.state.menuButtonType == 'back'"
+        class="md-icon-button"
+        @click="$router.go(-1)"
+      >
         <md-icon class="main-color">arrow_back</md-icon>
       </md-button>
       <h3 class="md-title main-color">{{$store.state.pageLabel}}</h3>
     </md-toolbar>
 
     <md-drawer :md-active.sync="showNavigation">
-      <md-toolbar class="md-transparent" md-elevation="0">
-        <span class="md-title">ProSMan</span>
-      </md-toolbar>
-
       <md-list>
+        <md-list-item class="user-panel">
+          <md-icon>person</md-icon>
+          <span class="md-list-item-text">{{userFullname}}</span>
+        </md-list-item>
         <md-list-item>
-          <md-icon>send</md-icon>
+          <md-icon>view_list</md-icon>
           <span class="md-list-item-text">
             <router-link to="/">Проекты</router-link>
           </span>
         </md-list-item>
+        <md-list-item>
+          <md-icon>today</md-icon>
+          <span class="md-list-item-text">
+            <router-link to="/today">Задания на день</router-link>
+          </span>
+        </md-list-item>
       </md-list>
+
+      <div class="exit-panel" @click="logout()">
+        <md-icon>exit_to_app</md-icon>
+        <span class="md-list-item-text">Выход</span>
+      </div>
     </md-drawer>
 
     <md-drawer
@@ -64,6 +79,7 @@
 
 <script>
 import store from "../store.js";
+import router from "../router.js"
 
 import projectService from "../services/project.service.js";
 import sprintService from "../services/sprint.service.js";
@@ -90,6 +106,13 @@ export default {
     this.selectProject();
     this.selectSprint();
   },
+
+  computed: {
+    userFullname() {
+      return localStorage.fullname;
+    }
+  },
+
   methods: {
     async closeSideNav(model, isCancel) {
       store.commit("toggleRightSideMenu");
@@ -169,6 +192,12 @@ export default {
         .then(sprint => {
           store.commit("selectSprint", sprint.data.data[0]);
         });
+    },
+
+    logout() {
+      localStorage.clear();
+      store.commit("setAuthenticated", false);
+      router.push({ path: "/login" });
     }
   }
 };
@@ -197,6 +226,34 @@ export default {
 
 .hide-right {
   width: 0;
+}
+
+.md-list-item {
+  border-bottom: 1px rgba($color: #000000, $alpha: 0.15) solid;
+  padding: 5px 0px;
+
+  span {
+    font-weight: 600;
+  }
+}
+
+.user-panel {
+  padding: 10px 0px;
+  margin-bottom: 10px;
+}
+
+.exit-panel {
+  min-height: 48px;
+  padding: 4px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: absolute;
+  bottom: 0;
+
+  .md-icon {
+    margin-right: 32px;
+  }
 }
 
 @media (max-width: 600px) {
