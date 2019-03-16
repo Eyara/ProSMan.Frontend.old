@@ -1,14 +1,13 @@
 import axios from 'axios';
-import globalVariable from '../variables'
 
 export default {
     name: 'categoryService',
 
     createCategory(model) {
-        return axios.post(globalVariable.hostname + "api/Category", model);
+        return axios.post("api/Category", model);
     },
 
     getByProjectId(id) {
-        return axios.get(globalVariable.hostname + "api/Category/GetByProjectId?id=" + id);
+        return axios.get("api/Category/GetByProjectId?id=" + id);
     },
 }
