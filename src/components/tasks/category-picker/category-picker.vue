@@ -8,8 +8,7 @@
         class="category-chip"
         v-bind:class="{ 'category-chip-selected': category.selected }"
         md-clickable
-      >{{category.name}}
-      </md-chip>
+      >{{category.name}}</md-chip>
       <div class="action-block" @click="emitCreateCategory()">
         <md-icon class="btn-action">add</md-icon>
       </div>
@@ -23,13 +22,15 @@
 }
 .category-chip {
   user-select: none;
-  color: #3a9ad9;
-  background-color: #e9e0d6;
+  color: #3a9ad9 !important;
+  background-color: #e9e0d6 !important;
 }
 
-.category-chip:hover {
-  color: white !important;
-  background-color: #3a9ad9 !important;
+@media (min-width: 600px) {
+  .category-chip:hover {
+    color: white !important;
+    background-color: #3a9ad9 !important;
+  }
 }
 
 .category-chip-selected {
@@ -63,7 +64,7 @@ export default {
   name: "category-picker",
 
   props: {
-    categories: Array,
+    categories: Array
   },
 
   methods: {
@@ -78,8 +79,8 @@ export default {
 
     emitSelectCategories() {
       let selectedCategories = this.categories.filter(x => x.selected);
-      this.$emit("select-categories", selectedCategories);  
-    },
+      this.$emit("select-categories", selectedCategories);
+    }
   }
 };
 </script>

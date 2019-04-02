@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import VueMaterial from 'vue-material'
+import Vue2TouchEvents from 'vue2-touch-events'
 import 'vue-material/dist/vue-material.min.css'
 import interceptorSetup from './interceptors/authReqInterceptor'
 import unauthorize from './interceptors/unauthInterceptor'
@@ -13,6 +14,7 @@ unauthorize()
 Vue.config.productionTip = false
 
 Vue.use(VueMaterial);
+Vue.use(Vue2TouchEvents)
 
 Vue.filter('priority', function (value) {
   if (!value) return ''

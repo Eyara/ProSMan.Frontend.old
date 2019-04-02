@@ -1,6 +1,26 @@
 <template>
   <div class="login-toolbar">
-    <md-tabs class="md-primary" md-alignment="centered">
+    <md-tabs class="md-primary" md-alignment="centered">  
+      <md-tab id="sign-in" md-icon="input" md-label="Вход">
+        <md-content>
+          <div class="title-block">
+            <p class="login-title">Добро пожаловать в персональный менеджер проектов!</p>
+          </div>
+          <div class="login-form">
+            <md-field>
+              <label>Логин</label>
+              <md-input v-model="loginModel.username"></md-input>
+            </md-field>
+            <md-field>
+              <label>Пароль</label>
+              <md-input v-model="loginModel.password" type="password"></md-input>
+            </md-field>
+          </div>
+          <div class="action-block">
+            <md-button @click="login(loginModel)" class="btn-submit">Войти</md-button>
+          </div>
+        </md-content>
+      </md-tab>
       <md-tab id="sign-up" md-icon="perm_identity" md-label="Регистрация">
         <md-content>
           <div class="title-block">
@@ -22,26 +42,6 @@
           </div>
           <div class="action-block">
             <md-button @click="register()" class="btn-submit">Зарегистрироваться</md-button>
-          </div>
-        </md-content>
-      </md-tab>
-      <md-tab id="sign-in" md-icon="input" md-label="Вход">
-        <md-content>
-          <div class="title-block">
-            <p class="login-title">Добро пожаловать в персональный менеджер проектов!</p>
-          </div>
-          <div class="login-form">
-            <md-field>
-              <label>Логин</label>
-              <md-input v-model="loginModel.username"></md-input>
-            </md-field>
-            <md-field>
-              <label>Пароль</label>
-              <md-input v-model="loginModel.password" type="password"></md-input>
-            </md-field>
-          </div>
-          <div class="action-block">
-            <md-button @click="login(loginModel)" class="btn-submit">Войти</md-button>
           </div>
         </md-content>
       </md-tab>

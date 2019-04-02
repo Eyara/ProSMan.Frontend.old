@@ -2,14 +2,21 @@
   <div class="tasks-content">
     <div v-if="tasks">
       <div v-if="finishedTasksProportion != null" class="progress-block">
-        <div>{{$store.state.selectedSprint.name}}</div>
+        <div class="progress-main-header">
+          <div>{{$store.state.selectedSprint.name}}</div>
+          <div>
+            <div @click="createTask()">
+              <md-icon class="btn-action">add</md-icon>
+            </div>
+          </div>
+        </div>
         <md-progress-bar
           class="progress-task-bar"
           md-mode="determinate"
           :md-value="finishedTasksProportion"
         ></md-progress-bar>
         <div class="progress-header">{{finishedTasksHours}}ч / {{tasksHours}}ч</div>
-        <div v-if="hasCategories" class="category-picker">
+        <div class="category-picker">
           <category-picker
             v-bind:categories="categories"
             v-on:select-categories="selectCategories"
@@ -31,7 +38,9 @@
           v-bind:key="task.id"
           v-bind:class="{ 'task-finished': task.isFinished}"
         >
-          <div class="btn-circle" @click="toggleFinishTask(task.id)"></div>
+          <div @click="toggleFinishTask(task.id)">
+            <div class="btn-circle"></div>
+          </div>
           <div class="task-item" @click="editTask(task)">
             <span class="task-name">{{task.name}}</span>
             <div class="task-info">
@@ -47,18 +56,13 @@
           </div>
           <div class="action-buttons">
             <div @click="toggleTodayTask(task.id)">
-                <md-icon v-if="todayTaskDate(task.date)">star_border</md-icon>
-                <md-icon v-else>star</md-icon>
+              <md-icon v-if="todayTaskDate(task.date)">star_border</md-icon>
+              <md-icon v-else>star</md-icon>
             </div>
             <div @click="deleteTask(task.id)">
               <md-icon>delete</md-icon>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="action-block">
-        <div @click="createTask()">
-          <md-icon class="btn-action">add</md-icon>
         </div>
       </div>
     </div>
@@ -72,7 +76,7 @@
 <script>
 import store from "../../store.js";
 import router from "../../router.js";
-import moment from 'moment'
+import moment from "moment";
 import taskService from "../../services/task.service.js";
 import categoryService from "../../services/category.service.js";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
@@ -205,21 +209,22 @@ export default {
 
     createTask() {
       store.commit("setCreating", true);
-      store.commit("toggleRightSideMenu");
       store.commit("setUpdatingType", "task");
+      store.dispatch("toggleRightSideMenu");
     },
 
     createCategory() {
       store.commit("setCreating", true);
-      store.commit("toggleRightSideMenu");
       store.commit("setUpdatingType", "category");
+      store.dispatch("toggleRightSideMenu");
     },
 
     editTask(task) {
+      window.scrollTo(0, 0);
       store.commit("setCreating", false);
       store.commit("updateItem", task);
       store.commit("setUpdatingType", "task");
-      store.commit("toggleRightSideMenu");
+      store.dispatch("toggleRightSideMenu");
     },
 
     async toggleFinishTask(id) {

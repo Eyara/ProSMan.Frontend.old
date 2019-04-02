@@ -4,27 +4,35 @@
       <div v-if="projects.length === 0">
         <md-empty-state
           md-icon="date_range"
-          md-label="Создай первый проекте"
+          md-label="Создай первый проект"
           md-description="Ты пока не создал ни одного проекта"
         ></md-empty-state>
       </div>
       <div v-else>
         <md-card v-for="project in projects" :key="project.id">
-          <md-card-header>
-            <router-link to="/sprints">
-              <div @click="openProject(project)" class="md-title">{{project.name}}</div>
-            </router-link>
-          </md-card-header>
-          <md-card-actions md-alignment="space-between">
-            <div @click="editProject(project)">
-              <md-button>
-                <span>Редактировать</span>
-              </md-button>
-            </div>
-            <div @click="deleteProject(project.id)">
-              <md-button>Удалить</md-button>
-            </div>
-          </md-card-actions>
+          <md-card-media-cover md-solid>
+            <md-card-media>
+              <img src="@/assets/project_background/project_background_3.jpg" style="height: 225px">
+            </md-card-media>
+
+            <md-card-area>
+              <md-card-header>
+                <router-link to="/sprints">
+                  <div @click="openProject(project)" class="md-title project-name">{{project.name}}</div>
+                </router-link>
+              </md-card-header>
+
+              <md-card-actions>
+                <md-button class="md-icon-button" @click="editProject(project)">
+                  <md-icon>edit</md-icon>
+                </md-button>
+
+                <md-button class="md-icon-button" @click="deleteProject(project.id)">
+                  <md-icon>delete</md-icon>
+                </md-button>
+              </md-card-actions>
+            </md-card-area>
+          </md-card-media-cover>
         </md-card>
       </div>
       <div class="action-block">
@@ -81,14 +89,14 @@ export default {
     createProject() {
       store.commit("setCreating", true);
       store.commit("setUpdatingType", "project");
-      store.commit("toggleRightSideMenu");
+      store.dispatch("toggleRightSideMenu");
     },
 
     editProject(project) {
       store.commit("setCreating", false);
       store.commit("updateItem", project);
       store.commit("setUpdatingType", "project");
-      store.commit("toggleRightSideMenu");
+      store.dispatch("toggleRightSideMenu");
     },
 
     async deleteProject(id) {
@@ -121,5 +129,14 @@ export default {
 .btn-action:hover {
   color: #fafafa !important;
   background-color: #3a9ad9 !important;
+}
+
+.project-name {
+  color: white;
+  cursor: pointer;
+}
+
+.project-name:hover {
+  color: #e2e2e2;
 }
 </style>

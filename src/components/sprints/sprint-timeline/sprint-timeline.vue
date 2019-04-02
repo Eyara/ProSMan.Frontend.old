@@ -48,13 +48,13 @@ export default {
 
   filters: {
     year(date) {
-      return moment(date).format('YYYY');
+      return moment(date).local().format('YYYY');
     },
     month(date) {
-      return moment(date).format('MMM');
+      return moment(date).local().format('MMM');
     },
     day(date) {
-      return moment(date).format('D');
+      return moment(date).local().format('D');
     }
   },
 
