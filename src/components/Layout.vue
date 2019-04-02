@@ -4,7 +4,7 @@
       <md-button
         v-if="$store.state.menuButtonType == 'menu'"
         class="md-icon-button"
-        @click="showNavigation = true"
+        @click="$store.commit('toggleLeftSideMenu')"
       >
         <md-icon class="main-color">menu</md-icon>
       </md-button>
@@ -18,7 +18,7 @@
       <h3 class="md-title main-color">{{$store.state.pageLabel}}</h3>
     </md-toolbar>
 
-    <md-drawer :md-active.sync="showNavigation">
+    <md-drawer :md-active.sync="$store.state.isLeftSideMenuOpen">
       <md-list>
         <md-list-item class="user-panel">
           <md-icon>person</md-icon>
@@ -46,29 +46,36 @@
 
     <md-drawer
       class="md-right drawer-sidenav"
-      v-bind:class="{ 'hide-right': !$store.state.rightSideMenuOpen }"
-      :md-active.sync="$store.state.rightSideMenuOpen"
+      v-bind:class="{ 'hide-right': !$store.state.isRightSideMenuOpen }"
+      :md-active.sync="$store.state.isRightSideMenuOpen"
+      v-touch:swipe.right="hideRightSideNav"
     >
       <add-task-modal
-        v-if="$store.state.rightSideMenuOpen && $store.state.updatingType == 'task'"
+        v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType == 'task'"
         v-bind:taskModel="$store.state.updatingItem"
         v-bind:isCreating="$store.state.isCreating"
         v-on:close-dialog="closeSideNav"
       ></add-task-modal>
+      <add-non-sprint-task-modal
+        v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType == 'nonSprintTask'"
+        v-bind:taskModel="$store.state.updatingItem"
+        v-bind:isCreating="$store.state.isCreating"
+        v-on:close-dialog="closeSideNav"
+      ></add-non-sprint-task-modal>
       <add-category-modal
-        v-else-if="$store.state.rightSideMenuOpen && $store.state.updatingType == 'category'"
+        v-else-if="$store.state.isRightSideMenuOpen && $store.state.updatingType == 'category'"
         v-bind:categoryModel="$store.state.updatingItem"
         v-bind:isCreating="$store.state.isCreating"
         v-on:close-dialog="closeSideNav"
       ></add-category-modal>
       <add-sprint-modal
-        v-else-if="$store.state.rightSideMenuOpen && $store.state.updatingType == 'sprint'"
+        v-else-if="$store.state.isRightSideMenuOpen && $store.state.updatingType == 'sprint'"
         v-bind:sprintModel="$store.state.updatingItem"
         v-bind:isCreating="$store.state.isCreating"
         v-on:close-dialog="closeSideNav"
       ></add-sprint-modal>
       <add-project-modal
-        v-else-if="$store.state.rightSideMenuOpen && $store.state.updatingType == 'project'"
+        v-else-if="$store.state.isRightSideMenuOpen && $store.state.updatingType == 'project'"
         v-bind:projectModel="$store.state.updatingItem"
         v-bind:isCreating="$store.state.isCreating"
         v-on:close-dialog="closeSideNav"
@@ -81,23 +88,24 @@
 import store from "../store.js";
 import router from "../router.js"
 
+
+import nonSprintTaskService from "../services/nonSprintTask.service.js";
 import projectService from "../services/project.service.js";
 import sprintService from "../services/sprint.service.js";
 import taskService from "../services/task.service.js";
 import categoryService from "../services/category.service.js";
 
 import AddTaskModal from "./tasks/add-task-modal/add-task-modal.vue";
+import AddNonSprintTaskModal from "./sprints/add-non-sprint-task-modal/add-non-sprint-task-modal.vue";
 import AddCategoryModal from "./tasks/add-category-modal/add-category-modal.vue";
 import AddSprintModal from "./sprints/add-sprint-modal/add-sprint-modal.vue";
 import AddProjectModal from "./home/add-project-modal/add-project-modal.vue";
 
 export default {
   name: "Layout",
-  data: () => ({
-    showNavigation: false
-  }),
   components: {
     AddTaskModal,
+    AddNonSprintTaskModal,
     AddCategoryModal,
     AddSprintModal,
     AddProjectModal
@@ -140,8 +148,16 @@ export default {
             ? await this.createProject(model)
             : await this.updateProject(model);
           break;
+        case "nonSprintTask":
+          store.state.isCreating
+            ? await this.createNonSprintTask(model)
+            : await this.updateNonSprintTask(model);
       }
       store.commit("setHasBeenUpdated", true);
+    },
+
+    hideRightSideNav() {
+      store.commit('hideRightSideMenu');
     },
 
     async createTask(model) {
@@ -194,6 +210,14 @@ export default {
         });
     },
 
+    async createNonSprintTask(model) {
+      return await nonSprintTaskService.create(model);
+    },
+
+    async updateNonSprintTask(model) {
+      return await nonSprintTaskService.update(model);
+    },
+
     logout() {
       localStorage.clear();
       store.commit("setAuthenticated", false);
@@ -225,7 +249,7 @@ export default {
 }
 
 .hide-right {
-  width: 0;
+  width: 0 !important;
 }
 
 .md-list-item {

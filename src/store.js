@@ -9,7 +9,8 @@ export default new Vuex.Store({
     selectedSprint: Object(null),
     selectedCategoryId: 0,
     pageLabel: "",
-    rightSideMenuOpen: false,
+    isLeftSideMenuOpen: false,
+    isRightSideMenuOpen: false,
     updatingItem: Object(null),
     isCreating: true,
     updatingType: "project",
@@ -35,7 +36,15 @@ export default new Vuex.Store({
     },
 
     toggleRightSideMenu(state) {
-      state.rightSideMenuOpen = !state.rightSideMenuOpen;
+      state.isRightSideMenuOpen = !state.isRightSideMenuOpen;
+    },
+
+    hideRightSideMenu(state) {
+      state.isRightSideMenuOpen = false;
+    },
+
+    toggleLeftSideMenu(state) {
+      state.isLeftSideMenuOpen = !state.isLeftSideMenuOpen;
     },
 
     updateItem(state, value) {
@@ -63,5 +72,9 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    toggleRightSideMenu(context) {
+      context.commit('toggleRightSideMenu');
+      window.scrollTo(0, 0);
+    }
   }
 })
