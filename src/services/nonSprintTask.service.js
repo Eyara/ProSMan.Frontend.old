@@ -7,8 +7,16 @@ export default {
         return axios.post("api/NonSprintTask/", model);
     },
 
-    getAll() {
-        return axios.get("api/NonSprintTask");
+    createBacklog(model) {
+        return axios.post("api/NonSprintTask/Backlog", model);
+    },
+
+    getAll(projectId) {
+        return axios.get("api/NonSprintTask?projectId=" + projectId);
+    },
+
+    getAllBacklog(projectId) {
+        return axios.get("api/NonSprintTask/getBacklog?projectId=" + projectId);
     },
 
     toggleFinishTask(id) {

@@ -15,6 +15,9 @@
                   <p>{{sprint.name}}</p>
                 </div>
                 <div class="timeline__actions">
+                  <div @click="emitFinishSprint(sprint.id)">
+                    <md-icon>done</md-icon>
+                  </div>
                   <div @click="emitEditSprint(sprint)">
                     <md-icon>create</md-icon>
                   </div>
@@ -69,6 +72,10 @@ export default {
 
     emitDeleteSprint(id) {
       this.$emit("delete-sprint", id);
+    },
+
+    emitFinishSprint(id) {
+      this.$emit("finish-sprint", id);
     }
   }
 };

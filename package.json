@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "proxy": {
-    "/api": "http://localhost:54973"
+    "/api": "http://localhost:54972"
   },
   "dependencies": {
     "axios": "^0.18.0",

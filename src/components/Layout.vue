@@ -57,7 +57,8 @@
         v-on:close-dialog="closeSideNav"
       ></add-task-modal>
       <add-non-sprint-task-modal
-        v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType == 'nonSprintTask'"
+        v-if="$store.state.isRightSideMenuOpen && 
+          ($store.state.updatingType == 'nonSprintTask' || $store.state.updatingType == 'backlogTask')"
         v-bind:taskModel="$store.state.updatingItem"
         v-bind:isCreating="$store.state.isCreating"
         v-on:close-dialog="closeSideNav"
@@ -152,6 +153,12 @@ export default {
           store.state.isCreating
             ? await this.createNonSprintTask(model)
             : await this.updateNonSprintTask(model);
+          break;
+        case "backlogTask":
+          store.state.isCreating
+            ? await this.createBacklogTask(model)
+            : await this.updateNonSprintTask(model);
+          break;
       }
       store.commit("setHasBeenUpdated", true);
     },
@@ -216,6 +223,10 @@ export default {
 
     async updateNonSprintTask(model) {
       return await nonSprintTaskService.update(model);
+    },
+
+    async createBacklogTask(model) {
+      return await nonSprintTaskService.createBacklog(model);
     },
 
     logout() {
