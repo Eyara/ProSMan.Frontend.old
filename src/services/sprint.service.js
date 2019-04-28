@@ -22,4 +22,8 @@ export default {
     updateSprint(model) {
         return axios.put("api/Sprint", model);
     },
+
+    finish(id) {
+        return axios.put("api/Sprint/Finish?id=" + id);
+    },
 }

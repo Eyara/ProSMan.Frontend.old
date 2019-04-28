@@ -14,6 +14,7 @@
             <sprint-timeline
               v-bind:sprints="sprints"
               v-on:tasks-open="tasksOpen"
+              v-on:finish-sprint="finishSprint"
               v-on:edit-sprint="editSprint"
               v-on:delete-sprint="deleteSprint"
             ></sprint-timeline>
@@ -77,11 +78,58 @@
         </div>
       </md-tab>
       <md-tab id="backlog" md-label="Бэклог">
-        <md-empty-state
-          md-icon="build"
-          md-label="В разработке"
-          md-description="Бэклога пока нет. :("
-        ></md-empty-state>
+        <div v-if="backlogTasks == null || backlogTasks.length == 0">
+          <md-empty-state
+            md-icon="list"
+            md-label="Создай первую задачу в бэклог"
+            md-description="У тебя нет задач в бэклоге. Добавь их!"
+          ></md-empty-state>
+        </div>
+        <div v-else>
+          <div class="tasks-content">
+            <div class="tasks-block">
+              <div
+                class="task"
+                v-for="nsTask in backlogTasks"
+                v-bind:key="nsTask.id"
+                v-bind:class="{ 'task-finished': nsTask.isFinished}"
+              >
+                <div class="btn-circle" @click="toggleFinishTask(nsTask.id, true)"></div>
+                <div class="task-item">
+                  <span class="task-name">{{nsTask.name}}</span>
+                  <div class="task-info">
+                    <div class="task-info-header">
+                      <md-icon>access_time</md-icon>
+                      <span class="task-sub-info">{{nsTask.timeEstimate}}ч</span>
+                    </div>
+                    <div class="task-info-header">
+                      <md-icon style="margin-right: -5px;">priority_high</md-icon>
+                      <span class="task-sub-info">{{nsTask.priority | priority}}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="action-buttons">
+                  <!-- <div @click="toggleTodayTask(nsTask.id, true)"> -->
+                  <div>
+                    <md-icon @click="moveToSprint(nsTask.id)">arrow_forward</md-icon>
+                  </div>
+                  <div>
+                    <md-icon v-if="todayTaskDate(nsTask.date)">star_border</md-icon>
+                    <md-icon v-else>star</md-icon>
+                  </div>
+                  <div @click="deleteTask(nsTask.id, true)">
+                    <md-icon>delete</md-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="action-block">
+          <div @click="createBacklogTask()">
+            <md-button class="btn-action-add">Создать новую задачу</md-button>
+          </div>
+        </div>
       </md-tab>
     </md-tabs>
   </div>
@@ -103,7 +151,7 @@ export default {
   data: () => ({
     sprints: null,
     nonSprintTasks: null,
-    backlog: null
+    backlogTasks: null
   }),
 
   created() {
@@ -112,6 +160,7 @@ export default {
 
     if (this.selectedProjectId) this.getSprints();
     this.getNonSprintTasks();
+    this.getBacklogTasks();
   },
 
   computed: {
@@ -128,6 +177,7 @@ export default {
     hasBeenUpdated(newValue) {
       if (newValue) {
         this.getNonSprintTasks();
+        this.getBacklogTasks();
         this.getSprints();
         store.commit("setHasBeenUpdated", false);
       }
@@ -152,8 +202,14 @@ export default {
     },
 
     getNonSprintTasks() {
-      nonSprintTaskService.getAll().then(response => {
+      nonSprintTaskService.getAll(store.state.selectedProject.id).then(response => {
         this.nonSprintTasks = response.data.data;
+      });
+    },
+
+    getBacklogTasks() {
+      nonSprintTaskService.getAllBacklog(store.state.selectedProject.id).then(response => {
+        this.backlogTasks = response.data.data;
       });
     },
 
@@ -174,10 +230,22 @@ export default {
       store.dispatch("toggleRightSideMenu");
     },
 
+    createBacklogTask() {
+      store.commit("setCreating", true);
+      store.commit("setUpdatingType", "backlogTask");
+      store.dispatch("toggleRightSideMenu");
+    },
+
     editSprint(sprint) {
       store.commit("setCreating", false);
       store.commit("updateItem", sprint);
       store.commit("setUpdatingType", "sprint");
+      store.dispatch("toggleRightSideMenu");
+    },
+
+    moveToSprint(id) {
+      store.commit("updateItem", id);
+      store.commit("setUpdatingType", "moveToSprint");
       store.dispatch("toggleRightSideMenu");
     },
 
@@ -192,11 +260,18 @@ export default {
       this.getNonSprintTasks();
     },
 
+    async finishSprint(id) {
+      await sprintService.finish(id);  
+      this.getSprints();
+      this.getBacklogTasks();
+    },
+
     async deleteTask(id, isNonSprintTask) {
       if (isNonSprintTask) {
         await nonSprintTaskService.delete(id);
       }
       this.getNonSprintTasks();
+      this.getBacklogTasks();
     },
 
     async deleteSprint(id) {
