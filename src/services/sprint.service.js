@@ -15,6 +15,10 @@ export default {
         return axios.get("api/Sprint/GetById?id=" + sprintId);
     },
 
+    getUnfinished(projectId) {
+        return axios.get("/api/Sprint/GetUnfinished?id=" + projectId);
+    },
+
     deleteSprint(id) {
         return axios.delete("api/Sprint?id=" + id);
     },

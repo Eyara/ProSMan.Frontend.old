@@ -3,11 +3,19 @@
     <md-content v-if="model !== null" class="modal-block">
       <h2>Перенос задачи в спринт</h2>
       <md-field>
-        <label>Приоритет</label>
-        <md-select v-model="model.priority">
-          <md-option value="1">Низкий</md-option>
-          <md-option value="2">Средний</md-option>
-          <md-option value="3">Высокий</md-option>
+        <label>Спринт</label>
+        <md-select v-model="selectedSprintId">
+          <md-option  v-for="sprint in sprints" :key="sprint.id" :value="sprint.id">
+            {{sprint.name}}
+          </md-option>
+        </md-select>
+      </md-field>
+      <md-field>
+        <label>Категории</label>
+        <md-select v-model="selectedCategoryId">
+          <md-option  v-for="category in categories" :key="category.id" :value="category.id">
+            {{category.name}}
+          </md-option>
         </md-select>
       </md-field>
       <div class="button-block">
@@ -22,27 +30,30 @@
 
 <script>
 import store from "../../../store.js";
+import sprintService from "../../../services/sprint.service.js"
+import categoryService from "../../../services/category.service.js"
 export default {
   name: "move-to-sprint-modal",
 
   data() {
     return {
-      initial_model: {
+      selectedSprintId: String,
+      selectedCategoryId: String,
+      sprints: [],
+      categories: [],
+      model: {
         id: "00000000-0000-0000-0000-000000000000",
-        projectId: store.state.selectedProject.id,
-        categoryId: store.state.selectedProject.id,
+        sprintId: "00000000-0000-0000-0000-000000000000",
+        categoryId: "00000000-0000-0000-0000-000000000000",
       },
-      model: Object,
       isCancel: Boolean
     };
   },
 
   created() {
-    if (this.isCreating) {
-      this.model = this.initial_model;
-    } else {
-      this.model = this.taskModel;
-    }
+    this.model.id = this.taskModel.id;
+    this.getUnfinishedSprints();
+    this.getCategories();
   },
 
   computed: {
@@ -58,7 +69,6 @@ export default {
   },
 
   props: {
-    isCreating: Boolean,
     showDialog: Boolean,
     taskModel: Object
   },
@@ -66,7 +76,6 @@ export default {
   methods: {
     close() {
       this.$emit("close-dialog", this.model, this.isCancel);
-      this.model = this.initial_model;
     },
     cancel() {
       this.isCancel = true;
@@ -74,9 +83,21 @@ export default {
       this.close();
     },
     create() {
+      this.model.sprintId = this.selectedSprintId;
+      this.model.categoryId = this.selectedCategoryId;
       this.isCancel = false;
       this.close();
     },
+    getUnfinishedSprints() {
+      sprintService.getUnfinished(store.state.selectedProject.id).then(response => {
+        this.sprints = response.data.data;
+      });
+    },
+    getCategories() {
+        categoryService.getByProjectId(store.state.selectedProject.id).then(response => {
+        this.categories = response.data.data;
+      });
+    }
   }
 };
 </script>

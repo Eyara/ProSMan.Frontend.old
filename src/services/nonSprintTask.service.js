@@ -19,6 +19,10 @@ export default {
         return axios.get("api/NonSprintTask/getBacklog?projectId=" + projectId);
     },
 
+    moveToSprint(model) {
+        return axios.put("/api/NonSprintTask/MoveToSprint", model);
+    },
+
     toggleFinishTask(id) {
         return axios.post("api/NonSprintTask/ToggleFinishTask?id=" + id);
     },

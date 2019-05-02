@@ -5,7 +5,8 @@
         <div class="progress-main-header">
           <div>{{$store.state.selectedSprint.name}}</div>
           <div>
-            <div @click="createTask()">
+            <div v-if="!$store.state.selectedSprint.isFinished"
+              @click="createTask()">
               <md-icon class="btn-action">add</md-icon>
             </div>
           </div>

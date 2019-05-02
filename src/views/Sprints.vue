@@ -26,7 +26,7 @@
           </div>
         </div>
       </md-tab>
-      <md-tab id="non-sprint-tasks" md-label="Задания вне спринтов">
+      <md-tab id="non-sprint-tasks" md-label="Задания">
         <div v-if="nonSprintTasks == null || nonSprintTasks.length == 0">
           <md-empty-state
             md-icon="list"
@@ -110,8 +110,8 @@
                 </div>
                 <div class="action-buttons">
                   <!-- <div @click="toggleTodayTask(nsTask.id, true)"> -->
-                  <div>
-                    <md-icon @click="moveToSprint(nsTask.id)">arrow_forward</md-icon>
+                  <div @click="moveToSprint(nsTask.id)">
+                    <md-icon>arrow_forward</md-icon>
                   </div>
                   <div>
                     <md-icon v-if="todayTaskDate(nsTask.date)">star_border</md-icon>
@@ -244,7 +244,7 @@ export default {
     },
 
     moveToSprint(id) {
-      store.commit("updateItem", id);
+      store.commit("updateItem", {id: id});
       store.commit("setUpdatingType", "moveToSprint");
       store.dispatch("toggleRightSideMenu");
     },
