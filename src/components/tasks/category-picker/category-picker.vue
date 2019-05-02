@@ -33,6 +33,12 @@
   }
 }
 
+@media (max-width: 320px) {
+  .category-picker .md-chip {
+    font-size: 12px;
+  }
+}
+
 .category-chip-selected {
   color: white !important;
   background-color: #3a9ad9 !important;

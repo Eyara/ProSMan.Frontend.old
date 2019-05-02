@@ -81,14 +81,18 @@
         v-bind:isCreating="$store.state.isCreating"
         v-on:close-dialog="closeSideNav"
       ></add-project-modal>
+      <move-to-sprint-modal
+        v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType == 'moveToSprint'"
+        v-bind:taskModel="$store.state.updatingItem"
+        v-on:close-dialog="closeSideNav"
+      ></move-to-sprint-modal>
     </md-drawer>
   </div>
 </template>
 
 <script>
 import store from "../store.js";
-import router from "../router.js"
-
+import router from "../router.js";
 
 import nonSprintTaskService from "../services/nonSprintTask.service.js";
 import projectService from "../services/project.service.js";
@@ -101,6 +105,7 @@ import AddNonSprintTaskModal from "./sprints/add-non-sprint-task-modal/add-non-s
 import AddCategoryModal from "./tasks/add-category-modal/add-category-modal.vue";
 import AddSprintModal from "./sprints/add-sprint-modal/add-sprint-modal.vue";
 import AddProjectModal from "./home/add-project-modal/add-project-modal.vue";
+import MoveToSprintModal from "./sprints/move-to-sprint-modal/move-to-sprint-modal.vue";
 
 export default {
   name: "Layout",
@@ -109,7 +114,8 @@ export default {
     AddNonSprintTaskModal,
     AddCategoryModal,
     AddSprintModal,
-    AddProjectModal
+    AddProjectModal,
+    MoveToSprintModal
   },
   async created() {
     this.selectProject();
@@ -159,12 +165,15 @@ export default {
             ? await this.createBacklogTask(model)
             : await this.updateNonSprintTask(model);
           break;
+        case "moveToSprint":
+          await this.moveToSprint(model);
+          break;
       }
       store.commit("setHasBeenUpdated", true);
     },
 
     hideRightSideNav() {
-      store.commit('hideRightSideMenu');
+      store.commit("hideRightSideMenu");
     },
 
     async createTask(model) {
@@ -229,6 +238,10 @@ export default {
       return await nonSprintTaskService.createBacklog(model);
     },
 
+    async moveToSprint(model) {
+      return await nonSprintTaskService.moveToSprint(model);
+    },
+
     logout() {
       localStorage.clear();
       store.commit("setAuthenticated", false);
@@ -245,6 +258,7 @@ export default {
   top: 0;
   left: 0;
   background-color: #3a9ad9 !important;
+  z-index: 6;
 }
 
 .main-color {
@@ -253,6 +267,8 @@ export default {
 
 .md-drawer {
   width: 275px;
+  z-index: 8;
+  position: fixed;
 }
 
 .drawer-sidenav {
@@ -288,6 +304,11 @@ export default {
 
   .md-icon {
     margin-right: 32px;
+  }
+  
+  .md-list-item-text {
+    font-weight: 600;
+    cursor: pointer;
   }
 }
 

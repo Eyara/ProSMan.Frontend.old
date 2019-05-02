@@ -10,15 +10,22 @@
                 <span class="timeline__day">{{sprint.fromDate | day}}</span>
                 <span class="timeline__month">{{ sprint.fromDate | month}}</span>
               </div>
-              <div class="timeline__post">
-                <div class="timeline__content" @click="tasksOpen(sprint)">
+              <div
+                class="timeline__post"
+                v-bind:class="{ timeline__post__finished: sprint.isFinished}"
+              >
+                <div
+                  class="timeline__content"
+                  v-bind:class="{ timeline__content__finished: sprint.isFinished}"
+                  @click="tasksOpen(sprint)"
+                >
                   <p>{{sprint.name}}</p>
                 </div>
                 <div class="timeline__actions">
                   <div @click="emitFinishSprint(sprint.id)">
                     <md-icon>done</md-icon>
                   </div>
-                  <div @click="emitEditSprint(sprint)">
+                  <div v-if="!sprint.isFinished" @click="emitEditSprint(sprint)">
                     <md-icon>create</md-icon>
                   </div>
                   <div @click="emitDeleteSprint(sprint.id)">
@@ -39,25 +46,31 @@
 </style>
 
 <script>
-import moment from 'moment'
+import moment from "moment";
 export default {
   name: "sprint-timeline",
 
   data: () => ({}),
 
   props: {
-    sprints: Array,
+    sprints: Array
   },
 
   filters: {
     year(date) {
-      return moment(date).local().format('YYYY');
+      return moment(date)
+        .local()
+        .format("YYYY");
     },
     month(date) {
-      return moment(date).local().format('MMM');
+      return moment(date)
+        .local()
+        .format("MMM");
     },
     day(date) {
-      return moment(date).local().format('D');
+      return moment(date)
+        .local()
+        .format("D");
     }
   },
 

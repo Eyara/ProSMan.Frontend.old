@@ -46,6 +46,11 @@
         </md-content>
       </md-tab>
     </md-tabs>
+    <md-snackbar :md-position="'center'" :md-duration="4000" 
+      :md-active.sync="showSnackBar" md-persistent>
+      <span>{{snackbar_message}}</span>
+      <md-button class="md-primary" @click="snackbar_message = null">Закрыть</md-button>
+    </md-snackbar>
   </div>
 </template>
 
@@ -71,8 +76,15 @@ export default {
         password: "",
         grant_type: "password",
         scope: "openid"
-      }
+      },
+      snackbar_message: null,
     };
+  },
+
+  computed: {
+    showSnackBar() {
+      return this.snackbar_message != null;
+    }
   },
 
   created() {
@@ -92,6 +104,8 @@ export default {
         store.commit("setAuthenticated", true);
 
         router.push({ path: "/" });
+      }).catch(response => {
+        this.snackbar_message = response.error_description;
       });
     },
 
@@ -101,9 +115,11 @@ export default {
           username: this.registerModel.username,
           password: this.registerModel.password,
           grant_type: "password",
-          scope: "openid"
+          scope: "openid" 
         };
         await this.login(model);
+      }).catch(response => {
+        this.snackbar_message = response.errorDescription;
       });
     },
   }
@@ -111,7 +127,7 @@ export default {
 </script>
 
 <style lang="scss">
-.login-toolbar {
+.login-toolbar {  
   top: 0;
   left: 0;
   position: fixed;

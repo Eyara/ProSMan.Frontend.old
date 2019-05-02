@@ -91,7 +91,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style>
 .md-dialog {
   max-width: 800px;
 }
@@ -103,5 +103,9 @@ export default {
 .button-block {
   display: flex;
   justify-content: space-between;
+}
+
+.md-datepicker-dialog {
+  background-color: white !important;
 }
 </style>

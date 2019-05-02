@@ -139,4 +139,10 @@ export default {
 .project-name:hover {
   color: #e2e2e2;
 }
+
+@media (max-width: 320px) {
+  .md-card {
+    width: 240px;
+  }
+}
 </style>

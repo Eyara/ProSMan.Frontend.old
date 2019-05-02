@@ -76,6 +76,10 @@ a {
 .md-drawer {
   background-color: var(--md-theme-secondary-color, #fff) !important;
 }
+
+.md-overlay {
+  z-index: 7 !important;
+}
 </style>
 
 <script>
