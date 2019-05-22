@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-content v-if="model !== null" class="modal-block">
+    <md-content v-if="model !== null" class="modal-block" @keyup.enter="create()">
       <h2 v-if="isCreating">Создание категории</h2>
       <h2 v-else>Обновление категории</h2>
       <md-field>
