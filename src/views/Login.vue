@@ -6,7 +6,7 @@
           <div class="title-block">
             <p class="login-title">Добро пожаловать в персональный менеджер проектов!</p>
           </div>
-          <div class="login-form">
+          <div class="login-form" @keyup.enter="login(loginModel)">
             <md-field>
               <label>Логин</label>
               <md-input v-model="loginModel.username"></md-input>

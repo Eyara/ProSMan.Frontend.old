@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-content v-if="model !== null" class="modal-block">
+    <md-content v-if="model !== null" class="modal-block" @keyup.enter="create()">
       <h2 v-if="isCreating">Создание спринта</h2>
       <h2 v-else>Обновление спринта</h2>
       <md-field>

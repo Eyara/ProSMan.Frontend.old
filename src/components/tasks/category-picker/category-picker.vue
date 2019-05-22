@@ -19,7 +19,9 @@
 <style scoped lang="scss">
 .category-picker {
   display: flex;
+  flex-wrap: wrap;
 }
+
 .category-chip {
   user-select: none;
   color: #3a9ad9 !important;
@@ -36,6 +38,10 @@
 @media (max-width: 320px) {
   .category-picker .md-chip {
     font-size: 12px;
+  }
+
+  .category-chip {
+    margin: 5px;
   }
 }
 
