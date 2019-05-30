@@ -19,7 +19,7 @@
     </md-toolbar>
 
     <md-drawer :md-active.sync="$store.state.isLeftSideMenuOpen">
-      <md-list>
+      <md-list @click="$store.commit('toggleLeftSideMenu')">
         <md-list-item class="user-panel">
           <md-icon>person</md-icon>
           <span class="md-list-item-text">{{userFullname}}</span>
