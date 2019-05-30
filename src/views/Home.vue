@@ -9,31 +9,11 @@
         ></md-empty-state>
       </div>
       <div v-else>
-        <md-card v-for="project in projects" :key="project.id">
-          <md-card-media-cover md-solid>
-            <md-card-media>
-              <img src="@/assets/project_background/project_background_3.jpg" style="height: 225px">
-            </md-card-media>
-
-            <md-card-area>
-              <md-card-header>
-                <router-link to="/sprints">
-                  <div @click="openProject(project)" class="md-title project-name">{{project.name}}</div>
-                </router-link>
-              </md-card-header>
-
-              <md-card-actions>
-                <md-button class="md-icon-button" @click="editProject(project)">
-                  <md-icon>edit</md-icon>
-                </md-button>
-
-                <md-button class="md-icon-button" @click="deleteProject(project.id)">
-                  <md-icon>delete</md-icon>
-                </md-button>
-              </md-card-actions>
-            </md-card-area>
-          </md-card-media-cover>
-        </md-card>
+        <scrum-card v-bind:cards="projects"
+          v-on:click="openProject"
+          v-on:edit="editProject"
+          v-on:delete="deleteProject"
+        ></scrum-card>
       </div>
       <div class="action-block">
         <div @click="createProject()">
@@ -46,11 +26,15 @@
 
 <script>
 import store from "../store.js";
+import router from "../router.js"
 import projectService from "../services/project.service.js";
+import ScrumCard from "../shared/scrum-card/ScrumCard.vue";
 
 export default {
   name: "home",
-  components: {},
+  components: {
+    ScrumCard
+  },
 
   data() {
     return {
@@ -105,13 +89,14 @@ export default {
     },
 
     openProject(project) {
+      router.push({path: "/sprints?projectId=" + project.id});
       store.commit("selectProject", project);
     }
   }
 };
 </script>
 
-<style>
+<style lang="scss">
 .md-card {
   width: 320px;
   margin: 4px;

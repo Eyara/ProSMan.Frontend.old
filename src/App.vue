@@ -8,6 +8,10 @@
       <Layout/>
     </div>
 
+    <loading :active.sync="$store.state.isLoading" 
+        :can-cancel="true" 
+        :is-full-page="true"></loading>
+
     <md-content class="content" v-touch:swipe.right="openSideNav">
       <router-view/>
     </md-content>
@@ -16,7 +20,7 @@
 
 <style lang="scss">
 
-@import "~vue-material/dist/theme/engine";
+@import "~vue-material/dist/theme/engine";  
 
 @include md-register-theme("default", (
   primary: #3a9ad9,
@@ -87,12 +91,15 @@ import router from "./router.js";
 import store from "./store.js";
 
 import Layout from "./components/Layout.vue";
-// import "vue-material/dist/theme/default.css";
+
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 export default {
   name: "App",
   components: {
-    Layout
+    Layout,
+    Loading
   },
 
   computed: {
