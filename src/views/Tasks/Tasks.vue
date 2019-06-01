@@ -5,8 +5,7 @@
         <div class="progress-main-header">
           <div>{{$store.state.selectedSprint.name}}</div>
           <div>
-            <div v-if="!$store.state.selectedSprint.isFinished"
-              @click="createTask()">
+            <div v-if="!$store.state.selectedSprint.isFinished" @click="createTask()">
               <md-icon class="btn-action">add</md-icon>
             </div>
           </div>
@@ -101,9 +100,7 @@ export default {
     store.commit("setPageLabel", "Задания");
     store.commit("setMenuButtonType", "back");
 
-    if (store.state.selectedProject.id && store.state.selectedSprint.id) {
-      this.refresh();
-    }
+    this.refresh();
   },
 
   computed: {
@@ -169,13 +166,15 @@ export default {
 
   methods: {
     refresh() {
-      router.replace({
-        name: "tasks",
-        query: {
-          projectId: store.state.selectedProject.id,
-          sprintId: store.state.selectedSprint.id
-        }
-      });
+      if (store.state.selectedProject.id && store.state.selectedSprint.id) {
+        router.replace({
+          name: "tasks",
+          query: {
+            projectId: store.state.selectedProject.id,
+            sprintId: store.state.selectedSprint.id
+          }
+        });
+      }
 
       this.getCategories();
       this.getTasks();
@@ -183,7 +182,7 @@ export default {
 
     getTasks() {
       return taskService
-        .getBySprintId(store.state.selectedSprint.id)
+        .getBySprintId(this.$route.query.sprintId)
         .then(response => {
           this.tasks = response.data.data;
         });
@@ -191,7 +190,7 @@ export default {
 
     getCategories() {
       categoryService
-        .getByProjectId(store.state.selectedProject.id)
+        .getByProjectId(this.$route.query.projectId)
         .then(response => {
           this.categories = response.data.data.map(x => {
             return {

@@ -158,7 +158,7 @@ export default {
     store.commit("setPageLabel", "Спринты");
     store.commit("setMenuButtonType", "back");
 
-    if (this.selectedProjectId) this.getSprints();
+    this.getSprints();
     this.getNonSprintTasks();
     this.getBacklogTasks();
   },
@@ -184,33 +184,37 @@ export default {
     },
 
     selectedProjectId(newValue) {
-      if (newValue) this.getSprints();
+      if (newValue) {
+        this.getSprints();
+        this.getNonSprintTasks();
+        this.getBacklogTasks();
+      }
     }
   },
 
   methods: {
     getSprints() {
-      router.replace({
-        name: "sprints",
-        query: { projectId: store.state.selectedProject.id }
-      });
       sprintService
-        .getByProjectId(store.state.selectedProject.id)
+        .getByProjectId(this.$route.query.projectId)
         .then(response => {
           this.sprints = response.data.data;
         });
     },
 
     getNonSprintTasks() {
-      nonSprintTaskService.getAll(store.state.selectedProject.id).then(response => {
-        this.nonSprintTasks = response.data.data;
-      });
+      nonSprintTaskService
+        .getAll(this.$route.query.projectId)
+        .then(response => {
+          this.nonSprintTasks = response.data.data;
+        });
     },
 
     getBacklogTasks() {
-      nonSprintTaskService.getAllBacklog(store.state.selectedProject.id).then(response => {
-        this.backlogTasks = response.data.data;
-      });
+      nonSprintTaskService
+        .getAllBacklog(this.$route.query.projectId)
+        .then(response => {
+          this.backlogTasks = response.data.data;
+        });
     },
 
     tasksOpen(sprint) {
@@ -244,7 +248,7 @@ export default {
     },
 
     moveToSprint(id) {
-      store.commit("updateItem", {id: id});
+      store.commit("updateItem", { id: id });
       store.commit("setUpdatingType", "moveToSprint");
       store.dispatch("toggleRightSideMenu");
     },
@@ -261,7 +265,7 @@ export default {
     },
 
     async finishSprint(id) {
-      await sprintService.finish(id);  
+      await sprintService.finish(id);
       this.getSprints();
       this.getBacklogTasks();
     },
