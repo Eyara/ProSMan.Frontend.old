@@ -118,8 +118,8 @@ export default {
     MoveToSprintModal
   },
   async created() {
-    this.selectProject();
-    this.selectSprint();
+    await this.selectProject();
+    await this.selectSprint();
   },
 
   computed: {

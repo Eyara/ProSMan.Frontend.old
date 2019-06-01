@@ -120,6 +120,11 @@
     .timeline__box:before {
       top: 90px;
     }
+
+    .timeline__content {
+      margin-left: 15px;
+      overflow: hidden;
+    }
   
     .timeline__date {
       margin-top: 20px;
@@ -194,29 +199,4 @@
     padding-top: 30px;
     padding-bottom: 30px;
     max-width: 800px;
-  }
-  
-  .footer {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-    text-align: center;
-    font-size: 1.4rem;
-  }
-  
-  .footer__link {
-    text-decoration: none;
-    color: inherit;
-  }
-  
-  @media screen and (min-width: 361px) {
-    .footer__container {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
-  
-  @media screen and (max-width: 360px) {
-    .melnik909 {
-      display: none;
-    }
   }
