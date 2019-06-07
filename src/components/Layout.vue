@@ -36,6 +36,12 @@
             <router-link to="/today">Задания на день</router-link>
           </span>
         </md-list-item>
+        <md-list-item>
+          <md-icon>assessment</md-icon>
+          <span class="md-list-item-text">
+            <router-link to="/dashboard">Статистика</router-link>
+          </span>
+        </md-list-item>
       </md-list>
 
       <div class="exit-panel" @click="logout()">

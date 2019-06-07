@@ -5,6 +5,7 @@ import Sprints from './views/Sprints.vue'
 import Tasks from './views/Tasks/Tasks.vue'
 import Login from './views/Login.vue'
 import Today from './views/Today.vue'
+import Dashboard from './views/Dashboard.vue'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/today',
       name: 'today',
       component: Today
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: Dashboard
     }
   ]
 })
