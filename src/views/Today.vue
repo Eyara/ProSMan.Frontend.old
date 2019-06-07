@@ -1,6 +1,6 @@
 <template>
   <div class="tasks-content">
-    <div v-if="tasks">
+    <div v-if="tasks && tasks.length > 0">
       <div class="tasks-block">
         <div
           class="task"
@@ -30,6 +30,13 @@
         </div>
       </div>
     </div>
+    <div v-else>
+        <md-empty-state
+        md-icon="today"
+        md-label="Нет задач"
+        md-description="Задачи на сегодня отсутствуют."
+      ></md-empty-state>
+      </div>
   </div>
 </template>
 
