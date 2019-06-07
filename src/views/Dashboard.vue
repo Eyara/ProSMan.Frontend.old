@@ -30,7 +30,7 @@
     </div>
     <div v-else>
       <md-empty-state
-        md-icon="date_range"
+        md-icon="assessment"
         md-label="Выбери проект"
         md-description="Выбери проект, чтобы увидеть по нему статистику."
       ></md-empty-state>
