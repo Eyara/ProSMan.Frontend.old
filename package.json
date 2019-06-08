@@ -1,20 +1,18 @@
 {
   "name": "prosman.frontend",
-  "version": "0.1.0",
+  "version": "0.9.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
-  "proxy": {
-    "/api": "http://localhost:54972"
-  },
   "dependencies": {
     "axios": "^0.18.0",
     "chart.js": "^2.8.0",
     "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
+    "register-service-worker": "^1.6.2",
     "vue": "^2.5.21",
     "vue-chartjs": "^3.4.2",
     "vue-loading-overlay": "^3.2.0",
@@ -29,6 +27,7 @@
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.2.0",
     "@vue/cli-plugin-eslint": "^3.2.0",
+    "@vue/cli-plugin-pwa": "^3.8.0",
     "@vue/cli-service": "^3.2.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
@@ -63,5 +62,8 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "proxy": {
+    "/api": "http://localhost:54972"
+  }
 }
