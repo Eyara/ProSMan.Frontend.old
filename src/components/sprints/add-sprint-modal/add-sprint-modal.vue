@@ -10,9 +10,6 @@
       <md-datepicker v-model="model.fromDate">
         <label>Дата начала спринта</label>
       </md-datepicker>
-      <md-datepicker v-model="model.toDate">
-        <label>Дата окончания спринта</label>
-      </md-datepicker>
       <div class="button-block">
         <md-button class="md-primary" @click="cancel()">Отмена</md-button>
         <md-button class="md-raised md-primary" @click="create()">
@@ -37,7 +34,6 @@ export default {
         projectId: store.state.selectedProject.id,
         name: "",
         fromDate: new Date(),
-        toDate: new Date(),
         isFinished: false
       },
       model: Object | String,
