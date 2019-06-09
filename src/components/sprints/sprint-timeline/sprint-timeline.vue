@@ -15,14 +15,18 @@
             <p>{{sprint.name}}</p>
           </div>
           <div class="timeline__actions">
-            <div @click="emitFinishSprint(sprint.id)">
-              <md-icon>done</md-icon>
+            <div>
+              <div @click="emitFinishSprint(sprint.id)">
+                <md-icon>done</md-icon>
+              </div>
             </div>
-            <div v-if="!sprint.isFinished" @click="emitEditSprint(sprint)">
-              <md-icon>create</md-icon>
-            </div>
-            <div @click="emitDeleteSprint(sprint.id)">
-              <md-icon>delete</md-icon>
+            <div class="non-del-actions">
+              <div v-if="!sprint.isFinished" @click="emitEditSprint(sprint)">
+                <md-icon>create</md-icon>
+              </div>
+              <div @click="emitDeleteSprint(sprint.id)">
+                <md-icon>delete</md-icon>
+              </div>
             </div>
           </div>
         </div>

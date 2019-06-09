@@ -86,6 +86,10 @@
       margin: 0px;
     }
   }
+
+  .non-del-actions {
+    display: flex;
+  }
   
   @media screen and (min-width: 641px) {
     .timeline:before {
@@ -133,6 +137,11 @@
 
     .timeline__day {
       font-size: 1.5rem;
+    }
+
+    .timeline__actions {
+      justify-content: space-between;
+      padding-left: 25px;
     }
   }
   

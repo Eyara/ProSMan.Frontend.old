@@ -18,5 +18,8 @@ export default function setup() {
     axios.interceptors.response.use(function (response) {
         store.commit("setLoading", false);
         return response;
+    }, function (err) {
+        store.commit("setLoading", false);
+        return Promise.reject(err);
     });
 }
