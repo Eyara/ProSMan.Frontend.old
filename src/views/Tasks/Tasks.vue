@@ -1,72 +1,72 @@
 <template>
-  <div class="tasks-content">
-    <div v-if="tasks">
-      <div v-if="finishedTasksProportion != null" class="progress-block">
-        <div class="progress-main-header">
-          <div>{{$store.state.selectedSprint.name}}</div>
-          <div>
-            <div v-if="!$store.state.selectedSprint.isFinished" @click="createTask()">
-              <md-icon class="btn-action">add</md-icon>
+    <div class="tasks-content">
+        <div v-if="tasks">
+            <div v-if="finishedTasksProportion != null" class="progress-block">
+                <div class="progress-main-header">
+                    <div>{{$store.state.selectedSprint.name}}</div>
+                    <div>
+                        <div v-if="!$store.state.selectedSprint.isFinished" @click="createTask()">
+                            <md-icon class="btn-action">add</md-icon>
+                        </div>
+                    </div>
+                </div>
+                <md-progress-bar
+                        class="progress-task-bar"
+                        md-mode="determinate"
+                        :md-value="finishedTasksProportion"
+                ></md-progress-bar>
+                <div class="progress-header">{{finishedTasksHours}}ч / {{tasksHours}}ч</div>
+                <div class="category-picker">
+                    <category-picker
+                            v-bind:categories="categories"
+                            v-on:select-categories="selectCategories"
+                            v-on:create-category="createCategory"
+                    ></category-picker>
+                </div>
             </div>
-          </div>
+            <div v-if="tasks.length === 0">
+                <md-empty-state
+                        md-icon="list"
+                        md-label="Добавь новую задачу"
+                        md-description="В этом спринте нет заданий. Добавь их!"
+                ></md-empty-state>
+            </div>
+            <div class="tasks-block" v-else>
+                <div
+                        class="task"
+                        v-for="task in selectedTasks"
+                        v-bind:key="task.id"
+                        v-bind:class="{ 'task-finished': task.isFinished}"
+                >
+                    <div @click="toggleFinishTask(task.id)">
+                        <div class="btn-circle"></div>
+                    </div>
+                    <div class="task-item" @click="editTask(task)">
+                        <span class="task-name">{{task.name}}</span>
+                        <div class="task-info">
+                            <div class="task-info-header">
+                                <md-icon>access_time</md-icon>
+                                <span class="task-sub-info">{{task.timeEstimate}}ч</span>
+                            </div>
+                            <div class="task-info-header">
+                                <md-icon style="margin-right: -5px;">priority_high</md-icon>
+                                <span class="task-sub-info">{{task.priority | priority}}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <div @click="toggleTodayTask(task.id)">
+                            <md-icon v-if="todayTaskDate(task.date)">star_border</md-icon>
+                            <md-icon v-else>star</md-icon>
+                        </div>
+                        <div @click="deleteTask(task.id)">
+                            <md-icon>delete</md-icon>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <md-progress-bar
-          class="progress-task-bar"
-          md-mode="determinate"
-          :md-value="finishedTasksProportion"
-        ></md-progress-bar>
-        <div class="progress-header">{{finishedTasksHours}}ч / {{tasksHours}}ч</div>
-        <div class="category-picker">
-          <category-picker
-            v-bind:categories="categories"
-            v-on:select-categories="selectCategories"
-            v-on:create-category="createCategory"
-          ></category-picker>
-        </div>
-      </div>
-      <div v-if="tasks.length === 0">
-        <md-empty-state
-          md-icon="list"
-          md-label="Добавь новую задачу"
-          md-description="В этом спринте нет заданий. Добавь их!"
-        ></md-empty-state>
-      </div>
-      <div class="tasks-block" v-else>
-        <div
-          class="task"
-          v-for="task in selectedTasks"
-          v-bind:key="task.id"
-          v-bind:class="{ 'task-finished': task.isFinished}"
-        >
-          <div @click="toggleFinishTask(task.id)">
-            <div class="btn-circle"></div>
-          </div>
-          <div class="task-item" @click="editTask(task)">
-            <span class="task-name">{{task.name}}</span>
-            <div class="task-info">
-              <div class="task-info-header">
-                <md-icon>access_time</md-icon>
-                <span class="task-sub-info">{{task.timeEstimate}}ч</span>
-              </div>
-              <div class="task-info-header">
-                <md-icon style="margin-right: -5px;">priority_high</md-icon>
-                <span class="task-sub-info">{{task.priority | priority}}</span>
-              </div>
-            </div>
-          </div>
-          <div class="action-buttons">
-            <div @click="toggleTodayTask(task.id)">
-              <md-icon v-if="todayTaskDate(task.date)">star_border</md-icon>
-              <md-icon v-else>star</md-icon>
-            </div>
-            <div @click="deleteTask(task.id)">
-              <md-icon>delete</md-icon>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
 <style lang="scss" scoped>
@@ -74,11 +74,11 @@
 </style>
 
 <script>
-import store from "../../store.js";
-import router from "../../router.js";
+import store from "../../store";
+import router from "../../router";
 import moment from "moment";
-import taskService from "../../services/task.service.js";
-import categoryService from "../../services/category.service.js";
+import taskService from "../../services/task.service";
+import categoryService from "../../services/category.service";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
 
 export default {

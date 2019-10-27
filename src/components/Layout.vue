@@ -97,14 +97,14 @@
 </template>
 
 <script>
-import store from "../store.js";
-import router from "../router.js";
+import store from "../store";
+import router from "../router";
 
-import nonSprintTaskService from "../services/nonSprintTask.service.js";
-import projectService from "../services/project.service.js";
-import sprintService from "../services/sprint.service.js";
-import taskService from "../services/task.service.js";
-import categoryService from "../services/category.service.js";
+import nonSprintTaskService from "../services/nonSprintTask.service";
+import projectService from "../services/project.service";
+import sprintService from "../services/sprint.service";
+import taskService from "../services/task.service";
+import categoryService from "../services/category.service";
 
 import AddTaskModal from "./tasks/add-task-modal/add-task-modal.vue";
 import AddNonSprintTaskModal from "./sprints/add-non-sprint-task-modal/add-non-sprint-task-modal.vue";
@@ -311,7 +311,7 @@ export default {
   .md-icon {
     margin-right: 32px;
   }
-  
+
   .md-list-item-text {
     font-weight: 600;
     cursor: pointer;

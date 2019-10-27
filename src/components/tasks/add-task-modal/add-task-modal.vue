@@ -45,8 +45,8 @@
 </template>
 
 <script>
-import store from "../../../store.js";
-import categoryService from "../../../services/category.service.js";
+import store from "../../../store";
+import categoryService from "../../../services/category.service";
 export default {
   name: "add-task-modal",
 

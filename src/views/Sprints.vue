@@ -136,11 +136,11 @@
 </template>
 
 <script>
-import store from "../store.js";
-import router from "../router.js";
+import store from "../store";
+import router from "../router";
 import moment from "moment";
-import nonSprintTaskService from "../services/nonSprintTask.service.js";
-import sprintService from "../services/sprint.service.js";
+import nonSprintTaskService from "../services/nonSprintTask.service";
+import sprintService from "../services/sprint.service";
 import SprintTimeline from "../components/sprints/sprint-timeline/sprint-timeline.vue";
 
 export default {

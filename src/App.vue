@@ -1,39 +1,41 @@
 <template>
-  <div id="app">
-    <link
-      rel="stylesheet"
-      href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons"
-    >
-    <div v-if="$store.state.isAuthenticated" id="nav">
-      <Layout/>
+    <div id="app">
+        <link
+                rel="stylesheet"
+                href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons"
+        >
+        <div v-if="$store.state.isAuthenticated" id="nav">
+            <Layout/>
+        </div>
+
+        <loading :active.sync="$store.state.isLoading"
+                 :can-cancel="true"
+                 :is-full-page="true"></loading>
+
+        <md-content class="content" v-touch:swipe.right="openSideNav">
+            <router-view/>
+        </md-content>
     </div>
-
-    <loading :active.sync="$store.state.isLoading" 
-        :can-cancel="true" 
-        :is-full-page="true"></loading>
-
-    <md-content class="content" v-touch:swipe.right="openSideNav">
-      <router-view/>
-    </md-content>
-  </div>
 </template>
 
 <style lang="scss">
+@import "~vue-material/dist/theme/engine";
 
-@import "~vue-material/dist/theme/engine";  
-
-@include md-register-theme("default", (
-  primary: #3a9ad9,
-  icon-on-background: #3a9ad9,
-  text-primary-on-primary: white,
-  text-primary-on-background: #484848,
-  secondary-color: #fafafa,
-  disabled-on-background: rgba(0,0,0,.26),
-  accent-on-background: rgba(0,0,0,.12),
-  background: transparent,
-  background-on-background: transparent,
-  theme: light 
-));
+@include md-register-theme(
+  "default",
+  (
+    primary: #3a9ad9,
+    icon-on-background: #3a9ad9,
+    text-primary-on-primary: white,
+    text-primary-on-background: #484848,
+    secondary-color: #fafafa,
+    disabled-on-background: rgba(0, 0, 0, 0.26),
+    accent-on-background: rgba(0, 0, 0, 0.12),
+    background: transparent,
+    background-on-background: transparent,
+    theme: light
+  )
+);
 
 @import "~vue-material/dist/theme/all";
 
@@ -47,11 +49,14 @@
     text-decoration: none;
   }
 }
+
 #nav {
   padding: 30px;
+
   a {
     font-weight: bold;
     color: #2c3e50;
+
     &.router-link-exact-active {
       color: #3a9ad9;
       cursor: pointer;
@@ -73,8 +78,9 @@ a {
   background-color: white !important;
 }
 
-.md-list.md-theme-default .md-list-item-container:not(.md-list-item-default):not([disabled]):hover {
-  background-color: rgba(0,0,0,.12), !important;
+.md-list.md-theme-default
+  .md-list-item-container:not(.md-list-item-default):not([disabled]):hover {
+  background-color: rgba(0, 0, 0, 0.12) !important;
 }
 
 .md-drawer {
@@ -87,13 +93,12 @@ a {
 </style>
 
 <script>
-import router from "./router.js";
-import store from "./store.js";
-
+import router from "./router";
+import store from "./store";
 import Layout from "./components/Layout.vue";
 
-import Loading from 'vue-loading-overlay';
-import 'vue-loading-overlay/dist/vue-loading.css';
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
 
 export default {
   name: "App",
@@ -125,7 +130,7 @@ export default {
 
   methods: {
     openSideNav() {
-      store.commit('toggleLeftSideMenu');
+      store.commit("toggleLeftSideMenu");
     }
   }
 };

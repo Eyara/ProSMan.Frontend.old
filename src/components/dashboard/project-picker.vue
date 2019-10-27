@@ -80,8 +80,12 @@ export default {
 
   computed: {
     items: {
-      get() { return this.projects },
-      set() { return this.projects }
+      get() {
+        return this.projects;
+      },
+      set() {
+        return this.projects;
+      }
     }
   },
 

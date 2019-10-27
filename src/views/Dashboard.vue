@@ -38,9 +38,9 @@
   </div>
 </template>
 <script>
-import store from "../store.js";
+import store from "../store";
 import { VueSvgGauge } from "vue-svg-gauge";
-import dashboardService from "../services/dashboard.service.js";
+import dashboardService from "../services/dashboard.service";
 import Doughnut from "../components/dashboard/Doughnut";
 import LineChart from "../components/dashboard/LineChart";
 import Bar from "../components/dashboard/Bar";
@@ -206,9 +206,9 @@ export default {
     width: 250px;
 
     div > div {
-    width: 250px;
-    height: 250px;
-  }
+      width: 250px;
+      height: 250px;
+    }
   }
 }
 </style>

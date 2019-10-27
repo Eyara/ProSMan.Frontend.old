@@ -55,9 +55,9 @@
 </template>
 
 <script>
-import * as JWT from 'jwt-decode';
-import store from "../store.js";
-import router from "../router.js";
+import * as JWT from "jwt-decode";
+import store from "../store";
+import router from "../router";
 import authService from "../services/auth.service";
 
 export default {
@@ -77,7 +77,7 @@ export default {
         grant_type: "password",
         scope: "openid"
       },
-      snackbar_message: null,
+      snackbar_message: null
     };
   },
 
@@ -95,39 +95,45 @@ export default {
 
   methods: {
     async login(model) {
-      await authService.token(model).then(x => {
-        let jwtToken = JWT(x.data.id_token);
+      await authService
+        .token(model)
+        .then(x => {
+          let jwtToken = JWT(x.data.id_token);
 
-        localStorage.setItem("fullname", jwtToken.fullname);
-        localStorage.setItem("access_token", x.data.access_token);
+          localStorage.setItem("fullname", jwtToken.fullname);
+          localStorage.setItem("access_token", x.data.access_token);
 
-        store.commit("setAuthenticated", true);
+          store.commit("setAuthenticated", true);
 
-        router.push({ path: "/" });
-      }).catch(response => {
-        this.snackbar_message = response.error_description;
-      });
+          router.push({ path: "/" });
+        })
+        .catch(response => {
+          this.snackbar_message = response.error_description;
+        });
     },
 
     async register() {
-      await authService.register(this.registerModel).then(async () => {
-        let model = {
-          username: this.registerModel.username,
-          password: this.registerModel.password,
-          grant_type: "password",
-          scope: "openid" 
-        };
-        await this.login(model);
-      }).catch(response => {
-        this.snackbar_message = response.errorDescription;
-      });
-    },
+      await authService
+        .register(this.registerModel)
+        .then(async () => {
+          let model = {
+            username: this.registerModel.username,
+            password: this.registerModel.password,
+            grant_type: "password",
+            scope: "openid"
+          };
+          await this.login(model);
+        })
+        .catch(response => {
+          this.snackbar_message = response.errorDescription;
+        });
+    }
   }
 };
 </script>
 
 <style lang="scss">
-.login-toolbar {  
+.login-toolbar {
   top: 0;
   left: 0;
   position: fixed;

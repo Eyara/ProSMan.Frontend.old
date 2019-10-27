@@ -29,9 +29,9 @@
 </template>
 
 <script>
-import store from "../../../store.js";
-import sprintService from "../../../services/sprint.service.js"
-import categoryService from "../../../services/category.service.js"
+import store from "../../../store";
+import sprintService from "../../../services/sprint.service";
+import categoryService from "../../../services/category.service";
 export default {
   name: "move-to-sprint-modal",
 
@@ -44,7 +44,7 @@ export default {
       model: {
         id: "00000000-0000-0000-0000-000000000000",
         sprintId: "00000000-0000-0000-0000-000000000000",
-        categoryId: "00000000-0000-0000-0000-000000000000",
+        categoryId: "00000000-0000-0000-0000-000000000000"
       },
       isCancel: Boolean
     };
@@ -89,14 +89,18 @@ export default {
       this.close();
     },
     getUnfinishedSprints() {
-      sprintService.getUnfinished(store.state.selectedProject.id).then(response => {
-        this.sprints = response.data.data;
-      });
+      sprintService
+        .getUnfinished(store.state.selectedProject.id)
+        .then(response => {
+          this.sprints = response.data.data;
+        });
     },
     getCategories() {
-        categoryService.getByProjectId(store.state.selectedProject.id).then(response => {
-        this.categories = response.data.data;
-      });
+      categoryService
+        .getByProjectId(store.state.selectedProject.id)
+        .then(response => {
+          this.categories = response.data.data;
+        });
     }
   }
 };

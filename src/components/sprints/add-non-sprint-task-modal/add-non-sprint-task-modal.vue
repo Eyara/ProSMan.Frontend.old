@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import store from "../../../store.js";
+import store from "../../../store";
 export default {
   name: "add-non-sprint-task-modal",
 
@@ -48,7 +48,7 @@ export default {
         name: "",
         description: null,
         priority: "Low",
-        timeEstimate: 0,
+        timeEstimate: 0
       },
       model: Object,
       isCancel: Boolean
@@ -94,7 +94,7 @@ export default {
     create() {
       this.isCancel = false;
       this.close();
-    },
+    }
   }
 };
 </script>

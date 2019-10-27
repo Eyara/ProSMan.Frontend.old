@@ -1,7 +1,7 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
@@ -17,7 +17,7 @@ export default new Vuex.Store({
     hasBeenUpdated: false,
     menuButtonType: "menu",
     isAuthenticated: false,
-    isLoading: false,
+    isLoading: false
   },
   mutations: {
     selectProject(state, value) {
@@ -29,11 +29,11 @@ export default new Vuex.Store({
     },
 
     selectSprint(state, value) {
-      state.selectedSprint = value; 
+      state.selectedSprint = value;
     },
-    
-    setPageLabel(state, value) {
-      state.pageLabel = value;  
+
+    setPageLabel(state, value: string) {
+      state.pageLabel = value;
     },
 
     toggleRightSideMenu(state) {
@@ -52,7 +52,7 @@ export default new Vuex.Store({
       state.updatingItem = value;
     },
 
-    setCreating(state, value) {
+    setCreating(state, value: boolean) {
       state.isCreating = value;
     },
 
@@ -60,7 +60,7 @@ export default new Vuex.Store({
       state.updatingType = value;
     },
 
-    setHasBeenUpdated(state, value) {
+    setHasBeenUpdated(state, value: boolean) {
       state.hasBeenUpdated = value;
     },
 
@@ -68,18 +68,18 @@ export default new Vuex.Store({
       state.menuButtonType = value;
     },
 
-    setAuthenticated(state, value) {
+    setAuthenticated(state, value: boolean) {
       state.isAuthenticated = value;
     },
 
-    setLoading(state, value) {
+    setLoading(state, value: boolean) {
       state.isLoading = value;
     }
   },
   actions: {
     toggleRightSideMenu(context) {
-      context.commit('toggleRightSideMenu');
+      context.commit("toggleRightSideMenu");
       window.scrollTo(0, 0);
     }
   }
-})
+});

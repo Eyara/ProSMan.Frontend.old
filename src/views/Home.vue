@@ -1,99 +1,92 @@
 <template>
-  <div class="home">
-    <div v-if="projects">
-      <div v-if="projects.length === 0">
-        <md-empty-state
-          md-icon="date_range"
-          md-label="Создай первый проект"
-          md-description="Ты пока не создал ни одного проекта"
-        ></md-empty-state>
-      </div>
-      <div v-else>
-        <scrum-card v-bind:cards="projects"
-          v-on:click="openProject"
-          v-on:edit="editProject"
-          v-on:delete="deleteProject"
-        ></scrum-card>
-      </div>
-      <div class="action-block">
-        <div @click="createProject()">
-          <md-button class="btn-action">Создать новый проект</md-button>
+    <div class="home">
+        <div v-if="projects">
+            <div v-if="projects.length === 0">
+                <md-empty-state
+                        md-icon="date_range"
+                        md-label="Создай первый проект"
+                        md-description="Ты пока не создал ни одного проекта"
+                ></md-empty-state>
+            </div>
+            <div v-else>
+                <scrum-card v-bind:cards="projects"
+                            v-on:click="openProject"
+                            v-on:edit="editProject"
+                            v-on:delete="deleteProject"
+                ></scrum-card>
+            </div>
+            <div class="action-block">
+                <div @click="createProject()">
+                    <md-button class="btn-action">Создать новый проект</md-button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </template>
 
-<script>
-import store from "../store.js";
-import router from "../router.js"
-import projectService from "../services/project.service.js";
+<script lang="ts">
+import store from "../store";
+import router from "../router";
+import projectService from "../services/project.service";
 import ScrumCard from "../shared/scrum-card/ScrumCard.vue";
+import { Component, Vue, Watch } from "vue-property-decorator";
 
-export default {
-  name: "home",
+@Component({
+  name: "Home",
   components: {
     ScrumCard
-  },
-
-  data() {
-    return {
-      projects: null
-    };
-  },
+  }
+})
+export default class extends Vue {
+  projects = null;
 
   created() {
     store.commit("setPageLabel", "Проекты");
     store.commit("setMenuButtonType", "menu");
     this.getProjects();
-  },
+  }
 
-  computed: {
-    hasBeenUpdated() {
-      return store.state.hasBeenUpdated;
-    }
-  },
+  get hasBeenUpdated(): any {
+    return store.state.hasBeenUpdated;
+  }
 
-  watch: {
-    hasBeenUpdated(newValue) {
-      if (newValue) {
-        this.getProjects();
-        store.commit("setHasBeenUpdated", false);
-      }
-    }
-  },
-
-  methods: {
-    async getProjects() {
-      await projectService.getProjects().then(response => {
-        this.projects = response.data.data;
-      });
-    },
-
-    createProject() {
-      store.commit("setCreating", true);
-      store.commit("setUpdatingType", "project");
-      store.dispatch("toggleRightSideMenu");
-    },
-
-    editProject(project) {
-      store.commit("setCreating", false);
-      store.commit("updateItem", project);
-      store.commit("setUpdatingType", "project");
-      store.dispatch("toggleRightSideMenu");
-    },
-
-    async deleteProject(id) {
-      await projectService.deleteProject(id);
+  @Watch(this.hasBeenUpdated)
+  private hasBeenUpdatedWatcher(newValue) {
+    if (newValue) {
       this.getProjects();
-    },
-
-    openProject(project) {
-      router.push({path: "/sprints?projectId=" + project.id});
-      store.commit("selectProject", project);
+      store.commit("setHasBeenUpdated", false);
     }
   }
-};
+
+  async getProjects() {
+    await projectService.getProjects().then(response => {
+      this.projects = response.data.data;
+    });
+  }
+
+  createProject() {
+    store.commit("setCreating", true);
+    store.commit("setUpdatingType", "project");
+    store.dispatch("toggleRightSideMenu");
+  }
+
+  editProject(project) {
+    store.commit("setCreating", false);
+    store.commit("updateItem", project);
+    store.commit("setUpdatingType", "project");
+    store.dispatch("toggleRightSideMenu");
+  }
+
+  async deleteProject(id) {
+    await projectService.deleteProject(id);
+    this.getProjects();
+  }
+
+  openProject(project) {
+    router.push({ path: "/sprints?projectId=" + project.id });
+    store.commit("selectProject", project);
+  }
+}
 </script>
 
 <style lang="scss">

@@ -41,14 +41,14 @@
 </template>
 
 <script>
-import store from "../store.js";
-import router from "../router.js";
-import taskService from "../services/task.service.js";
+import store from "../store";
+import router from "../router";
+import taskService from "../services/task.service";
 
 export default {
   name: "today",
   data: () => ({
-    tasks: null,
+    tasks: null
   }),
 
   created() {
@@ -59,7 +59,7 @@ export default {
   computed: {
     hasBeenUpdated() {
       return store.state.hasBeenUpdated;
-    },
+    }
   },
 
   watch: {
@@ -72,23 +72,21 @@ export default {
         }
         store.commit("setHasBeenUpdated", false);
       }
-    },
+    }
   },
 
   methods: {
     refresh() {
       router.replace({
-        name: "today",
+        name: "today"
       });
       this.getTodayTasks();
     },
 
     getTodayTasks() {
-      return taskService
-        .getTodayTasks()
-        .then(response => {
-          this.tasks = response.data.data;
-        });
+      return taskService.getTodayTasks().then(response => {
+        this.tasks = response.data.data;
+      });
     },
 
     async toggleFinishTask(id) {
@@ -99,7 +97,7 @@ export default {
     async toggleTodayTask(id) {
       await taskService.toggleTodayTask(id);
       this.getTodayTasks();
-    },
+    }
   }
 };
 </script>
