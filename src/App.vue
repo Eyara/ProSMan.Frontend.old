@@ -18,6 +18,50 @@
     </div>
 </template>
 
+<script>
+import router from "./router";
+import store from "./store";
+import Layout from "./components/layout";
+
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
+
+export default {
+  name: "App",
+  components: {
+    Layout,
+    Loading
+  },
+
+  computed: {
+    isRightSideMenuOpen() {
+      return store.state.isRightSideMenuOpen;
+    }
+  },
+
+  watch: {
+    isRightSideMenuOpen(isOpen) {
+      document.documentElement.style.overflow = isOpen ? "hidden" : "auto";
+    }
+  },
+
+  created() {
+    if (localStorage.getItem("access_token") == null) {
+      store.commit("setAuthenticated", false);
+      router.push({ path: "/login" });
+    } else {
+      store.commit("setAuthenticated", true);
+    }
+  },
+
+  methods: {
+    openSideNav() {
+      store.commit("toggleLeftSideMenu");
+    }
+  }
+};
+</script>
+
 <style lang="scss">
 @import "~vue-material/dist/theme/engine";
 
@@ -91,47 +135,3 @@ a {
   z-index: 7 !important;
 }
 </style>
-
-<script>
-import router from "./router";
-import store from "./store";
-import Layout from "./components/Layout.vue";
-
-import Loading from "vue-loading-overlay";
-import "vue-loading-overlay/dist/vue-loading.css";
-
-export default {
-  name: "App",
-  components: {
-    Layout,
-    Loading
-  },
-
-  computed: {
-    isRightSideMenuOpen() {
-      return store.state.isRightSideMenuOpen;
-    }
-  },
-
-  watch: {
-    isRightSideMenuOpen(isOpen) {
-      document.documentElement.style.overflow = isOpen ? "hidden" : "auto";
-    }
-  },
-
-  created() {
-    if (localStorage.getItem("access_token") == null) {
-      store.commit("setAuthenticated", false);
-      router.push({ path: "/login" });
-    } else {
-      store.commit("setAuthenticated", true);
-    }
-  },
-
-  methods: {
-    openSideNav() {
-      store.commit("toggleLeftSideMenu");
-    }
-  }
-};
-</script>

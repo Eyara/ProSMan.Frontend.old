@@ -21,70 +21,57 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import store from "../../../store";
+import { Component, Prop, Vue } from "vue-property-decorator";
 
-export default {
-  name: "add-sprint-modal",
+@Component({
+  name: "add-sprint-modal"
+})
+export default class extends Vue {
+  @Prop() isCreating: Boolean;
+  @Prop() showDialog: Boolean;
+  // TODO add sprint interface
+  @Prop() sprintModel: Object;
 
-  data() {
-    return {
-      initial_model: {
-        id: "00000000-0000-0000-0000-000000000000",
-        projectId: store.state.selectedProject.id,
-        name: "",
-        fromDate: new Date(),
-        isFinished: false
-      },
-      model: Object | String,
-      isCancel: Boolean
-    };
-  },
+  initial_model = {
+    id: "00000000-0000-0000-0000-000000000000",
+    projectId: store.state.selectedProject.id,
+    name: "",
+    fromDate: new Date(),
+    isFinished: false
+  };
+  model: Object | String = null;
+  isCancel: Boolean;
 
   mounted() {
-    if (this.isCreating) {
-      this.model = this.initial_model;
-    } else {
-      this.model = this.sprintModel;
-    }
-  },
-
-  computed: {
-    show: {
-      get() {
-        return this.showDialog;
-      },
-      set() {
-        this.close();
-        return false;
-      }
-    }
-  },
-
-  props: {
-    isCreating: Boolean,
-    showDialog: Boolean,
-    sprintModel: Object
-  },
-
-  methods: {
-    close() {
-      this.$emit("close-dialog", this.model, this.isCancel);
-      this.model = this.initial_model;
-    },
-
-    cancel() {
-      this.isCancel = true;
-      this.model = null;
-      this.close();
-    },
-
-    create() {
-      this.isCancel = false;
-      this.close();
-    }
+    this.model = this.isCreating ? this.initial_model : this.sprintModel;
   }
-};
+
+  get show() {
+    return this.showDialog;
+  }
+
+  set show(value) {
+    this.close();
+  }
+
+  close() {
+    this.$emit("close-dialog", this.model, this.isCancel);
+    this.model = this.initial_model;
+  }
+
+  cancel() {
+    this.isCancel = true;
+    this.model = null;
+    this.close();
+  }
+
+  create() {
+    this.isCancel = false;
+    this.close();
+  }
+}
 </script>
 
 <style>

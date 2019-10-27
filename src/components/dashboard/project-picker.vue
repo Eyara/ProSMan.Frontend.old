@@ -1,17 +1,50 @@
 <template>
-  <div>
-    <div class="category-picker">
-      <md-chip
-        v-for="project in items"
-        :key="project.id"
-        @click="toggle(project)"
-        class="category-chip"
-        v-bind:class="{ 'category-chip-selected': project.selected }"
-        md-clickable
-      >{{project.name}}</md-chip>
+    <div>
+        <div class="category-picker">
+            <md-chip
+                    v-for="project in projects"
+                    :key="project.id"
+                    @click="toggle(project)"
+                    class="category-chip"
+                    v-bind:class="{ 'category-chip-selected': project.selected }"
+                    md-clickable
+            >{{project.name}}
+            </md-chip>
+        </div>
     </div>
-  </div>
 </template>
+
+<script lang="ts">
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
+
+@Component({
+  name: "project-picker"
+})
+export default class extends Vue {
+  @Prop() projects;
+
+  items: any;
+
+  @Watch("projects")
+  projectsWatcher() {
+    this.items = this.projects;
+  }
+
+  toggle(project) {
+    this.items = this.items.map(x => {
+      x.selected = false;
+      return x;
+    });
+    project.selected = !project.selected;
+    this.emitSelect();
+  }
+
+  emitSelect() {
+    let selectedProjects = this.items.filter(x => x.selected)[0];
+    this.$emit("select", selectedProjects);
+  }
+}
+</script>
 
 <style scoped lang="scss">
 .category-picker {
@@ -67,46 +100,3 @@
   background-color: #3a9ad9 !important;
 }
 </style>
-
-<script>
-export default {
-  name: "project-picker",
-
-  // data() {
-  //   return {
-  //     items: this.projects
-  //   };
-  // },
-
-  computed: {
-    items: {
-      get() {
-        return this.projects;
-      },
-      set() {
-        return this.projects;
-      }
-    }
-  },
-
-  props: {
-    projects: Array
-  },
-
-  methods: {
-    toggle(project) {
-      this.items = this.items.map(x => {
-        x.selected = false;
-        return x;
-      });
-      project.selected = !project.selected;
-      this.emitSelect();
-    },
-
-    emitSelect() {
-      let selectedProjects = this.items.filter(x => x.selected)[0];
-      this.$emit("select", selectedProjects);
-    }
-  }
-};
-</script>

@@ -80,171 +80,167 @@ import moment from "moment";
 import taskService from "../../services/task.service";
 import categoryService from "../../services/category.service";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
+import { Component, Vue, Watch } from "vue-property-decorator";
 
-export default {
+@Component({
   name: "tasks",
-  data: () => ({
-    tasks: null,
-    categories: [],
-    selectedCategories: [],
-    taskModel: {},
-    isCreating: true,
-    showDialog: false
-  }),
-
   components: {
     CategoryPicker
-  },
+  }
+})
+export default class extends Vue {
+  tasks = null;
+  categories = [];
+  selectedCategories = [];
+  taskModel = {};
+  isCreating = true;
+  showDialog = false;
 
   created() {
     store.commit("setPageLabel", "Задания");
     store.commit("setMenuButtonType", "back");
 
     this.refresh();
-  },
+  }
 
-  computed: {
-    finishedTasksHours() {
-      return this.tasks
-        .filter(x => x.isFinished)
-        .map(x => x.timeEstimate)
-        .reduce((accumulator, array) => accumulator + array, 0);
-    },
+  get finishedTasksHours() {
+    return this.tasks
+      .filter(x => x.isFinished)
+      .map(x => x.timeEstimate)
+      .reduce((accumulator, array) => accumulator + array, 0);
+  }
 
-    tasksHours() {
-      return this.tasks
-        .map(x => x.timeEstimate)
-        .reduce((accumulator, array) => accumulator + array, 0);
-    },
+  get tasksHours() {
+    return this.tasks
+      .map(x => x.timeEstimate)
+      .reduce((accumulator, array) => accumulator + array, 0);
+  }
 
-    finishedTasksProportion() {
-      return 100 * (this.finishedTasksHours / this.tasksHours);
-    },
+  get finishedTasksProportion() {
+    return 100 * (this.finishedTasksHours / this.tasksHours);
+  }
 
-    selectedTasks() {
-      if (this.selectedCategories.length === 0) return [];
+  get selectedTasks() {
+    if (this.selectedCategories.length === 0) return [];
 
-      return this.tasks.filter(x =>
-        this.selectedCategories.map(s => s.id).includes(x.categoryId)
-      );
-    },
+    return this.tasks.filter(x =>
+      this.selectedCategories.map(s => s.id).includes(x.categoryId)
+    );
+  }
 
-    hasCategories() {
-      return this.categories.length > 0;
-    },
+  get hasCategories() {
+    return this.categories.length > 0;
+  }
 
-    hasBeenUpdated() {
-      return store.state.hasBeenUpdated;
-    },
+  get hasBeenUpdated() {
+    return store.state.hasBeenUpdated;
+  }
 
-    selectedSprintAndProjectIds() {
-      return store.state.selectedSprint.id && store.state.selectedProject.id;
-    }
-  },
+  selectedSprintAndProjectIds() {
+    return store.state.selectedSprint.id && store.state.selectedProject.id;
+  }
 
-  watch: {
-    hasBeenUpdated(newValue) {
-      if (newValue) {
-        switch (store.state.updatingType) {
-          case "task":
-            this.getTasks();
-            break;
-          case "category":
-            this.getCategory();
-            break;
-        }
-        store.commit("setHasBeenUpdated", false);
+  @Watch("hasBeenUpdated", { immediate: true })
+  hasBeenUpdatedWatcher(newValue) {
+    if (newValue) {
+      switch (store.state.updatingType) {
+        case "task":
+          this.getTasks();
+          break;
+        case "category":
+          this.getCategory();
+          break;
       }
-    },
-
-    selectedSprintAndProjectIds(newValue) {
-      if (newValue) {
-        this.refresh();
-      }
-    }
-  },
-
-  methods: {
-    refresh() {
-      if (store.state.selectedProject.id && store.state.selectedSprint.id) {
-        router.replace({
-          name: "tasks",
-          query: {
-            projectId: store.state.selectedProject.id,
-            sprintId: store.state.selectedSprint.id
-          }
-        });
-      }
-
-      this.getCategories();
-      this.getTasks();
-    },
-
-    getTasks() {
-      return taskService
-        .getBySprintId(this.$route.query.sprintId)
-        .then(response => {
-          this.tasks = response.data.data;
-        });
-    },
-
-    getCategories() {
-      categoryService
-        .getByProjectId(this.$route.query.projectId)
-        .then(response => {
-          this.categories = response.data.data.map(x => {
-            return {
-              id: x.id,
-              name: x.name,
-              selected: true
-            };
-          });
-          this.selectCategories(this.categories);
-        });
-    },
-
-    todayTaskDate(date) {
-      return moment(date).format("YYYY-MM-DD") != moment().format("YYYY-MM-DD");
-    },
-
-    createTask() {
-      store.commit("setCreating", true);
-      store.commit("setUpdatingType", "task");
-      store.dispatch("toggleRightSideMenu");
-    },
-
-    createCategory() {
-      store.commit("setCreating", true);
-      store.commit("setUpdatingType", "category");
-      store.dispatch("toggleRightSideMenu");
-    },
-
-    editTask(task) {
-      window.scrollTo(0, 0);
-      store.commit("setCreating", false);
-      store.commit("updateItem", task);
-      store.commit("setUpdatingType", "task");
-      store.dispatch("toggleRightSideMenu");
-    },
-
-    async toggleFinishTask(id) {
-      await taskService.toggleFinishTask(id);
-      this.getTasks();
-    },
-
-    async toggleTodayTask(id) {
-      await taskService.toggleTodayTask(id);
-      this.getTasks();
-    },
-
-    async deleteTask(id) {
-      await taskService.deleteTask(id);
-      this.getTasks();
-    },
-
-    selectCategories(selectedCategories) {
-      this.selectedCategories = selectedCategories;
+      store.commit("setHasBeenUpdated", false);
     }
   }
-};
+
+  @Watch("selectedSprintAndProjectIds", { immediate: true })
+  selectedSprintAndProjectIdsWatcher(newValue) {
+    if (newValue) {
+      this.refresh();
+    }
+  }
+
+  refresh() {
+    if (store.state.selectedProject.id && store.state.selectedSprint.id) {
+      router.replace({
+        name: "tasks",
+        query: {
+          projectId: store.state.selectedProject.id,
+          sprintId: store.state.selectedSprint.id
+        }
+      });
+    }
+
+    this.getCategories();
+    this.getTasks();
+  }
+
+  getTasks() {
+    return taskService
+      .getBySprintId(this.$route.query.sprintId)
+      .then(response => {
+        this.tasks = response.data.data;
+      });
+  }
+
+  getCategories() {
+    categoryService
+      .getByProjectId(this.$route.query.projectId)
+      .then(response => {
+        this.categories = response.data.data.map(x => {
+          return {
+            id: x.id,
+            name: x.name,
+            selected: true
+          };
+        });
+        this.selectCategories(this.categories);
+      });
+  }
+
+  todayTaskDate(date) {
+    return moment(date).format("YYYY-MM-DD") != moment().format("YYYY-MM-DD");
+  }
+
+  createTask() {
+    store.commit("setCreating", true);
+    store.commit("setUpdatingType", "task");
+    store.dispatch("toggleRightSideMenu");
+  }
+
+  createCategory() {
+    store.commit("setCreating", true);
+    store.commit("setUpdatingType", "category");
+    store.dispatch("toggleRightSideMenu");
+  }
+
+  editTask(task) {
+    window.scrollTo(0, 0);
+    store.commit("setCreating", false);
+    store.commit("updateItem", task);
+    store.commit("setUpdatingType", "task");
+    store.dispatch("toggleRightSideMenu");
+  }
+
+  async toggleFinishTask(id) {
+    await taskService.toggleFinishTask(id);
+    this.getTasks();
+  }
+
+  async toggleTodayTask(id) {
+    await taskService.toggleTodayTask(id);
+    this.getTasks();
+  }
+
+  async deleteTask(id) {
+    await taskService.deleteTask(id);
+    this.getTasks();
+  }
+
+  selectCategories(selectedCategories) {
+    this.selectedCategories = selectedCategories;
+  }
+}
 </script>

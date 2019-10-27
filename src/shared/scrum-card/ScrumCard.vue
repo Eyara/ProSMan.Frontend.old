@@ -1,58 +1,53 @@
 <template>
-  <div class="scrum-block">
-    <div class="scrum-card" v-for="card in cards" :key="card.id">
-      <div class="scrum-header">
-        <div>{{card.name}}</div>
-        <div>
-          <md-icon class="scrum-icon">web</md-icon>
+    <div class="scrum-block">
+        <div class="scrum-card" v-for="card in cards" :key="card.id">
+            <div class="scrum-header">
+                <div>{{card.name}}</div>
+                <div>
+                    <md-icon class="scrum-icon">web</md-icon>
+                </div>
+            </div>
+            <div @click="emitClick(card)" class="scrum-main">
+                <md-icon class="scrum-icon scrum-main-icon">web</md-icon>
+            </div>
+            <div class="scrum-actions-panel">
+                <div>
+                    <md-icon class="scrum-icon">web</md-icon>
+                </div>
+                <div class="scrum-actions">
+                    <div @click="emitEdit(card)">
+                        <md-icon class="scrum-icon">edit</md-icon>
+                    </div>
+                    <div @click="emitDelete(card.id)">
+                        <md-icon class="scrum-icon">delete</md-icon>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div @click="emitClick(card)" class="scrum-main">
-        <md-icon class="scrum-icon scrum-main-icon">web</md-icon>
-      </div>
-      <div class="scrum-actions-panel">
-        <div>
-          <md-icon class="scrum-icon">web</md-icon>
-        </div>
-        <div class="scrum-actions">
-          <div @click="emitEdit(card)">
-            <md-icon class="scrum-icon">edit</md-icon>
-          </div>
-          <div @click="emitDelete(card.id)">
-            <md-icon class="scrum-icon">delete</md-icon>
-          </div>
-        </div>
-      </div>
     </div>
-  </div>
 </template>
 
-<script>
-export default {
-  name: "scrum-card",
+<script lang="ts">
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 
-  data() {
-    return {};
-  },
+@Component({
+  name: "scrum-card"
+})
+export default class extends Vue {
+  @Prop() cards;
 
-  props: {
-    cards: Array
-  },
-
-  methods: {
-    emitClick(card) {
-      this.$emit("click", card);
-    },
-
-    emitEdit(card) {
-      this.$emit("edit", card);
-    },
-
-    emitDelete(id) {
-      this.$emit("delete", id);
-    }
+  emitClick(card) {
+    this.$emit("click", card);
   }
-};
+
+  emitEdit(card) {
+    this.$emit("edit", card);
+  }
+
+  emitDelete(id) {
+    this.$emit("delete", id);
+  }
+}
 </script>
 
 <style lang="scss" scoped>

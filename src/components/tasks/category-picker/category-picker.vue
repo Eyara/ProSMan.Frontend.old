@@ -1,20 +1,46 @@
 <template>
-  <div>
-    <div class="category-picker">
-      <md-chip
-        v-for="category in categories"
-        :key="category.id"
-        @click="toggleCategory(category)"
-        class="category-chip"
-        v-bind:class="{ 'category-chip-selected': category.selected }"
-        md-clickable
-      >{{category.name}}</md-chip>
-      <div class="action-block" @click="emitCreateCategory()">
-        <md-icon class="btn-action">add</md-icon>
-      </div>
+    <div>
+        <div class="category-picker">
+            <md-chip
+                    v-for="category in categories"
+                    :key="category.id"
+                    @click="toggleCategory(category)"
+                    class="category-chip"
+                    v-bind:class="{ 'category-chip-selected': category.selected }"
+                    md-clickable
+            >{{category.name}}
+            </md-chip>
+            <div class="action-block" @click="emitCreateCategory()">
+                <md-icon class="btn-action">add</md-icon>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from "vue-property-decorator";
+
+@Component({
+  name: "category-picker"
+})
+export default class extends Vue {
+  @Prop() categories;
+
+  toggleCategory(category) {
+    category.selected = !category.selected;
+    this.emitSelectCategories();
+  }
+
+  emitCreateCategory() {
+    this.$emit("create-category");
+  }
+
+  emitSelectCategories() {
+    let selectedCategories = this.categories.filter(x => x.selected);
+    this.$emit("select-categories", selectedCategories);
+  }
+}
+</script>
 
 <style scoped lang="scss">
 .category-picker {
@@ -70,29 +96,3 @@
   background-color: #3a9ad9 !important;
 }
 </style>
-
-<script>
-export default {
-  name: "category-picker",
-
-  props: {
-    categories: Array
-  },
-
-  methods: {
-    toggleCategory(category) {
-      category.selected = !category.selected;
-      this.emitSelectCategories();
-    },
-
-    emitCreateCategory() {
-      this.$emit("create-category");
-    },
-
-    emitSelectCategories() {
-      let selectedCategories = this.categories.filter(x => x.selected);
-      this.$emit("select-categories", selectedCategories);
-    }
-  }
-};
-</script>

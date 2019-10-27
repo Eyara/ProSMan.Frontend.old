@@ -50,7 +50,7 @@ export default class extends Vue {
     return store.state.hasBeenUpdated;
   }
 
-  @Watch(this.hasBeenUpdated)
+  @Watch("hasBeenUpdated", { immediate: true })
   private hasBeenUpdatedWatcher(newValue) {
     if (newValue) {
       this.getProjects();

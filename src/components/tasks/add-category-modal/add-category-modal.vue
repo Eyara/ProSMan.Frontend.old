@@ -1,83 +1,73 @@
 <template>
-  <div>
-    <md-content v-if="model !== null" class="modal-block" @keyup.enter="create()">
-      <h2 v-if="isCreating">Создание категории</h2>
-      <h2 v-else>Обновление категории</h2>
-      <md-field>
-        <label>Название</label>
-        <md-input v-model="model.name"></md-input>
-      </md-field>
-      <div class="button-block">
-        <md-button class="md-primary" @click="cancel()">Отмена</md-button>
-        <md-button class="md-raised md-primary" @click="create()">
-          <span v-if="isCreating">Создать</span>
-          <span v-else>Обновить</span>
-        </md-button>
-      </div>
-    </md-content>
-  </div>
+    <div>
+        <md-content v-if="model !== null" class="modal-block" @keyup.enter="create()">
+            <h2 v-if="isCreating">Создание категории</h2>
+            <h2 v-else>Обновление категории</h2>
+            <md-field>
+                <label>Название</label>
+                <md-input v-model="model.name"></md-input>
+            </md-field>
+            <div class="button-block">
+                <md-button class="md-primary" @click="cancel()">Отмена</md-button>
+                <md-button class="md-raised md-primary" @click="create()">
+                    <span v-if="isCreating">Создать</span>
+                    <span v-else>Обновить</span>
+                </md-button>
+            </div>
+        </md-content>
+    </div>
 </template>
 
-<script>
+<script lang="ts">
 import store from "../../../store";
-export default {
-  name: "add-category-modal",
+import { Component, Prop, Vue } from "vue-property-decorator";
 
-  data() {
-    return {
-      initial_model: {
-        id: "00000000-0000-0000-0000-000000000000",
-        projectId: store.state.selectedProject.id,
-        name: ""
-      },
-      model: Object,
-      categories: [],
-      isCancel: Boolean
-    };
-  },
+@Component({
+  name: "add-category-modal"
+})
+export default class extends Vue {
+  @Prop() isCreating: Boolean;
+  @Prop() showDialog: Boolean;
+  // TODO add category interface
+  @Prop() categoryModel: Object;
+
+  initial_model = {
+    id: "00000000-0000-0000-0000-000000000000",
+    projectId: store.state.selectedProject.id,
+    name: ""
+  };
+  model: any;
+  categories: [];
+  isCancel: Boolean;
 
   created() {
-    if (this.isCreating) {
-      this.model = this.initial_model;
-    } else {
-      this.model = this.categoryModel;
-    }
-  },
-
-  computed: {
-    show: {
-      get() {
-        return this.showDialog;
-      },
-      set() {
-        this.close();
-        return false;
-      }
-    }
-  },
-
-  props: {
-    isCreating: Boolean,
-    showDialog: Boolean,
-    categoryModel: Object
-  },
-
-  methods: {
-    close() {
-      this.$emit("close-dialog", this.model, this.isCancel);
-      this.model = this.initial_model;
-    },
-    cancel() {
-      this.isCancel = true;
-      this.model = null;
-      this.close();
-    },
-    create() {
-      this.isCancel = false;
-      this.close();
-    }
+    this.model = this.isCreating ? this.initial_model : this.categoryModel;
   }
-};
+
+  get show() {
+    return this.showDialog;
+  }
+
+  set show(value) {
+    this.close();
+  }
+
+  close() {
+    this.$emit("close-dialog", this.model, this.isCancel);
+    this.model = this.initial_model;
+  }
+
+  cancel() {
+    this.isCancel = true;
+    this.model = null;
+    this.close();
+  }
+
+  create() {
+    this.isCancel = false;
+    this.close();
+  }
+}
 </script>
 
 <style scoped lang="scss">
