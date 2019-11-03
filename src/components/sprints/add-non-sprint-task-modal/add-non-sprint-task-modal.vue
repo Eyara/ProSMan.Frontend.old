@@ -37,6 +37,7 @@
 <script lang="ts">
 import store from "../../../store";
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { ITaskModel } from "@/models/task.model";
 
 @Component({
   name: "add-non-sprint-task-modal"
@@ -45,7 +46,7 @@ export default class extends Vue {
   @Prop() isCreating: Boolean;
   @Prop() showDialog: Boolean;
   // TODO add task interface
-  @Prop() taskModel: any;
+  @Prop() taskModel: ITaskModel;
 
   initial_model = {
     id: "00000000-0000-0000-0000-000000000000",

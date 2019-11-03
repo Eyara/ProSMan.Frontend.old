@@ -1,13 +1,17 @@
-import axios from "axios";
+import axios, { AxiosPromise } from "axios";
+import { ICategoryModel } from "@/models/category.model";
+import { IDataResponseModel } from "@/models/data-response.model";
 
 export default {
   name: "categoryService",
 
-  createCategory(model) {
-    return axios.post("api/Category", model);
+  createCategory(model): AxiosPromise<boolean> {
+    return axios.post<boolean>("api/Category", model);
   },
 
-  getByProjectId(id) {
-    return axios.get("api/Category/GetByProjectId?id=" + id);
+  getByProjectId(id): AxiosPromise<IDataResponseModel<ICategoryModel[]>> {
+    return axios.get<IDataResponseModel<ICategoryModel[]>>(
+      "api/Category/GetByProjectId?id=" + id
+    );
   }
 };

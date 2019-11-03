@@ -30,6 +30,8 @@ import router from "../router";
 import projectService from "../services/project.service";
 import ScrumCard from "../shared/scrum-card/ScrumCard.vue";
 import { Component, Vue, Watch } from "vue-property-decorator";
+import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
+import { ILookupViewModel } from "@/models/lookup.model";
 
 @Component({
   name: "Home",
@@ -65,16 +67,15 @@ export default class extends Vue {
   }
 
   createProject() {
-    store.commit("setCreating", true);
-    store.commit("setUpdatingType", "project");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [true, UpdatingTypeEnum.Project]);
   }
 
   editProject(project) {
-    store.commit("setCreating", false);
-    store.commit("updateItem", project);
-    store.commit("setUpdatingType", "project");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [
+      true,
+      UpdatingTypeEnum.Project,
+      project
+    ]);
   }
 
   async deleteProject(id) {
@@ -82,7 +83,7 @@ export default class extends Vue {
     this.getProjects();
   }
 
-  openProject(project) {
+  openProject(project: ILookupViewModel) {
     router.push({ path: "/sprints?projectId=" + project.id });
     store.commit("selectProject", project);
   }

@@ -45,6 +45,7 @@ import store from "../store";
 import router from "../router";
 import taskService from "../services/task.service";
 import { Component, Vue, Watch } from "vue-property-decorator";
+import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
 
 @Component({
   name: "today"
@@ -64,7 +65,7 @@ export default class extends Vue {
   @Watch("hasBeenUpdated", { immediate: true })
   hasBeenUpdatedWatcher(newValue) {
     if (newValue) {
-      if (store.state.updatingType === "task") {
+      if (store.state.updatingType === UpdatingTypeEnum.Task) {
         this.getTodayTasks();
       }
       store.commit("setHasBeenUpdated", false);

@@ -1,33 +1,39 @@
-import axios from "axios";
+import axios, { AxiosPromise } from "axios";
+import { ITaskModel } from "@/models/task.model";
+import { IDataResponseModel } from "@/models/data-response.model";
 
 export default {
   name: "taskService",
 
-  createTask(model) {
-    return axios.post("api/Task/", model);
+  createTask(model): AxiosPromise<boolean> {
+    return axios.post<boolean>("api/Task/", model);
   },
 
-  getBySprintId(id) {
-    return axios.get("api/Task/GetBySprintId?id=" + id);
+  getBySprintId(id): AxiosPromise<IDataResponseModel<ITaskModel[]>> {
+    return axios.get<IDataResponseModel<ITaskModel[]>>(
+      "api/Task/GetBySprintId?id=" + id
+    );
   },
 
-  getTodayTasks() {
-    return axios.get("api/Task/getTodayTasks");
+  getTodayTasks(): AxiosPromise<IDataResponseModel<ITaskModel[]>> {
+    return axios.get<IDataResponseModel<ITaskModel[]>>(
+      "api/Task/getTodayTasks"
+    );
   },
 
-  toggleFinishTask(id) {
-    return axios.post("api/Task/ToggleFinishTask?id=" + id);
+  toggleFinishTask(id): AxiosPromise<boolean> {
+    return axios.post<boolean>("api/Task/ToggleFinishTask?id=" + id);
   },
 
-  toggleTodayTask(id) {
-    return axios.post("api/Task/ToggleTodayTask?id=" + id);
+  toggleTodayTask(id): AxiosPromise<boolean> {
+    return axios.post<boolean>("api/Task/ToggleTodayTask?id=" + id);
   },
 
-  deleteTask(id) {
+  deleteTask(id): AxiosPromise<boolean> {
     return axios.delete("api/Task?id=" + id);
   },
 
-  updateTask(model) {
-    return axios.put("api/Task/", model);
+  updateTask(model): AxiosPromise<boolean> {
+    return axios.put<boolean>("api/Task/", model);
   }
 };

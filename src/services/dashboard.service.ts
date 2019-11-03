@@ -1,9 +1,10 @@
-import axios from "axios";
+import axios, { AxiosPromise } from "axios";
+import { IDashboardModel } from "@/models/dashboard.model";
 
 export default {
   name: "dashboardService",
 
-  get() {
-    return axios.get("api/Dashboard");
+  get(): AxiosPromise<IDashboardModel> {
+    return axios.get<IDashboardModel>("api/Dashboard");
   }
 };

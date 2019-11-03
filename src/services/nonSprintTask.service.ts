@@ -1,38 +1,46 @@
-import axios from "axios";
+import axios, { AxiosPromise } from "axios";
+import { IDataResponseModel } from "@/models/data-response.model";
+import { INonSprintTaskModel } from "@/models/non-sprint-task.model";
 
 export default {
   name: "taskService",
 
-  create(model) {
-    return axios.post("api/NonSprintTask/", model);
+  create(model): AxiosPromise<boolean> {
+    return axios.post<boolean>("api/NonSprintTask/", model);
   },
 
-  createBacklog(model) {
-    return axios.post("api/NonSprintTask/Backlog", model);
+  createBacklog(model): AxiosPromise<boolean> {
+    return axios.post<boolean>("api/NonSprintTask/Backlog", model);
   },
 
-  getAll(projectId) {
-    return axios.get("api/NonSprintTask?projectId=" + projectId);
+  getAll(projectId): AxiosPromise<IDataResponseModel<INonSprintTaskModel[]>> {
+    return axios.get<IDataResponseModel<INonSprintTaskModel[]>>(
+      "api/NonSprintTask?projectId=" + projectId
+    );
   },
 
-  getAllBacklog(projectId) {
-    return axios.get("api/NonSprintTask/getBacklog?projectId=" + projectId);
+  getAllBacklog(
+    projectId
+  ): AxiosPromise<IDataResponseModel<INonSprintTaskModel[]>> {
+    return axios.get<IDataResponseModel<INonSprintTaskModel[]>>(
+      "api/NonSprintTask/getBacklog?projectId=" + projectId
+    );
   },
 
-  moveToSprint(model) {
-    return axios.put("/api/NonSprintTask/MoveToSprint", model);
+  moveToSprint(model): AxiosPromise<boolean> {
+    return axios.put<boolean>("/api/NonSprintTask/MoveToSprint", model);
   },
 
-  toggleFinishTask(id) {
-    return axios.post("api/NonSprintTask/ToggleFinishTask?id=" + id);
+  toggleFinishTask(id): AxiosPromise<boolean> {
+    return axios.post<boolean>("api/NonSprintTask/ToggleFinishTask?id=" + id);
   },
 
   delete(id) {
     return axios.delete("api/NonSprintTask?id=" + id);
   },
 
-  update(model) {
-    return axios.put("api/NonSprintTask/", model);
+  update(model): AxiosPromise<boolean> {
+    return axios.put<boolean>("api/NonSprintTask/", model);
   }
 
   // not implemented

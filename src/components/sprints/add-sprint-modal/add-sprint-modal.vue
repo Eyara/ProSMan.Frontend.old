@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-content v-if="model !== null" class="modal-block" @keyup.enter="create()">
+    <md-content v-if="!!model" class="modal-block" @keyup.enter="create()">
       <h2 v-if="isCreating">Создание спринта</h2>
       <h2 v-else>Обновление спринта</h2>
       <md-field>
@@ -24,6 +24,7 @@
 <script lang="ts">
 import store from "../../../store";
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { ISprintModel } from "@/models/sprint.model";
 
 @Component({
   name: "add-sprint-modal"
@@ -31,8 +32,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class extends Vue {
   @Prop() isCreating: Boolean;
   @Prop() showDialog: Boolean;
-  // TODO add sprint interface
-  @Prop() sprintModel: Object;
+  @Prop() sprintModel: ISprintModel;
 
   initial_model = {
     id: "00000000-0000-0000-0000-000000000000",
@@ -44,7 +44,7 @@ export default class extends Vue {
   model: Object | String = null;
   isCancel: Boolean;
 
-  mounted() {
+  created() {
     this.model = this.isCreating ? this.initial_model : this.sprintModel;
   }
 

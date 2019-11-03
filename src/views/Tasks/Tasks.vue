@@ -81,6 +81,7 @@ import taskService from "../../services/task.service";
 import categoryService from "../../services/category.service";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
 import { Component, Vue, Watch } from "vue-property-decorator";
+import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
 
 @Component({
   name: "tasks",
@@ -143,12 +144,12 @@ export default class extends Vue {
   @Watch("hasBeenUpdated", { immediate: true })
   hasBeenUpdatedWatcher(newValue) {
     if (newValue) {
-      switch (store.state.updatingType) {
-        case "task":
+      switch (+store.state.updatingType) {
+        case UpdatingTypeEnum.Task:
           this.getTasks();
           break;
-        case "category":
-          this.getCategory();
+        case UpdatingTypeEnum.Category:
+          this.getCategories();
           break;
       }
       store.commit("setHasBeenUpdated", false);
@@ -201,27 +202,19 @@ export default class extends Vue {
   }
 
   todayTaskDate(date) {
-    return moment(date).format("YYYY-MM-DD") != moment().format("YYYY-MM-DD");
+    return moment(date).format("YYYY-MM-DD") !== moment().format("YYYY-MM-DD");
   }
 
   createTask() {
-    store.commit("setCreating", true);
-    store.commit("setUpdatingType", "task");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [true, UpdatingTypeEnum.Task]);
   }
 
   createCategory() {
-    store.commit("setCreating", true);
-    store.commit("setUpdatingType", "category");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [true, UpdatingTypeEnum.Category]);
   }
 
   editTask(task) {
-    window.scrollTo(0, 0);
-    store.commit("setCreating", false);
-    store.commit("updateItem", task);
-    store.commit("setUpdatingType", "task");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [false, UpdatingTypeEnum.Task, task]);
   }
 
   async toggleFinishTask(id) {

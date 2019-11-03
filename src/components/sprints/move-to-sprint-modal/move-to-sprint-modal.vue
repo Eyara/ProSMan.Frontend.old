@@ -33,13 +33,14 @@ import store from "../../../store";
 import sprintService from "../../../services/sprint.service";
 import categoryService from "../../../services/category.service";
 import { Component, Vue, Prop } from "vue-property-decorator";
+import { ITaskModel } from "@/models/task.model";
 
 @Component({
   name: "move-to-sprint-modal"
 })
 export default class extends Vue {
   @Prop() showDialog: Boolean;
-  @Prop() taskModel: any;
+  @Prop() taskModel: ITaskModel;
 
   selectedSprintId: string = null;
   selectedCategoryId: string = null;
@@ -53,7 +54,7 @@ export default class extends Vue {
   isCancel: Boolean;
 
   created() {
-    this.model.id = this.taskModel.id;
+    this.model.id = this.taskModel.id.toString();
     this.getUnfinishedSprints();
     this.getCategories();
   }

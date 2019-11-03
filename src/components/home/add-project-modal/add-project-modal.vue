@@ -20,6 +20,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { ILookupViewModel } from "@/models/lookup.model";
 
 @Component({
   name: "add-project-modal"
@@ -27,10 +28,9 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 export default class extends Vue {
   @Prop() isCreating: Boolean;
   @Prop() showDialog: Boolean;
-  // TODO add project interface
-  @Prop() projectModel: Object;
+  @Prop() projectModel: ILookupViewModel;
 
-  initial_model = {
+  initial_model: ILookupViewModel = {
     id: "00000000-0000-0000-0000-000000000000",
     name: ""
   };

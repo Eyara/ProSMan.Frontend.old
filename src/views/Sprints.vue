@@ -1,9 +1,9 @@
 <template>
     <div>
-        <md-tabs md-alignment="centered">
+        <md-tabs md-alignment="centered" v-if="sprints">
             <md-tab id="sprints" md-label="Спринты">
                 <div>
-                    <div v-if="sprints == null || sprints.length == 0">
+                    <div v-if="sprints.length == 0">
                         <md-empty-state
                                 md-icon="date_range"
                                 md-label="Создай первый спринт"
@@ -143,6 +143,8 @@ import nonSprintTaskService from "../services/nonSprintTask.service";
 import sprintService from "../services/sprint.service";
 import SprintTimeline from "../components/sprints/sprint-timeline/sprint-timeline.vue";
 import { Component, Vue, Watch } from "vue-property-decorator";
+import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
+import { ISprintModel } from "@/models/sprint.model";
 
 @Component({
   name: "sprints",
@@ -211,40 +213,33 @@ export default class extends Vue {
       });
   }
 
-  tasksOpen(sprint) {
+  tasksOpen(sprint: ISprintModel) {
     router.push({ path: "/tasks" });
     store.commit("selectSprint", sprint);
   }
 
   createSprint() {
-    store.commit("setCreating", true);
-    store.commit("setUpdatingType", "sprint");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [true, UpdatingTypeEnum.Sprint]);
   }
 
   createNonSprintTask() {
-    store.commit("setCreating", true);
-    store.commit("setUpdatingType", "nonSprintTask");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [true, UpdatingTypeEnum.NonSprintTask]);
   }
 
   createBacklogTask() {
-    store.commit("setCreating", true);
-    store.commit("setUpdatingType", "backlogTask");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [true, UpdatingTypeEnum.BacklogTask]);
   }
 
   editSprint(sprint) {
-    store.commit("setCreating", false);
-    store.commit("updateItem", sprint);
-    store.commit("setUpdatingType", "sprint");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [false, UpdatingTypeEnum.Sprint, sprint]);
   }
 
   moveToSprint(id) {
-    store.commit("updateItem", { id: id });
-    store.commit("setUpdatingType", "moveToSprint");
-    store.dispatch("toggleRightSideMenu");
+    store.dispatch("setUpdatingItem", [
+      false,
+      UpdatingTypeEnum.MoveToSprint,
+      { id: id }
+    ]);
   }
 
   todayTaskDate(date) {

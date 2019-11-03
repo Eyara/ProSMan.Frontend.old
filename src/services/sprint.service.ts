@@ -1,14 +1,18 @@
-import axios from "axios";
+import axios, { AxiosPromise } from "axios";
+import { IDataResponseModel } from "@/models/data-response.model";
+import { ISprintModel } from "@/models/sprint.model";
 
 export default {
   name: "sprintService",
 
-  createSprint(model) {
-    return axios.post("api/Sprint", model);
+  createSprint(model): AxiosPromise<boolean> {
+    return axios.post<boolean>("api/Sprint", model);
   },
 
-  getByProjectId(id) {
-    return axios.get("api/Sprint/GetByProjectId?id=" + id);
+  getByProjectId(id): AxiosPromise<IDataResponseModel<ISprintModel[]>> {
+    return axios.get<IDataResponseModel<ISprintModel[]>>(
+      "api/Sprint/GetByProjectId?id=" + id
+    );
   },
 
   getById(sprintId) {
@@ -23,11 +27,11 @@ export default {
     return axios.delete("api/Sprint?id=" + id);
   },
 
-  updateSprint(model) {
-    return axios.put("api/Sprint", model);
+  updateSprint(model): AxiosPromise<boolean> {
+    return axios.put<boolean>("api/Sprint", model);
   },
 
-  finish(id) {
-    return axios.put("api/Sprint/Finish?id=" + id);
+  finish(id): AxiosPromise<boolean> {
+    return axios.put<boolean>("api/Sprint/Finish?id=" + id);
   }
 };

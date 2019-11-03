@@ -21,6 +21,7 @@
 <script lang="ts">
 import store from "../../../store";
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { ICategoryModel } from "@/models/category.model";
 
 @Component({
   name: "add-category-modal"
@@ -29,7 +30,7 @@ export default class extends Vue {
   @Prop() isCreating: Boolean;
   @Prop() showDialog: Boolean;
   // TODO add category interface
-  @Prop() categoryModel: Object;
+  @Prop() categoryModel: ICategoryModel;
 
   initial_model = {
     id: "00000000-0000-0000-0000-000000000000",

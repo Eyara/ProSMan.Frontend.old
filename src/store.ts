@@ -1,26 +1,29 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
+import { ILookupViewModel } from "@/models/lookup.model";
+import { ISprintModel } from "@/models/sprint.model";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    selectedProject: Object(null),
-    selectedSprint: Object(null),
+    selectedProject: <ILookupViewModel>{},
+    selectedSprint: <ISprintModel>{},
     selectedCategoryId: 0,
     pageLabel: "",
     isLeftSideMenuOpen: false,
     isRightSideMenuOpen: false,
     updatingItem: Object(null),
     isCreating: true,
-    updatingType: "project",
+    updatingType: UpdatingTypeEnum.Task,
     hasBeenUpdated: false,
     menuButtonType: "menu",
     isAuthenticated: false,
     isLoading: false
   },
   mutations: {
-    selectProject(state, value) {
+    selectProject(state, value: ILookupViewModel) {
       state.selectedProject = value;
     },
 
@@ -28,7 +31,7 @@ export default new Vuex.Store({
       state.selectedCategoryId = value;
     },
 
-    selectSprint(state, value) {
+    selectSprint(state, value: ISprintModel) {
       state.selectedSprint = value;
     },
 
@@ -56,7 +59,7 @@ export default new Vuex.Store({
       state.isCreating = value;
     },
 
-    setUpdatingType(state, value) {
+    setUpdatingType(state, value: UpdatingTypeEnum) {
       state.updatingType = value;
     },
 
@@ -80,6 +83,13 @@ export default new Vuex.Store({
     toggleRightSideMenu(context) {
       context.commit("toggleRightSideMenu");
       window.scrollTo(0, 0);
+    },
+
+    setUpdatingItem(context, [isCreating, type, item]) {
+      context.commit("setCreating", isCreating);
+      context.commit("updateItem", item);
+      context.commit("setUpdatingType", type);
+      context.dispatch("toggleRightSideMenu");
     }
   }
 });

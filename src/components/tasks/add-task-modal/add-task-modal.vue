@@ -49,6 +49,7 @@
 import store from "../../../store";
 import categoryService from "../../../services/category.service";
 import { Component, Prop, Vue } from "vue-property-decorator";
+import { ITaskModel } from "@/models/task.model";
 
 @Component({
   name: "add-task-modal"
@@ -57,19 +58,21 @@ export default class extends Vue {
   @Prop() isCreating: Boolean;
   @Prop() showDialog: Boolean;
   // TODO add task interface
-  @Prop() taskModel: any;
+  @Prop() taskModel: ITaskModel;
 
-  initial_model = {
+  initial_model: ITaskModel = {
     id: "00000000-0000-0000-0000-000000000000",
-    projectId: store.state.selectedProject.id,
-    sprintId: store.state.selectedSprint.id,
+    projectId: store.state.selectedProject.id.toString(),
+    sprintId: store.state.selectedSprint.id.toString(),
     categoryId: "",
-    isFinished: 0,
+    isFinished: false,
     name: "",
     description: null,
-    priority: "Low",
+    priority: 0,
     timeEstimate: 0,
-    actualTimeSpent: 0
+    actualSpentTime: 0,
+    date: null,
+    finishedOn: null
   };
   model: any;
   categories = [];
