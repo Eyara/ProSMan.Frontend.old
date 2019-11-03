@@ -1,6 +1,6 @@
 {
-  "name": "prosman.frontend",
-  "short_name": "prosman.frontend",
+  "name": "Prosman",
+  "short_name": "Prosman",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
