@@ -45,7 +45,6 @@ import { ITaskModel } from "@/models/task.model";
 export default class extends Vue {
   @Prop() isCreating: Boolean;
   @Prop() showDialog: Boolean;
-  // TODO add task interface
   @Prop() taskModel: ITaskModel;
 
   initial_model = {

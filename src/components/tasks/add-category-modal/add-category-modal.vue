@@ -29,7 +29,6 @@ import { ICategoryModel } from "@/models/category.model";
 export default class extends Vue {
   @Prop() isCreating: Boolean;
   @Prop() showDialog: Boolean;
-  // TODO add category interface
   @Prop() categoryModel: ICategoryModel;
 
   initial_model = {
