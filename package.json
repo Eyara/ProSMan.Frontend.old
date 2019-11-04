@@ -9,7 +9,7 @@
     "prettier": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.vue\" \"src/**/*.scss\" \"src/**/*.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "chart.js": "^2.8.0",
     "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
