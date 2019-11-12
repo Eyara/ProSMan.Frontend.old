@@ -72,7 +72,7 @@ export default class extends Vue {
 
   editProject(project) {
     store.dispatch("setUpdatingItem", [
-      true,
+      false,
       UpdatingTypeEnum.Project,
       project
     ]);

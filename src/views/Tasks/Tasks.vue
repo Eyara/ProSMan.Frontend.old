@@ -93,15 +93,13 @@ export default class extends Vue {
   tasks = null;
   categories = [];
   selectedCategories = [];
-  taskModel = {};
   isCreating = true;
-  showDialog = false;
 
   created() {
     store.commit("setPageLabel", "Задания");
     store.commit("setMenuButtonType", "back");
 
-    this.refresh();
+    // this.refresh();
   }
 
   get finishedTasksHours() {

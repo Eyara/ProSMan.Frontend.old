@@ -214,7 +214,13 @@ export default class extends Vue {
   }
 
   tasksOpen(sprint: ISprintModel) {
-    router.push({ path: "/tasks" });
+    router.push({
+      path: "/tasks",
+      query: {
+        projectId: this.selectedProjectId.toString(),
+        sprintId: sprint.id.toString()
+      }
+    });
     store.commit("selectSprint", sprint);
   }
 

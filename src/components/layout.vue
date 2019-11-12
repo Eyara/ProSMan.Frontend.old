@@ -130,7 +130,6 @@ import { Component, Vue } from "vue-property-decorator";
 export default class extends Vue {
   async created() {
     await this.selectProject();
-    await this.selectSprint();
   }
 
   get updatingType() {
@@ -223,11 +222,10 @@ export default class extends Vue {
   }
 
   async selectProject() {
-    return await projectService
+    await projectService
       .getById(this.$route.query.projectId.toString())
-      .then(project => {
-        store.commit("selectProject", project.data.data[0]);
-      });
+      .then(project => store.commit("selectProject", project.data.data[0]));
+    await this.selectSprint();
   }
 
   async selectSprint() {
