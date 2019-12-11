@@ -1,0 +1,105 @@
+.task {
+  display: flex;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba($color: #000000, $alpha: 0.2);
+}
+
+.task-item {
+  cursor: pointer;
+  margin-left: 20px;
+  padding-bottom: 10px;
+  width: 100%;
+}
+
+.task-non-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.task-name {
+  font-size: 18px;
+}
+
+.task-info {
+  display: flex;
+  margin-top: 5px;
+
+  .task-info-header:not(:first-child) {
+    margin-left: 15px;
+  }
+}
+
+.task-sub-info {
+  margin-left: 5px;
+  vertical-align: bottom;
+}
+
+.task-info-header {
+  .md-icon {
+    color: #3a9ad9;
+  }
+
+  font-size: 14px;
+  color: #3a9ad9;
+  min-width: 60px;
+}
+
+.task-finished {
+  .task-item > .task-name {
+    color: rgba($color: #000000, $alpha: 0.2);
+  }
+
+  .task-item > .task-info > .task-info-header {
+    .md-icon {
+      color: rgba($color: #000000, $alpha: 0.2);
+    }
+
+    font-size: 14px;
+    color: rgba($color: #000000, $alpha: 0.2);
+  }
+  .btn-circle {
+    background-color: #3a9ad9;
+  }
+}
+
+.action-block {
+  margin: 20px 0 0 10px;
+}
+
+.action-buttons {
+  cursor: pointer;
+  display: flex;
+
+  .md-icon {
+    color: #3a9ad9;
+  }
+}
+
+@media (max-width: 320px) {
+  .task-name {
+    font-size: 16px;
+  }
+
+  .task-info-header {
+    font-size: 13px;
+  }
+}
+
+.btn-circle {
+  display: inline-block;
+  border: 2px solid #3a9ad9;
+  background-color: transparent;
+  height: 25px !important;
+  width: 25px !important;
+  border-radius: 50%;
+  vertical-align: middle;
+  transition: 0.4s;
+}
+
+.btn-circle:hover {
+  background-color: #3a9ad9;
+}

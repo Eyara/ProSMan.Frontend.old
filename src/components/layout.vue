@@ -27,20 +27,20 @@
                 <md-list-item>
                     <md-icon>view_list</md-icon>
                     <span class="md-list-item-text">
-            <router-link to="/">Проекты</router-link>
-          </span>
+                        <router-link to="/">Проекты</router-link>
+                    </span>
                 </md-list-item>
                 <md-list-item>
                     <md-icon>today</md-icon>
                     <span class="md-list-item-text">
-            <router-link to="/today">Задания на день</router-link>
-          </span>
+                        <router-link to="/today">Задания на день</router-link>
+                    </span>
                 </md-list-item>
                 <md-list-item>
                     <md-icon>assessment</md-icon>
                     <span class="md-list-item-text">
-            <router-link to="/dashboard">Статистика</router-link>
-          </span>
+                        <router-link to="/dashboard">Статистика</router-link>
+                    </span>
                 </md-list-item>
             </md-list>
 

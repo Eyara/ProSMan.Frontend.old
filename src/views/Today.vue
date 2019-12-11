@@ -2,32 +2,12 @@
     <div class="tasks-content">
         <div v-if="tasks && tasks.length > 0">
             <div class="tasks-block">
-                <div
+                <task
                         class="task"
                         v-for="task in tasks"
                         v-bind:key="task.id"
-                        v-bind:class="{ 'task-finished': task.isFinished}"
-                >
-                    <div class="btn-circle" @click="toggleFinishTask(task.id)"></div>
-                    <div class="task-item">
-                        <span class="task-name">{{task.name}}</span>
-                        <div class="task-info">
-                            <div class="task-info-header">
-                                <md-icon>access_time</md-icon>
-                                <span class="task-sub-info">{{task.timeEstimate}}ч</span>
-                            </div>
-                            <div class="task-info-header">
-                                <md-icon style="margin-right: -5px;">priority_high</md-icon>
-                                <span class="task-sub-info">{{task.priority | priority}}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="action-buttons">
-                        <div @click="toggleTodayTask(task.id)">
-                            <md-icon>star</md-icon>
-                        </div>
-                    </div>
-                </div>
+                        v-bind:task="task">
+                </task>
             </div>
         </div>
         <div v-else>
@@ -46,9 +26,13 @@ import router from "../router";
 import taskService from "../services/task.service";
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
+import Task from "@/shared/task/task";
 
 @Component({
-  name: "today"
+  name: "today",
+  components: {
+    Task
+  }
 })
 export default class extends Vue {
   tasks = null;

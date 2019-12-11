@@ -32,38 +32,17 @@
                 ></md-empty-state>
             </div>
             <div class="tasks-block" v-else>
-                <div
-                        class="task"
+                <task
                         v-for="task in selectedTasks"
                         v-bind:key="task.id"
-                        v-bind:class="{ 'task-finished': task.isFinished}"
+                        v-bind:task="task"
+                        v-on:edit="editTask"
+                        v-on:toggle-finish="toggleFinishTask"
+                        v-on:toggle-today="toggleTodayTask"
+                        v-on:delete="deleteTask"
                 >
-                    <div @click="toggleFinishTask(task.id)">
-                        <div class="btn-circle"></div>
-                    </div>
-                    <div class="task-item" @click="editTask(task)">
-                        <span class="task-name">{{task.name}}</span>
-                        <div class="task-info">
-                            <div class="task-info-header">
-                                <md-icon>access_time</md-icon>
-                                <span class="task-sub-info">{{task.timeEstimate}}ч</span>
-                            </div>
-                            <div class="task-info-header">
-                                <md-icon style="margin-right: -5px;">priority_high</md-icon>
-                                <span class="task-sub-info">{{task.priority | priority}}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="action-buttons">
-                        <div @click="toggleTodayTask(task.id)">
-                            <md-icon v-if="todayTaskDate(task.date)">star_border</md-icon>
-                            <md-icon v-else>star</md-icon>
-                        </div>
-                        <div @click="deleteTask(task.id)">
-                            <md-icon>delete</md-icon>
-                        </div>
-                    </div>
-                </div>
+
+                </task>
             </div>
         </div>
     </div>
@@ -76,17 +55,18 @@
 <script>
 import store from "../../store";
 import router from "../../router";
-import moment from "moment";
 import taskService from "../../services/task.service";
 import categoryService from "../../services/category.service";
 import CategoryPicker from "../../components/tasks/category-picker/category-picker.vue";
+import Task from "../../shared/task/task";
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
 
 @Component({
   name: "tasks",
   components: {
-    CategoryPicker
+    CategoryPicker,
+    Task
   }
 })
 export default class extends Vue {
@@ -197,10 +177,6 @@ export default class extends Vue {
         });
         this.selectCategories(this.categories);
       });
-  }
-
-  todayTaskDate(date) {
-    return moment(date).format("YYYY-MM-DD") !== moment().format("YYYY-MM-DD");
   }
 
   createTask() {
