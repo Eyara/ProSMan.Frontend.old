@@ -43,30 +43,17 @@
                                     v-bind:key="nsTask.id"
                                     v-bind:class="{ 'task-finished': nsTask.isFinished}"
                             >
-                                <div class="btn-circle" @click="toggleFinishTask(nsTask.id, true)"></div>
-                                <div class="task-item">
-                                    <span class="task-name">{{nsTask.name}}</span>
-                                    <div class="task-info">
-                                        <div class="task-info-header">
-                                            <md-icon>access_time</md-icon>
-                                            <span class="task-sub-info">{{nsTask.timeEstimate}}ч</span>
-                                        </div>
-                                        <div class="task-info-header">
-                                            <md-icon style="margin-right: -5px;">priority_high</md-icon>
-                                            <span class="task-sub-info">{{nsTask.priority | priority}}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="action-buttons">
-                                    <!-- <div @click="toggleTodayTask(nsTask.id, true)"> -->
-                                    <div>
-                                        <md-icon v-if="todayTaskDate(nsTask.date)">star_border</md-icon>
-                                        <md-icon v-else>star</md-icon>
-                                    </div>
-                                    <div @click="deleteTask(nsTask.id, true)">
-                                        <md-icon>delete</md-icon>
-                                    </div>
-                                </div>
+                                <task
+                                        v-for="nsTask in nonSprintTasks"
+                                        v-bind:key="nsTask.id"
+                                        v-bind:task="nsTask"
+                                        v-bind:task-type="taskType.NonSprint"
+                                        v-on:toggle-finish="toggleFinishTask"
+                                        v-on:toggle-today="today"
+                                        v-on:finish-task="toggleFinishTask"
+                                        v-on:delete="deleteTask"
+                                >
+                                </task>
                             </div>
                         </div>
                     </div>
@@ -88,40 +75,15 @@
                 <div v-else>
                     <div class="tasks-content">
                         <div class="tasks-block">
-                            <div
-                                    class="task"
-                                    v-for="nsTask in backlogTasks"
-                                    v-bind:key="nsTask.id"
-                                    v-bind:class="{ 'task-finished': nsTask.isFinished}"
+                            <task
+                                    v-for="task in backlogTasks"
+                                    v-bind:key="task.id"
+                                    v-bind:task="task"
+                                    v-bind:task-type="taskType.Backlog"
+                                    v-on:move-to-sprint="moveToSprint"
+                                    v-on:delete="deleteBacklogTask"
                             >
-                                <div class="btn-circle" @click="toggleFinishTask(nsTask.id, true)"></div>
-                                <div class="task-item">
-                                    <span class="task-name">{{nsTask.name}}</span>
-                                    <div class="task-info">
-                                        <div class="task-info-header">
-                                            <md-icon>access_time</md-icon>
-                                            <span class="task-sub-info">{{nsTask.timeEstimate}}ч</span>
-                                        </div>
-                                        <div class="task-info-header">
-                                            <md-icon style="margin-right: -5px;">priority_high</md-icon>
-                                            <span class="task-sub-info">{{nsTask.priority | priority}}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="action-buttons">
-                                    <!-- <div @click="toggleTodayTask(nsTask.id, true)"> -->
-                                    <div @click="moveToSprint(nsTask.id)">
-                                        <md-icon>arrow_forward</md-icon>
-                                    </div>
-                                    <div>
-                                        <md-icon v-if="todayTaskDate(nsTask.date)">star_border</md-icon>
-                                        <md-icon v-else>star</md-icon>
-                                    </div>
-                                    <div @click="deleteTask(nsTask.id, true)">
-                                        <md-icon>delete</md-icon>
-                                    </div>
-                                </div>
-                            </div>
+                            </task>
                         </div>
                     </div>
                 </div>
@@ -138,17 +100,26 @@
 <script lang="ts">
 import store from "../store";
 import router from "../router";
+
+import { Component, Vue, Watch } from "vue-property-decorator";
+
 import moment from "moment";
+
+import backlogTaskService from "../services/backlogTask.service";
 import nonSprintTaskService from "../services/nonSprintTask.service";
 import sprintService from "../services/sprint.service";
+
 import SprintTimeline from "../components/sprints/sprint-timeline/sprint-timeline.vue";
-import { Component, Vue, Watch } from "vue-property-decorator";
+import Task from "../shared/task/task.vue";
+
+import { TaskTypeEnum } from "@/models/enums/task-type.enum";
 import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
 import { ISprintModel } from "@/models/sprint.model";
 
 @Component({
   name: "sprints",
   components: {
+    Task,
     SprintTimeline
   }
 })
@@ -164,6 +135,10 @@ export default class extends Vue {
     this.getSprints();
     this.getNonSprintTasks();
     this.getBacklogTasks();
+  }
+
+  get taskType() {
+    return TaskTypeEnum;
   }
 
   get hasBeenUpdated() {
@@ -206,11 +181,9 @@ export default class extends Vue {
   }
 
   getBacklogTasks() {
-    nonSprintTaskService
-      .getAllBacklog(this.$route.query.projectId)
-      .then(response => {
-        this.backlogTasks = response.data.data;
-      });
+    backlogTaskService.getAll(this.$route.query.projectId).then(response => {
+      this.backlogTasks = response.data.data;
+    });
   }
 
   tasksOpen(sprint: ISprintModel) {
@@ -248,14 +221,8 @@ export default class extends Vue {
     ]);
   }
 
-  todayTaskDate(date) {
-    return moment(date).format("YYYY-MM-DD") !== moment().format("YYYY-MM-DD");
-  }
-
-  async toggleFinishTask(id, isNonSprintTask) {
-    if (isNonSprintTask) {
-      await nonSprintTaskService.toggleFinishTask(id);
-    }
+  async toggleFinishTask(id) {
+    await nonSprintTaskService.toggleFinishTask(id);
     this.getNonSprintTasks();
   }
 
@@ -265,11 +232,13 @@ export default class extends Vue {
     this.getBacklogTasks();
   }
 
-  async deleteTask(id, isNonSprintTask) {
-    if (isNonSprintTask) {
-      await nonSprintTaskService.delete(id);
-    }
+  async deleteTask(id) {
+    await nonSprintTaskService.delete(id);
     this.getNonSprintTasks();
+  }
+
+  async deleteBacklogTask(id) {
+    await backlogTaskService.delete(id);
     this.getBacklogTasks();
   }
 

@@ -36,12 +36,12 @@
                         v-for="task in selectedTasks"
                         v-bind:key="task.id"
                         v-bind:task="task"
+                        v-bind:task-type="taskType.Common"
                         v-on:edit="editTask"
                         v-on:toggle-finish="toggleFinishTask"
                         v-on:toggle-today="toggleTodayTask"
                         v-on:delete="deleteTask"
                 >
-
                 </task>
             </div>
         </div>
@@ -61,6 +61,7 @@ import CategoryPicker from "../../components/tasks/category-picker/category-pick
 import Task from "../../shared/task/task";
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
+import { TaskTypeEnum } from "@/models/enums/task-type.enum";
 
 @Component({
   name: "tasks",
@@ -80,6 +81,10 @@ export default class extends Vue {
     store.commit("setMenuButtonType", "back");
 
     // this.refresh();
+  }
+
+  get taskType() {
+    return TaskTypeEnum;
   }
 
   get finishedTasksHours() {

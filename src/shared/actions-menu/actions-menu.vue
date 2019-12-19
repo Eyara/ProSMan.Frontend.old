@@ -1,9 +1,17 @@
 <template>
     <div id="actions-menu" class="actions-menu">
-        <md-button @click="toggleTodayTaskEmit()">
+        <md-button v-if="isTodayAvailable"
+            @click="toggleTodayTaskEmit()">
             <div class="actions-menu__button">
                 <md-icon>star</md-icon>
                 <span>На сегодня</span>
+            </div>
+        </md-button>
+        <md-button v-if="isMoveable"
+                @click="moveToSprintEmit()">
+            <div class="actions-menu__button">
+                <md-icon>arrow_forward</md-icon>
+                <span>В спринт</span>
             </div>
         </md-button>
         <md-button @click="deleteTaskEmit()">
@@ -26,6 +34,8 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 })
 export default class extends Vue {
   @Prop() id: string;
+  @Prop() isMoveable: boolean;
+  @Prop() isTodayAvailable: boolean;
 
   private clickListen() {
     this.$emit("close");
@@ -37,6 +47,10 @@ export default class extends Vue {
 
   toggleTodayTaskEmit() {
     this.$emit("toggle-today", this.id);
+  }
+
+  moveToSprintEmit() {
+    this.$emit("move-to-sprint", this.id);
   }
 
   deleteTaskEmit() {

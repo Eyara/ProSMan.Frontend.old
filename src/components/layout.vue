@@ -100,6 +100,7 @@
 import store from "../store";
 import router from "../router";
 
+import backlogTaskService from "../services/backlogTask.service";
 import nonSprintTaskService from "../services/nonSprintTask.service";
 import projectService from "../services/project.service";
 import sprintService from "../services/sprint.service";
@@ -245,11 +246,11 @@ export default class extends Vue {
   }
 
   async createBacklogTask(model) {
-    return await nonSprintTaskService.createBacklog(model);
+    return await backlogTaskService.create(model);
   }
 
   async moveToSprint(model) {
-    return await nonSprintTaskService.moveToSprint(model);
+    return await backlogTaskService.moveToSprint(model);
   }
 
   logout() {

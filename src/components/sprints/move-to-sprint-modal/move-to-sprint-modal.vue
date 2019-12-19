@@ -11,12 +11,28 @@
                 </md-select>
             </md-field>
             <md-field>
+                <label>Описание</label>
+                <md-textarea v-model="model.description" md-autogrow></md-textarea>
+            </md-field>
+            <md-field>
                 <label>Категории</label>
                 <md-select v-model="selectedCategoryId">
                     <md-option v-for="category in categories" :key="category.id" :value="category.id">
                         {{category.name}}
                     </md-option>
                 </md-select>
+            </md-field>
+            <md-field>
+                <label>Приоритет</label>
+                <md-select v-model="model.priority">
+                    <md-option value="1">Низкий</md-option>
+                    <md-option value="2">Средний</md-option>
+                    <md-option value="3">Высокий</md-option>
+                </md-select>
+            </md-field>
+            <md-field>
+                <label>Предполагаемое время</label>
+                <md-input v-model="model.timeEstimate"></md-input>
             </md-field>
             <div class="button-block">
                 <md-button class="md-primary" @click="cancel()">Отмена</md-button>
@@ -49,7 +65,10 @@ export default class extends Vue {
   model = {
     id: "00000000-0000-0000-0000-000000000000",
     sprintId: "00000000-0000-0000-0000-000000000000",
-    categoryId: "00000000-0000-0000-0000-000000000000"
+    categoryId: "00000000-0000-0000-0000-000000000000",
+    description: "",
+    priority: 0,
+    timeEstimate: 0
   };
   isCancel: Boolean;
 
