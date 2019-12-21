@@ -25,10 +25,9 @@ export default {
 
   delete(id) {
     return axios.delete("api/NonSprintTask?id=" + id);
-  }
+  },
 
-  // not implemented
-  // toggleTodayTask(id) {
-  //     return axios.post("api/Task/ToggleTodayTask?id=" + id);
-  // },
+  toggleTodayTask(id) {
+      return axios.put("api/NonSprintTask/ToggleTodayTask?id=" + id);
+  },
 };

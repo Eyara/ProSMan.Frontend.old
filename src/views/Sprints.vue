@@ -49,7 +49,7 @@
                                         v-bind:task="nsTask"
                                         v-bind:task-type="taskType.NonSprint"
                                         v-on:toggle-finish="toggleFinishTask"
-                                        v-on:toggle-today="today"
+                                        v-on:toggle-today="toggleTodayTask"
                                         v-on:finish-task="toggleFinishTask"
                                         v-on:delete="deleteTask"
                                 >
@@ -223,6 +223,11 @@ export default class extends Vue {
 
   async toggleFinishTask(id) {
     await nonSprintTaskService.toggleFinishTask(id);
+    this.getNonSprintTasks();
+  }
+
+  async toggleTodayTask(id) {
+    await nonSprintTaskService.toggleTodayTask(id);
     this.getNonSprintTasks();
   }
 
