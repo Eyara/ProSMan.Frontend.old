@@ -29,6 +29,7 @@ import {TaskTypeEnum} from "@/models/enums/task-type.enum";
                 v-bind:id="task.id"
                 v-bind:is-moveable="isBacklog"
                 v-bind:is-today-available="!(isBacklog || isNonSprintTask)"
+                v-bind:is-deletable="isTodayTask"
                 v-on:close="closeActions"
                 v-on:toggle-today="toggleTodayTaskEmit"
                 v-on:move-to-sprint="moveToSprintEmit"
@@ -62,6 +63,10 @@ export default class extends Vue {
 
   get isNonSprintTask() {
     return this.taskType == TaskTypeEnum.NonSprint;
+  }
+
+  get isTodayTask() {
+    return this.taskType == TaskTypeEnum.Today;
   }
 
   showActions() {

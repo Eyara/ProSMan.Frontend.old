@@ -1,5 +1,6 @@
 export enum TaskTypeEnum {
   Common,
   NonSprint,
-  Backlog
+  Backlog,
+  Today
 }

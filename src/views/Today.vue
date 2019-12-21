@@ -1,21 +1,24 @@
 <template>
     <div class="tasks-content">
-        <div v-if="tasks && tasks.length > 0">
-            <div class="tasks-block">
+        <div v-if="tasks">
+            <div class="tasks-block" v-if="tasks.length > 0">
                 <task
-                        class="task"
                         v-for="task in tasks"
                         v-bind:key="task.id"
-                        v-bind:task="task">
+                        v-bind:task="task"
+                        v-bind:task-type="taskType.Today"
+                        v-on:toggle-finish="toggleFinishTask"
+                        v-on:toggle-today="toggleTodayTask"
+                >
                 </task>
             </div>
-        </div>
-        <div v-else>
-            <md-empty-state
-                    md-icon="today"
-                    md-label="Нет задач"
-                    md-description="Задачи на сегодня отсутствуют."
-            ></md-empty-state>
+            <div v-else>
+                <md-empty-state
+                        md-icon="today"
+                        md-label="Нет задач"
+                        md-description="Задачи на сегодня отсутствуют."
+                ></md-empty-state>
+            </div>
         </div>
     </div>
 </template>
@@ -27,6 +30,7 @@ import taskService from "../services/task.service";
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
 import Task from "@/shared/task/task";
+import { TaskTypeEnum } from "@/models/enums/task-type.enum";
 
 @Component({
   name: "today",
@@ -40,6 +44,10 @@ export default class extends Vue {
   created() {
     store.commit("setPageLabel", "Задания на день");
     this.refresh();
+  }
+
+  get taskType() {
+    return TaskTypeEnum;
   }
 
   get hasBeenUpdated() {

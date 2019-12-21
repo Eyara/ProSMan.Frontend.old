@@ -1,20 +1,21 @@
 <template>
     <div id="actions-menu" class="actions-menu">
         <md-button v-if="isTodayAvailable"
-            @click="toggleTodayTaskEmit()">
+                   @click="toggleTodayTaskEmit()">
             <div class="actions-menu__button">
                 <md-icon>star</md-icon>
                 <span>На сегодня</span>
             </div>
         </md-button>
         <md-button v-if="isMoveable"
-                @click="moveToSprintEmit()">
+                   @click="moveToSprintEmit()">
             <div class="actions-menu__button">
                 <md-icon>arrow_forward</md-icon>
                 <span>В спринт</span>
             </div>
         </md-button>
-        <md-button @click="deleteTaskEmit()">
+        <md-button v-if="isDeletable"
+                   @click="deleteTaskEmit()">
             <div class="actions-menu__button">
                 <md-icon>delete</md-icon>
                 <span>Удалить</span>
@@ -36,6 +37,7 @@ export default class extends Vue {
   @Prop() id: string;
   @Prop() isMoveable: boolean;
   @Prop() isTodayAvailable: boolean;
+  @Prop() isDeletable: boolean;
 
   private clickListen() {
     this.$emit("close");

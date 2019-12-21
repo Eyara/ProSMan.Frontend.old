@@ -103,8 +103,6 @@ import router from "../router";
 
 import { Component, Vue, Watch } from "vue-property-decorator";
 
-import moment from "moment";
-
 import backlogTaskService from "../services/backlogTask.service";
 import nonSprintTaskService from "../services/nonSprintTask.service";
 import sprintService from "../services/sprint.service";
