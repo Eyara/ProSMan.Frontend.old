@@ -1,4 +1,5 @@
 import {TaskTypeEnum} from "@/models/enums/task-type.enum";
+import {TaskTypeEnum} from "@/models/enums/task-type.enum";
 <template>
     <div>
         <div class="task"
@@ -27,7 +28,7 @@ import {TaskTypeEnum} from "@/models/enums/task-type.enum";
                 v-if="isActions"
                 v-bind:id="task.id"
                 v-bind:is-moveable="isBacklog"
-                v-bind:is-today-available="!isBacklog"
+                v-bind:is-today-available="!(isBacklog || isNonSprintTask)"
                 v-on:close="closeActions"
                 v-on:toggle-today="toggleTodayTaskEmit"
                 v-on:move-to-sprint="moveToSprintEmit"
@@ -57,6 +58,10 @@ export default class extends Vue {
 
   get isBacklog() {
     return this.taskType == TaskTypeEnum.Backlog;
+  }
+
+  get isNonSprintTask() {
+    return this.taskType == TaskTypeEnum.NonSprint;
   }
 
   showActions() {
