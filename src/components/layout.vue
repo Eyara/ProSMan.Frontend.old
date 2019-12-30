@@ -63,12 +63,17 @@
                     v-on:close-dialog="closeSideNav"
             ></add-task-modal>
             <add-non-sprint-task-modal
-                    v-if="$store.state.isRightSideMenuOpen &&
-          ($store.state.updatingType === updatingType.NonSprintTask || $store.state.updatingType === updatingType.BacklogTask)"
+                    v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.NonSprintTask"
                     v-bind:taskModel="$store.state.updatingItem"
                     v-bind:isCreating="$store.state.isCreating"
                     v-on:close-dialog="closeSideNav"
             ></add-non-sprint-task-modal>
+            <add-backlog-task-modal
+                    v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.BacklogTask"
+                    v-bind:taskModel="$store.state.updatingItem"
+                    v-bind:isCreating="$store.state.isCreating"
+                    v-on:close-dialog="closeSideNav"
+            ></add-backlog-task-modal>
             <add-category-modal
                     v-else-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.Category"
                     v-bind:categoryModel="$store.state.updatingItem"
@@ -110,6 +115,7 @@ import categoryService from "../services/category.service";
 import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
 
 import AddTaskModal from "./tasks/add-task-modal/add-task-modal.vue";
+import AddBacklogTaskModal from "./sprints/add-backlog-task-modal/add-backlog-task-modal.vue";
 import AddNonSprintTaskModal from "./sprints/add-non-sprint-task-modal/add-non-sprint-task-modal.vue";
 import AddCategoryModal from "./tasks/add-category-modal/add-category-modal.vue";
 import AddSprintModal from "./sprints/add-sprint-modal/add-sprint-modal.vue";
@@ -125,6 +131,7 @@ import { Component, Vue } from "vue-property-decorator";
     AddCategoryModal,
     AddSprintModal,
     AddProjectModal,
+    AddBacklogTaskModal,
     MoveToSprintModal
   }
 })

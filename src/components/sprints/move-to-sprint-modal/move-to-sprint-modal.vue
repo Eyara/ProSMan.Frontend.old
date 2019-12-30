@@ -3,14 +3,6 @@
         <md-content v-if="model !== null" class="modal-block" @keyup.enter="create()">
             <h2>Перенос задачи в спринт</h2>
             <md-field>
-                <label>Спринт</label>
-                <md-select v-model="selectedSprintId">
-                    <md-option v-for="sprint in sprints" :key="sprint.id" :value="sprint.id">
-                        {{sprint.name}}
-                    </md-option>
-                </md-select>
-            </md-field>
-            <md-field>
                 <label>Описание</label>
                 <md-textarea v-model="model.description" md-autogrow></md-textarea>
             </md-field>
@@ -64,7 +56,6 @@ export default class extends Vue {
   categories = [];
   model = {
     id: "00000000-0000-0000-0000-000000000000",
-    sprintId: "00000000-0000-0000-0000-000000000000",
     categoryId: "00000000-0000-0000-0000-000000000000",
     description: "",
     priority: 0,
@@ -97,7 +88,6 @@ export default class extends Vue {
   }
 
   create() {
-    this.model.sprintId = this.selectedSprintId;
     this.model.categoryId = this.selectedCategoryId;
     this.isCancel = false;
     this.close();

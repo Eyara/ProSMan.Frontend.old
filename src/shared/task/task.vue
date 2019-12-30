@@ -10,6 +10,7 @@ import {TaskTypeEnum} from "@/models/enums/task-type.enum";
             </div>
             <div class="task-item task-non-select"
                  v-touch:longtap="showActions"
+                 @contextmenu.prevent="showActions"
                  @click="editTaskEmit(task)">
                 <span class="task-name">{{task.name}}</span>
                 <div class="task-info" v-if="!isBacklog">

@@ -20,7 +20,7 @@
                         ></sprint-timeline>
                     </div>
                     <div class="action-block">
-                        <div @click="createSprint()">
+                        <div v-if="!hasNonFinishedSprint" @click="createSprint()">
                             <md-button class="btn-action-add">Создать новый спринт</md-button>
                         </div>
                     </div>
@@ -122,7 +122,7 @@ import { ISprintModel } from "@/models/sprint.model";
   }
 })
 export default class extends Vue {
-  sprints = null;
+  sprints: ISprintModel[] = null;
   nonSprintTasks = null;
   backlogTasks = null;
 
@@ -145,6 +145,10 @@ export default class extends Vue {
 
   get selectedProjectId() {
     return store.state.selectedProject.id;
+  }
+
+  get hasNonFinishedSprint() {
+    return this.sprints && this.sprints.some(sprint => !sprint.isFinished);
   }
 
   @Watch("hasBeenUpdated", { immediate: true })
