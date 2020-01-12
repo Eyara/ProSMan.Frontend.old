@@ -48,6 +48,7 @@
                                         v-bind:key="nsTask.id"
                                         v-bind:task="nsTask"
                                         v-bind:task-type="taskType.NonSprint"
+                                        v-on:edit="editNonSprintTask"
                                         v-on:toggle-finish="toggleFinishTask"
                                         v-on:toggle-today="toggleTodayTask"
                                         v-on:finish-task="toggleFinishTask"
@@ -80,6 +81,7 @@
                                     v-bind:key="task.id"
                                     v-bind:task="task"
                                     v-bind:task-type="taskType.Backlog"
+                                    v-on:edit="editBacklogTask"
                                     v-on:move-to-sprint="moveToSprint"
                                     v-on:delete="deleteBacklogTask"
                             >
@@ -213,6 +215,22 @@ export default class extends Vue {
 
   editSprint(sprint) {
     store.dispatch("setUpdatingItem", [false, UpdatingTypeEnum.Sprint, sprint]);
+  }
+
+  editNonSprintTask(task) {
+    store.dispatch("setUpdatingItem", [
+      false,
+      UpdatingTypeEnum.NonSprintTask,
+      task
+    ]);
+  }
+
+  editBacklogTask(task) {
+    store.dispatch("setUpdatingItem", [
+      false,
+      UpdatingTypeEnum.BacklogTask,
+      task
+    ]);
   }
 
   moveToSprint(id) {

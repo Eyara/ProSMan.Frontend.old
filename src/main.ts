@@ -16,7 +16,9 @@ unauthorize();
 Vue.config.productionTip = false;
 
 Vue.use(VueMaterial);
-Vue.use(Vue2TouchEvents);
+Vue.use(Vue2TouchEvents, {
+  touchHoldTolerance: 400,
+});
 Vue.use(Vuelidate);
 
 Vue.filter("priority", function(value) {

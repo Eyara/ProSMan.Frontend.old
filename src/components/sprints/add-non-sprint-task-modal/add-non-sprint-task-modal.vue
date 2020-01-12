@@ -56,13 +56,11 @@ export default class extends Vue {
     priority: "Low",
     timeEstimate: 0
   };
-  model = {};
+  model: any = {};
   isCancel: Boolean;
 
   created() {
-    if (this.isCreating) {
-      this.model = this.isCreating ? this.initial_model : this.taskModel;
-    }
+    this.model = this.isCreating ? this.initial_model : this.taskModel;
   }
 
   get show() {

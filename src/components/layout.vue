@@ -182,7 +182,7 @@ export default class extends Vue {
       case UpdatingTypeEnum.BacklogTask:
         store.state.isCreating
           ? await this.createBacklogTask(model)
-          : await this.updateNonSprintTask(model);
+          : await this.updateBacklogTask(model);
         break;
       case UpdatingTypeEnum.MoveToSprint:
         await this.moveToSprint(model);
@@ -254,6 +254,10 @@ export default class extends Vue {
 
   async createBacklogTask(model) {
     return await backlogTaskService.create(model);
+  }
+
+  async updateBacklogTask(model) {
+    return await backlogTaskService.update(model);
   }
 
   async moveToSprint(model) {

@@ -9,7 +9,7 @@ import {TaskTypeEnum} from "@/models/enums/task-type.enum";
                 <div @click="toggleFinishTaskEmit(task.id)" class="btn-circle"></div>
             </div>
             <div class="task-item task-non-select"
-                 v-touch:longtap="showActions"
+                 v-touch:touchhold="showActions"
                  @contextmenu.prevent="showActions"
                  @click="editTaskEmit(task)">
                 <span class="task-name">{{task.name}}</span>

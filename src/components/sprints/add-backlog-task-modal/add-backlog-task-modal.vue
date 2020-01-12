@@ -45,9 +45,7 @@ export default class extends Vue {
   isCancel: Boolean;
 
   created() {
-    if (this.isCreating) {
-      this.model = this.isCreating ? this.initial_model : this.taskModel;
-    }
+    this.model = this.isCreating ? this.initial_model : this.taskModel;
   }
 
   close() {
