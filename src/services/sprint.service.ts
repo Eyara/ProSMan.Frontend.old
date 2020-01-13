@@ -1,6 +1,7 @@
 import axios, { AxiosPromise } from "axios";
 import { IDataResponseModel } from "@/models/data-response.model";
 import { ISprintModel } from "@/models/sprint.model";
+import {IPaginationResponseModel} from "@/models/pagination-response.model";
 
 export default {
   name: "sprintService",
@@ -9,9 +10,9 @@ export default {
     return axios.post<boolean>("api/Sprint", model);
   },
 
-  getByProjectId(id): AxiosPromise<IDataResponseModel<ISprintModel[]>> {
-    return axios.get<IDataResponseModel<ISprintModel[]>>(
-      "api/Sprint/GetByProjectId?id=" + id
+  getByProjectId(id: string, currentPage: number, pageCount: number): AxiosPromise<IPaginationResponseModel<ISprintModel[]>> {
+    return axios.get<IPaginationResponseModel<ISprintModel[]>>(
+      `api/Sprint/GetByProjectId?id=${id}&currentPage=${currentPage}&pageCount=${pageCount}`
     );
   },
 
@@ -23,7 +24,7 @@ export default {
     return axios.get("/api/Sprint/GetUnfinished?id=" + projectId);
   },
 
-  deleteSprint(id) {
+  deleteSprint(id: string) {
     return axios.delete("api/Sprint?id=" + id);
   },
 
@@ -31,7 +32,7 @@ export default {
     return axios.put<boolean>("api/Sprint", model);
   },
 
-  finish(id): AxiosPromise<boolean> {
+  finish(id: string): AxiosPromise<boolean> {
     return axios.put<boolean>("api/Sprint/Finish?id=" + id);
   }
 };

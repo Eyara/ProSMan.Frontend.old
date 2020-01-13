@@ -1,24 +1,27 @@
 <template>
-  <div>
-    <md-content v-if="!!model" class="modal-block" @keyup.enter="create()">
-      <h2 v-if="isCreating">Создание спринта</h2>
-      <h2 v-else>Обновление спринта</h2>
-      <md-field>
-        <label>Название</label>
-        <md-input v-model="model.name"></md-input>
-      </md-field>
-      <md-datepicker v-model="model.fromDate">
-        <label>Дата начала спринта</label>
-      </md-datepicker>
-      <div class="button-block">
-        <md-button class="md-primary" @click="cancel()">Отмена</md-button>
-        <md-button class="md-raised md-primary" @click="create()">
-          <span v-if="isCreating">Создать</span>
-          <span v-else>Обновить</span>
-        </md-button>
-      </div>
-    </md-content>
-  </div>
+    <div>
+        <md-content v-if="!!model" class="modal-block" @keyup.enter="create()">
+            <label class="main-label">
+                <span v-if="isCreating">Создание</span>
+                <span v-else>Обновление</span>
+                спринта
+            </label>
+            <md-field>
+                <label>Название</label>
+                <md-input v-model="model.name"></md-input>
+            </md-field>
+            <md-datepicker v-model="model.fromDate">
+                <label>Дата начала спринта</label>
+            </md-datepicker>
+            <div class="button-block">
+                <md-button class="md-primary" @click="cancel()">Отмена</md-button>
+                <md-button class="md-raised md-primary" @click="create()">
+                    <span v-if="isCreating">Создать</span>
+                    <span v-else>Обновить</span>
+                </md-button>
+            </div>
+        </md-content>
+    </div>
 </template>
 
 <script lang="ts">

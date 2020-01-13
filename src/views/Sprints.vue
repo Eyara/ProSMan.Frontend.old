@@ -20,9 +20,17 @@
                         ></sprint-timeline>
                     </div>
                     <div class="action-block">
-                        <div v-if="!hasNonFinishedSprint" @click="createSprint()">
+                        <div v-if="sprintIsCreatable" @click="createSprint()">
                             <md-button class="btn-action-add">Создать новый спринт</md-button>
                         </div>
+                    </div>
+                    <div class="pagination-block">
+                        <q-pagination
+                                v-model="currentPage"
+                                :max="lastPage"
+                                :direction-links="true"
+                        >
+                        </q-pagination>
                     </div>
                 </div>
             </md-tab>
@@ -127,6 +135,9 @@ export default class extends Vue {
   sprints: ISprintModel[] = null;
   nonSprintTasks = null;
   backlogTasks = null;
+  currentPage: number = 1;
+  lastPage: number = 1;
+  pageCount: number = 5;
 
   created() {
     store.commit("setPageLabel", "Спринты");
@@ -153,6 +164,14 @@ export default class extends Vue {
     return this.sprints && this.sprints.some(sprint => !sprint.isFinished);
   }
 
+  get sprintIsCreatable() {
+    return (
+      !this.hasNonFinishedSprint &&
+      // TODO: not the best solution, will be changed in the future releases
+      this.currentPage === this.lastPage
+    );
+  }
+
   @Watch("hasBeenUpdated", { immediate: true })
   hasBeenUpdatedWatcher(newValue) {
     if (newValue) {
@@ -172,10 +191,24 @@ export default class extends Vue {
     }
   }
 
+  @Watch("currentPage", { immediate: true })
+  currentPageWatcher(newValue) {
+    if (newValue) {
+      this.getSprints();
+    }
+  }
+
   getSprints() {
-    sprintService.getByProjectId(this.$route.query.projectId).then(response => {
-      this.sprints = response.data.data;
-    });
+    sprintService
+      .getByProjectId(
+        this.$route.query.projectId.toString(),
+        this.currentPage,
+        this.pageCount
+      )
+      .then(response => {
+        this.sprints = response.data.items;
+        this.lastPage = response.data.lastPage;
+      });
   }
 
   getNonSprintTasks() {
@@ -287,5 +320,11 @@ export default class extends Vue {
 .btn-action-add:hover {
   color: #fafafa !important;
   background-color: #3a9ad9 !important;
+}
+
+.pagination-block {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0 5px 0;
 }
 </style>

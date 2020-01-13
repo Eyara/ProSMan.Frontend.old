@@ -1,7 +1,7 @@
 <template>
     <div>
         <md-content v-if="model !== null" class="modal-block" @keyup.enter="create()">
-            <h2>Перенос задачи в спринт</h2>
+            <label class="main-label">Перенос задачи в спринт</label>
             <md-field>
                 <label>Описание</label>
                 <md-textarea v-model="model.description" md-autogrow></md-textarea>

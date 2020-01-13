@@ -9,6 +9,7 @@ import "vue-material/dist/vue-material.min.css";
 import interceptorSetup from "./interceptors/authReqInterceptor";
 import unauthorize from "./interceptors/unauthInterceptor";
 import "./registerServiceWorker";
+import './quasar'
 
 interceptorSetup();
 unauthorize();

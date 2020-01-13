@@ -1,8 +1,11 @@
 <template>
     <div>
         <md-content v-if="model !== null" class="modal-block" @keyup.enter="create()">
-            <h2 v-if="isCreating">Создание проекта</h2>
-            <h2 v-else>Обновление проекта</h2>
+            <label class="main-label">
+                <span v-if="isCreating">Создание</span>
+                <span v-else>Обновление</span>
+                проекта
+            </label>
             <md-field>
                 <label>Название</label>
                 <md-input v-model="model.name"></md-input>
