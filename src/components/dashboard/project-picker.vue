@@ -1,17 +1,17 @@
 <template>
-    <div>
-        <div class="category-picker">
-            <md-chip
-                    v-for="project in projects"
-                    :key="project.id"
-                    @click="toggle(project)"
-                    class="category-chip"
-                    v-bind:class="{ 'category-chip-selected': project.selected }"
-                    md-clickable
-            >{{project.name}}
-            </md-chip>
-        </div>
+  <div>
+    <div class="category-picker">
+      <md-chip
+        v-for="project in projects"
+        :key="project.id"
+        @click="toggle(project)"
+        class="category-chip"
+        v-bind:class="{ 'category-chip-selected': project.selected }"
+        md-clickable
+        >{{ project.name }}
+      </md-chip>
     </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -31,10 +31,7 @@ export default class extends Vue {
   }
 
   toggle(project) {
-    this.items = this.items.map(x => {
-      x.selected = false;
-      return x;
-    });
+    this.items.forEach(item => (item.selected = false));
     project.selected = !project.selected;
     this.emitSelect();
   }

@@ -1,104 +1,125 @@
 <template>
-    <div>
-        <md-toolbar class="top-menu">
-            <md-button
-                    v-if="$store.state.menuButtonType == 'menu'"
-                    class="md-icon-button"
-                    @click="$store.commit('toggleLeftSideMenu')"
-            >
-                <md-icon class="main-color">menu</md-icon>
-            </md-button>
-            <md-button
-                    v-else-if="$store.state.menuButtonType == 'back'"
-                    class="md-icon-button"
-                    @click="$router.go(-1)"
-            >
-                <md-icon class="main-color">arrow_back</md-icon>
-            </md-button>
-            <h3 class="md-title main-color">{{$store.state.pageLabel}}</h3>
-        </md-toolbar>
+  <div>
+    <md-toolbar class="top-menu">
+      <md-button
+        v-if="$store.state.menuButtonType == 'menu'"
+        class="md-icon-button"
+        @click="$store.commit('toggleLeftSideMenu')"
+      >
+        <md-icon class="main-color">menu</md-icon>
+      </md-button>
+      <md-button
+        v-else-if="$store.state.menuButtonType == 'back'"
+        class="md-icon-button"
+        @click="$router.go(-1)"
+      >
+        <md-icon class="main-color">arrow_back</md-icon>
+      </md-button>
+      <h3 class="md-title main-color">{{ $store.state.pageLabel }}</h3>
+    </md-toolbar>
 
-        <md-drawer :md-active.sync="$store.state.isLeftSideMenuOpen">
-            <md-list @click="$store.commit('toggleLeftSideMenu')">
-                <md-list-item class="user-panel">
-                    <md-icon>person</md-icon>
-                    <span class="md-list-item-text">{{userFullname}}</span>
-                </md-list-item>
-                <md-list-item>
-                    <md-icon>view_list</md-icon>
-                    <span class="md-list-item-text">
-                        <router-link to="/">Проекты</router-link>
-                    </span>
-                </md-list-item>
-                <md-list-item>
-                    <md-icon>today</md-icon>
-                    <span class="md-list-item-text">
-                        <router-link to="/today">Задания на день</router-link>
-                    </span>
-                </md-list-item>
-                <md-list-item>
-                    <md-icon>assessment</md-icon>
-                    <span class="md-list-item-text">
-                        <router-link to="/dashboard">Статистика</router-link>
-                    </span>
-                </md-list-item>
-            </md-list>
+    <md-drawer :md-active.sync="$store.state.isLeftSideMenuOpen">
+      <md-list @click="$store.commit('toggleLeftSideMenu')">
+        <md-list-item class="user-panel">
+          <md-icon>person</md-icon>
+          <span class="md-list-item-text">{{ userFullname }}</span>
+        </md-list-item>
+        <md-list-item>
+          <md-icon>view_list</md-icon>
+          <span class="md-list-item-text">
+            <router-link to="/">Проекты</router-link>
+          </span>
+        </md-list-item>
+        <md-list-item>
+          <md-icon>today</md-icon>
+          <span class="md-list-item-text">
+            <router-link to="/today">Задания на день</router-link>
+          </span>
+        </md-list-item>
+        <md-list-item v-if="!isMobile">
+          <md-icon>assessment</md-icon>
+          <span class="md-list-item-text">
+            <router-link to="/dashboard">Статистика</router-link>
+          </span>
+        </md-list-item>
+      </md-list>
 
-            <div class="exit-panel" @click="logout()">
-                <md-icon>exit_to_app</md-icon>
-                <span class="md-list-item-text">Выход</span>
-            </div>
-        </md-drawer>
+      <div class="exit-panel" @click="logout()">
+        <md-icon>exit_to_app</md-icon>
+        <span class="md-list-item-text">Выход</span>
+      </div>
+    </md-drawer>
 
-        <md-drawer
-                class="md-right drawer-sidenav"
-                v-bind:class="{ 'hide-right': !$store.state.isRightSideMenuOpen }"
-                :md-active.sync="$store.state.isRightSideMenuOpen"
-                v-touch:swipe.right="hideRightSideNav"
-        >
-            <add-task-modal
-                    v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.Task"
-                    v-bind:taskModel="$store.state.updatingItem"
-                    v-bind:isCreating="$store.state.isCreating"
-                    v-on:close-dialog="closeSideNav"
-            ></add-task-modal>
-            <add-non-sprint-task-modal
-                    v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.NonSprintTask"
-                    v-bind:taskModel="$store.state.updatingItem"
-                    v-bind:isCreating="$store.state.isCreating"
-                    v-on:close-dialog="closeSideNav"
-            ></add-non-sprint-task-modal>
-            <add-backlog-task-modal
-                    v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.BacklogTask"
-                    v-bind:taskModel="$store.state.updatingItem"
-                    v-bind:isCreating="$store.state.isCreating"
-                    v-on:close-dialog="closeSideNav"
-            ></add-backlog-task-modal>
-            <add-category-modal
-                    v-else-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.Category"
-                    v-bind:categoryModel="$store.state.updatingItem"
-                    v-bind:isCreating="$store.state.isCreating"
-                    v-on:close-dialog="closeSideNav"
-            ></add-category-modal>
-            <add-sprint-modal
-                    v-else-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.Sprint"
-                    v-bind:sprintModel="$store.state.updatingItem"
-                    v-bind:isCreating="$store.state.isCreating"
-                    v-on:close-dialog="closeSideNav"
-            ></add-sprint-modal>
-            <add-project-modal
-                    v-else-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.Project"
-                    v-bind:projectModel="$store.state.updatingItem"
-                    v-bind:isCreating="$store.state.isCreating"
-                    v-on:close-dialog="closeSideNav"
-            ></add-project-modal>
-            <move-to-sprint-modal
-                    v-if="$store.state.isRightSideMenuOpen && $store.state.updatingType === updatingType.MoveToSprint"
-                    v-bind:taskModel="$store.state.updatingItem"
-                    v-on:close-dialog="closeSideNav"
-            ></move-to-sprint-modal>
-        </md-drawer>
-    </div>
+    <md-drawer
+      class="md-right drawer-sidenav"
+      v-bind:class="{ 'hide-right': !$store.state.isRightSideMenuOpen }"
+      :md-active.sync="$store.state.isRightSideMenuOpen"
+      v-touch:swipe.right="hideRightSideNav"
+    >
+      <add-task-modal
+        v-if="
+          $store.state.isRightSideMenuOpen &&
+            $store.state.updatingType === updatingType.Task
+        "
+        v-bind:taskModel="$store.state.updatingItem"
+        v-bind:isCreating="$store.state.isCreating"
+        v-on:close-dialog="closeSideNav"
+      ></add-task-modal>
+      <add-non-sprint-task-modal
+        v-if="
+          $store.state.isRightSideMenuOpen &&
+            $store.state.updatingType === updatingType.NonSprintTask
+        "
+        v-bind:taskModel="$store.state.updatingItem"
+        v-bind:isCreating="$store.state.isCreating"
+        v-on:close-dialog="closeSideNav"
+      ></add-non-sprint-task-modal>
+      <add-backlog-task-modal
+        v-if="
+          $store.state.isRightSideMenuOpen &&
+            $store.state.updatingType === updatingType.BacklogTask
+        "
+        v-bind:taskModel="$store.state.updatingItem"
+        v-bind:isCreating="$store.state.isCreating"
+        v-on:close-dialog="closeSideNav"
+      ></add-backlog-task-modal>
+      <add-category-modal
+        v-else-if="
+          $store.state.isRightSideMenuOpen &&
+            $store.state.updatingType === updatingType.Category
+        "
+        v-bind:categoryModel="$store.state.updatingItem"
+        v-bind:isCreating="$store.state.isCreating"
+        v-on:close-dialog="closeSideNav"
+      ></add-category-modal>
+      <add-sprint-modal
+        v-else-if="
+          $store.state.isRightSideMenuOpen &&
+            $store.state.updatingType === updatingType.Sprint
+        "
+        v-bind:sprintModel="$store.state.updatingItem"
+        v-bind:isCreating="$store.state.isCreating"
+        v-on:close-dialog="closeSideNav"
+      ></add-sprint-modal>
+      <add-project-modal
+        v-else-if="
+          $store.state.isRightSideMenuOpen &&
+            $store.state.updatingType === updatingType.Project
+        "
+        v-bind:projectModel="$store.state.updatingItem"
+        v-bind:isCreating="$store.state.isCreating"
+        v-on:close-dialog="closeSideNav"
+      ></add-project-modal>
+      <move-to-sprint-modal
+        v-if="
+          $store.state.isRightSideMenuOpen &&
+            $store.state.updatingType === updatingType.MoveToSprint
+        "
+        v-bind:taskModel="$store.state.updatingItem"
+        v-on:close-dialog="closeSideNav"
+      ></move-to-sprint-modal>
+    </md-drawer>
+  </div>
 </template>
 
 <script lang="ts">
@@ -146,6 +167,10 @@ export default class extends Vue {
 
   get userFullname() {
     return localStorage.fullname;
+  }
+
+  get isMobile() {
+    return window.innerWidth <= 800 && window.innerHeight <= 600;
   }
 
   async closeSideNav(model, isCancel) {
@@ -196,15 +221,15 @@ export default class extends Vue {
   }
 
   async createTask(model) {
-    return await taskService.createTask(model);
+    return taskService.createTask(model);
   }
 
   async updateTask(model) {
-    return await taskService.updateTask(model);
+    return taskService.updateTask(model);
   }
 
   async createCategory(model) {
-    return await categoryService.createCategory(model);
+    return categoryService.createCategory(model);
   }
 
   // eslint-disable-next-line
@@ -214,19 +239,19 @@ export default class extends Vue {
   }
 
   async createSprint(model) {
-    return await sprintService.createSprint(model);
+    return sprintService.createSprint(model);
   }
 
   async updateSprint(model) {
-    return await sprintService.updateSprint(model);
+    return sprintService.updateSprint(model);
   }
 
   async createProject(model) {
-    return await projectService.createProject(model);
+    return projectService.createProject(model);
   }
 
   async editProject(model) {
-    return await projectService.editProject(model);
+    return projectService.editProject(model);
   }
 
   async selectProject() {
@@ -245,23 +270,23 @@ export default class extends Vue {
   }
 
   async createNonSprintTask(model) {
-    return await nonSprintTaskService.create(model);
+    return nonSprintTaskService.create(model);
   }
 
   async updateNonSprintTask(model) {
-    return await nonSprintTaskService.update(model);
+    return nonSprintTaskService.update(model);
   }
 
   async createBacklogTask(model) {
-    return await backlogTaskService.create(model);
+    return backlogTaskService.create(model);
   }
 
   async updateBacklogTask(model) {
-    return await backlogTaskService.update(model);
+    return backlogTaskService.update(model);
   }
 
   async moveToSprint(model) {
-    return await backlogTaskService.moveToSprint(model);
+    return backlogTaskService.moveToSprint(model);
   }
 
   logout() {

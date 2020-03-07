@@ -1,12 +1,12 @@
 export interface IDashboardModel {
-  averageDayHours: number;
-  projects: IDashboradProjectModel[];
+  projects: IDashboardProjectModel[];
 }
 
-export interface IDashboradProjectModel {
+export interface IDashboardProjectModel {
   name: string;
   categories: IDashboardCategoryModel[];
-  sprints: IDashboardSprintModel[];
+  overview: IDashboardOverviewModel[];
+  selected: boolean;
 }
 
 export interface IDashboardCategoryModel {
@@ -14,13 +14,10 @@ export interface IDashboardCategoryModel {
   proportion: number;
 }
 
-export interface IDashboardSprintModel {
-  name: string;
-  taskCount: number;
-  tasks: IDashboardTaskModel[];
-}
-
-export interface IDashboardTaskModel {
-  date: Date;
-  count: number;
+export interface IDashboardOverviewModel {
+  averageHoursInSprint: number;
+  averageTasksInSprint: number;
+  totalSprints: number;
+  totalBacklogTasks: number;
+  totalNonSprintTasks: number;
 }

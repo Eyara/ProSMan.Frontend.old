@@ -1,46 +1,109 @@
 <template>
-    <div>
-        <project-picker v-bind:projects="projects" v-on:select="selectProject"></project-picker>
-        <div v-if="projects && selectedProject.name" class="dashboard">
-            <div class="chart-block">
-                <div class="chart-item gauge-item">
-                    <!-- <p> Среднее кол-во часов в день </p> -->
-                    <vue-svg-gauge
-                            class="gauge"
-                            :start-angle="-110"
-                            :end-angle="110"
-                            :value="data.averageDayHours"
-                            :separator-step="0"
-                            :min="0"
-                            :max="24"
-                            gauge-color="#3cba9f"
-                            :scale-interval="0.1"
-                    />
-                </div>
-                <div class="chart-item">
-                    <doughnut :chart-data="categories_proportion_data"></doughnut>
-                </div>
-                <div class="chart-item">
-                    <bar :chart-data="task_count_data"></bar>
-                </div>
-                <div class="chart-item">
-                    <line-chart :chart-data="task_finish_data"></line-chart>
-                </div>
+  <div>
+    <project-picker
+      v-bind:projects="projects"
+      v-on:select="selectProject"
+    ></project-picker>
+    <div
+      v-if="projects && selectedProject && selectedProject.name"
+      class="dashboard-wrapper"
+    >
+      <q-carousel
+        v-model="slide"
+        transition-prev="scale"
+        transition-next="scale"
+        swipeable
+        animated
+        control-color="white"
+        navigation
+        padding
+        arrows
+        height="600px"
+        class="bg-primary text-white shadow-1 rounded-borders dashboard-carousel"
+      >
+        <q-carousel-slide name="first" class="column no-wrap flex-center">
+          <div class="general-info">
+            <div class="main-info">
+              <div class="main-info-card info-card">
+                <span>
+                  Кол-во спринтов:
+                  <span class="highlight-info">
+                    {{ selectedProject.overview.totalSprints }}</span
+                  >
+                </span>
+              </div>
             </div>
-        </div>
-        <div v-else>
-            <md-empty-state
-                    md-icon="assessment"
-                    md-label="Выбери проект"
-                    md-description="Выбери проект, чтобы увидеть по нему статистику."
-            ></md-empty-state>
-        </div>
+            <div class="side-info">
+              <div class="side-info-card info-card">
+                <span>
+                  В среднем часов в спринте:
+                  <span class="highlight-info">
+                    {{ selectedProject.overview.averageHoursInSprint }}</span
+                  >
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="general-info general-info-end">
+            <div>
+              <div class="main-info main-info-with-margin">
+                <div class="main-info-card info-card">
+                  <span>
+                    Кол-во задач в бэклоге:
+                    <span class="highlight-info">
+                      {{ selectedProject.overview.totalBacklogTasks }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="main-info">
+                <div class="main-info-card info-card">
+                  <span>
+                    Кол-во задач без спринта:
+                    <span class="highlight-info">
+                      {{ selectedProject.overview.totalNonSprintTasks }}
+                    </span>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="side-info">
+              <div class="side-info-card info-card">
+                <span>
+                  В среднем задач в спринте:
+                  <span class="highlight-info">
+                    {{ selectedProject.overview.averageTasksInSprint }}</span
+                  >
+                </span>
+              </div>
+            </div>
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="second" class="column no-wrap flex-center">
+          <div class="q-mt-md text-center">
+            <doughnut :chart-data="categories_proportion_data"></doughnut>
+          </div>
+        </q-carousel-slide>
+        <!--        Will be added in the future-->
+        <!--        <q-carousel-slide name="third" class="column no-wrap flex-center">-->
+        <!--          <q-icon name="style" size="56px" />-->
+        <!--          <div class="q-mt-md text-center">-->
+        <!--          </div>-->
+        <!--        </q-carousel-slide>-->
+      </q-carousel>
     </div>
+    <div v-else>
+      <md-empty-state
+        md-icon="assessment"
+        md-label="Выбери проект"
+        md-description="Выбери проект, чтобы увидеть по нему статистику."
+      ></md-empty-state>
+    </div>
+  </div>
 </template>
 
 <script>
 import store from "../store";
-import { VueSvgGauge } from "vue-svg-gauge";
 import dashboardService from "../services/dashboard.service";
 import Doughnut from "../components/dashboard/doughnut";
 import LineChart from "../components/dashboard/line-chart";
@@ -52,7 +115,6 @@ import { Component, Vue } from "vue-property-decorator";
   name: "dashboard",
 
   components: {
-    VueSvgGauge,
     Doughnut,
     LineChart,
     Bar,
@@ -62,7 +124,8 @@ import { Component, Vue } from "vue-property-decorator";
 export default class extends Vue {
   data = {};
   projects = [];
-  selectedProject = {};
+  selectedProject = null;
+  slide = "first";
 
   async created() {
     store.commit("setPageLabel", "Статистика");
@@ -74,84 +137,16 @@ export default class extends Vue {
     if (!this.data.projects) return { labels: [], datasets: [] };
     return {
       labels: this.data.projects
-        .filter(x => x.name == this.selectedProject.name)
+        .filter(x => x.name === this.selectedProject.name)
         .map(x => x.categories.map(c => c.name))
         .flat(),
       datasets: [
         {
           data: this.data.projects
-            .filter(x => x.name == this.selectedProject.name)
+            .filter(x => x.name === this.selectedProject.name)
             .map(x => x.categories.map(c => c.proportion))
             .flat(),
-          backgroundColor: [
-            "#3e95cd",
-            "#8e5ea2",
-            "#3cba9f",
-            "#e8c3b9",
-            "#c45850",
-            "#81f0e5",
-            "aa1155",
-            "ffee88",
-            "134074",
-            "8da9c4",
-            "fce694"
-          ]
-        }
-      ]
-    };
-  }
-
-  get task_count_data() {
-    if (!this.data.projects) return { labels: [], datasets: [] };
-    return {
-      labels: this.data.projects
-        .filter(x => x.name == this.selectedProject.name)
-        .map(x => x.sprints.map(s => s.name))
-        .flat(),
-      datasets: [
-        {
-          label: "Кол-во заданий в спринте",
-          data: this.data.projects
-            .filter(x => x.name == this.selectedProject.name)
-            .map(x => x.sprints.map(s => s.taskCount))
-            .flat(),
-          backgroundColor: [
-            "#3e95cd",
-            "#8e5ea2",
-            "#3cba9f",
-            "#e8c3b9",
-            "#c45850",
-            "#81f0e5",
-            "aa1155",
-            "ffee88",
-            "134074",
-            "8da9c4",
-            "fce694"
-          ]
-        }
-      ]
-    };
-  }
-
-  get task_finish_data() {
-    if (!this.data.projects) return { labels: [], datasets: [] };
-    return {
-      labels: this.data.projects
-        .filter(x => x.name == this.selectedProject.name)
-        .map(x =>
-          x.sprints.map(s =>
-            s.tasks.map(t => new Date(t.date).toLocaleDateString())
-          )
-        )
-        .flat(2),
-      datasets: [
-        {
-          label: "Завершённые задания",
-          data: this.data.projects
-            .filter(x => x.name == this.selectedProject.name)
-            .map(x => x.sprints.map(s => s.tasks.map(t => t.count)))
-            .flat(2),
-          backgroundColor: ["#e8c3b9"]
+          backgroundColor: ["#8e5ea2", "#e8c3b9", "#fff", "#c45850"]
         }
       ]
     };
@@ -162,9 +157,9 @@ export default class extends Vue {
       this.data = response.data;
       this.projects = response.data.projects.map(x => {
         return {
-          id: x.id,
           name: x.name,
-          selected: false
+          selected: false,
+          overview: x.overview
         };
       });
     });
@@ -206,6 +201,65 @@ export default class extends Vue {
       width: 250px;
       height: 250px;
     }
+  }
+}
+
+.dashboard-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.dashboard-carousel {
+  width: 65%;
+}
+
+.general-info {
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.general-info-end {
+  align-items: flex-end;
+}
+
+.main-info-with-margin {
+  margin-bottom: 50px;
+}
+
+.main-info-card {
+  width: 250px;
+  height: 100px;
+}
+
+.side-info-card {
+  width: 150px;
+  height: 150px;
+}
+
+.info-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background-color: #185e8c;
+}
+
+.highlight-info {
+  font-size: 18px;
+  color: #d9d71a;
+}
+
+@media (max-width: 850px) {
+  .dashboard-carousel {
+    width: 100%;
+  }
+
+  .main-info-card,
+  .side-info-card {
+    width: 150px;
+    height: 125px;
   }
 }
 </style>
