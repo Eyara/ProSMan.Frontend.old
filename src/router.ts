@@ -1,11 +1,12 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Home from "./views/Home.vue";
-import Sprints from "./views/Sprints.vue";
-import Tasks from "./views/Tasks/Tasks.vue";
-import Login from "./views/Login.vue";
-import Today from "./views/Today.vue";
-import Dashboard from "./views/Dashboard.vue";
+
+const Home = () => /* webpackChunkName: "home" */ import ("./views/Home.vue");
+const Sprints = () => /* webpackChunkName: "sprints" */ import ("./views/Sprints.vue");
+const Tasks = () => /* webpackChunkName: "tasks" */ import ("./views/Tasks/Tasks.vue");
+const Login = () => /* webpackChunkName: "login" */ import ("./views/Login.vue");
+const Today = () => /* webpackChunkName: "today" */ import ("./views/Today.vue");
+const Dashboard = () => /* webpackChunkName: "home" */ import ("./views/Dashboard.vue");
 
 Vue.use(Router);
 
