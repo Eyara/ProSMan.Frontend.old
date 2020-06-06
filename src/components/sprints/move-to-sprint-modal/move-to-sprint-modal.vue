@@ -1,39 +1,47 @@
 <template>
-    <div>
-        <md-content v-if="model !== null" class="modal-block" @keyup.enter="create()">
-            <label class="main-label">Перенос задачи в спринт</label>
-            <md-field>
-                <label>Описание</label>
-                <md-textarea v-model="model.description" md-autogrow></md-textarea>
-            </md-field>
-            <md-field>
-                <label>Категории</label>
-                <md-select v-model="selectedCategoryId">
-                    <md-option v-for="category in categories" :key="category.id" :value="category.id">
-                        {{category.name}}
-                    </md-option>
-                </md-select>
-            </md-field>
-            <md-field>
-                <label>Приоритет</label>
-                <md-select v-model="model.priority">
-                    <md-option value="1">Низкий</md-option>
-                    <md-option value="2">Средний</md-option>
-                    <md-option value="3">Высокий</md-option>
-                </md-select>
-            </md-field>
-            <md-field>
-                <label>Предполагаемое время</label>
-                <md-input v-model="model.timeEstimate"></md-input>
-            </md-field>
-            <div class="button-block">
-                <md-button class="md-primary" @click="cancel()">Отмена</md-button>
-                <md-button class="md-raised md-primary" @click="create()">
-                    <span>Переместить</span>
-                </md-button>
-            </div>
-        </md-content>
-    </div>
+  <div>
+    <md-content
+      v-if="model !== null"
+      class="modal-block"
+      @keyup.enter="create()"
+    >
+      <label class="main-label">Перенос задачи в спринт</label>
+      <md-field>
+        <label>Описание</label>
+        <md-textarea v-model="model.description" md-autogrow></md-textarea>
+      </md-field>
+      <md-field>
+        <label>Категории</label>
+        <md-select v-model="selectedCategoryId">
+          <md-option
+            v-for="category in categories"
+            :key="category.id"
+            :value="category.id"
+          >
+            {{ category.name }}
+          </md-option>
+        </md-select>
+      </md-field>
+      <md-field>
+        <label>Приоритет</label>
+        <md-select v-model="model.priority">
+          <md-option value="1">Низкий</md-option>
+          <md-option value="2">Средний</md-option>
+          <md-option value="3">Высокий</md-option>
+        </md-select>
+      </md-field>
+      <md-field>
+        <label>Предполагаемое время</label>
+        <md-input v-model="model.timeEstimate"></md-input>
+      </md-field>
+      <div class="button-block">
+        <md-button class="md-primary" @click="cancel()">Отмена</md-button>
+        <md-button class="md-raised md-primary" @click="create()">
+          <span>Переместить</span>
+        </md-button>
+      </div>
+    </md-content>
+  </div>
 </template>
 
 <script lang="ts">

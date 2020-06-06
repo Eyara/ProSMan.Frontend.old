@@ -119,12 +119,14 @@ import Task from "../shared/task/task.vue";
 import { TaskTypeEnum } from "@/models/enums/task-type.enum";
 import { UpdatingTypeEnum } from "@/models/enums/updating-type.enum";
 import { ISprintModel } from "@/models/sprint.model";
+import { QPagination } from "quasar";
 
 @Component({
   name: "sprints",
   components: {
     Task,
-    SprintTimeline
+    SprintTimeline,
+    QPagination
   }
 })
 export default class extends Vue {

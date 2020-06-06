@@ -110,6 +110,7 @@ import LineChart from "../components/dashboard/line-chart";
 import Bar from "../components/dashboard/bar";
 import ProjectPicker from "../components/dashboard/project-picker";
 import { Component, Vue } from "vue-property-decorator";
+import { QCarousel, QCarouselSlide } from "quasar";
 
 @Component({
   name: "dashboard",
@@ -118,7 +119,9 @@ import { Component, Vue } from "vue-property-decorator";
     Doughnut,
     LineChart,
     Bar,
-    ProjectPicker
+    ProjectPicker,
+    QCarousel,
+    QCarouselSlide
   }
 })
 export default class extends Vue {

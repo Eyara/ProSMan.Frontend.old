@@ -1,21 +1,23 @@
 <template>
-    <div id="app">
-        <link
-                rel="stylesheet"
-                href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons"
-        >
-        <div v-if="$store.state.isAuthenticated" id="nav">
-            <Layout/>
-        </div>
-
-        <loading :active.sync="$store.state.isLoading"
-                 :can-cancel="true"
-                 :is-full-page="true"></loading>
-
-        <md-content class="content" v-touch:swipe.right="openSideNav">
-            <router-view/>
-        </md-content>
+  <div id="app">
+    <link
+      rel="stylesheet"
+      href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons"
+    />
+    <div v-if="$store.state.isAuthenticated" id="nav">
+      <Layout />
     </div>
+
+    <loading
+      :active.sync="$store.state.isLoading"
+      :can-cancel="true"
+      :is-full-page="true"
+    ></loading>
+
+    <md-content class="content" v-touch:swipe.right="openSideNav">
+      <router-view />
+    </md-content>
+  </div>
 </template>
 
 <script>
